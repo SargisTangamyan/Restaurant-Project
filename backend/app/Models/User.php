@@ -20,7 +20,13 @@ class User extends Authenticatable
     protected $fillable = [
         'username',
         'email',
+        'role',
         'password',
+        'first_name',
+        'last_name',
+        'phone_number',
+        'city',
+        'address',
     ];
 
     /**
@@ -45,13 +51,13 @@ class User extends Authenticatable
         ];
     }
 
-    public function UserProfile()
+    public function isAdmin(): bool
     {
-        return $this->hasOne(UserProfile::class);
+        return $this->role = 'admin';
     }
 
-    public function CompanyProfile()
+    public function isUser(): bool
     {
-        return $this->hasOne(CompanyProfile::class);
+        return $this->role = 'user';
     }
 }
