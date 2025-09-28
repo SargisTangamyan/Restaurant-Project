@@ -1,0 +1,31 @@
+<?php
+
+use App\Http\Controllers\Auth\AccountController;
+use App\Http\Controllers\Auth\EmailVerificationController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/test', function () {
+    return response()->json([
+        'message' => 'API is working',
+        'status' => 200
+    ]);
+})->middleware(['auth:sanctum']);
+
+Route::name('account.')->prefix('account')->group(function () {
+    Route::post('/login', [LoginController::class, 'store'])->name('login');
+    Route::post('/register', [RegisterController::class, 'store'])->name('register');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('forgot_password');
+    Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('reset_password');
+
+    Route::controller(AccountController::class)->middleware('auth:sanctum')->group(function () {
+        Route::delete('/logout', 'logout')->name('logout');
+        Route::post('/delete-account', 'destroy')->name('delete_account');
+        Route::put('/change-password', 'changePassword')->name('change_password');
+    });
+});
+
+// Verify Email
+Route::get('/verify-email/{id}/{hash}', EmailVerificationController::class)->middleware(['signed'])->name('verification.verify');

@@ -1,0 +1,401 @@
+{
+	"info": {
+		"_postman_id": "f4f72d6e-8718-4e2a-bcc6-9c59338d2dc0",
+		"name": "Restaurant Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45791834"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Registration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "Application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "TestUser@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Testuser$1234",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "Testuser$1234",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Domain}}/account/register",
+							"host": [
+								"{{Domain}}"
+							],
+							"path": [
+								"account",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verifying Email",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "Application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{Domain}}/verify-email/27/710752e538df76351d59894b2256b23bce03a31b?expires=1757681308&signature=bbe983b10413fe0c080d9c2f9956a90384fd1a6aa290f95e51cadf1516df4230",
+							"host": [
+								"{{Domain}}"
+							],
+							"path": [
+								"verify-email",
+								"27",
+								"710752e538df76351d59894b2256b23bce03a31b"
+							],
+							"query": [
+								{
+									"key": "expires",
+									"value": "1757681308"
+								},
+								{
+									"key": "signature",
+									"value": "bbe983b10413fe0c080d9c2f9956a90384fd1a6aa290f95e51cadf1516df4230"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "Application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "testuser@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Testuser$1234",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Domain}}/account/login",
+							"host": [
+								"{{Domain}}"
+							],
+							"path": [
+								"account",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "Application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "testuser@gmail.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Domain}}/account/forgot-password",
+							"host": [
+								"{{Domain}}"
+							],
+							"path": [
+								"account",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ResetPassword",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "Application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "password",
+									"value": "AnotherPass$1234",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "AnotherPass$1234",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Domain}}/account/reset-password?token=9u5wxT1F4RdvcdZ8vsosDH9NOsdEWHlgAfoXBaPjNdysQCIGoExB1skpAflFibrU&email=testuser%40gmail.com",
+							"host": [
+								"{{Domain}}"
+							],
+							"path": [
+								"account",
+								"reset-password"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "9u5wxT1F4RdvcdZ8vsosDH9NOsdEWHlgAfoXBaPjNdysQCIGoExB1skpAflFibrU"
+								},
+								{
+									"key": "email",
+									"value": "testuser%40gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "Application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "password",
+									"value": "AnotherPass$1234",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Domain}}/account/delete-account",
+							"host": [
+								"{{Domain}}"
+							],
+							"path": [
+								"account",
+								"delete-account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "Application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{Domain}}/account/logout",
+							"host": [
+								"{{Domain}}"
+							],
+							"path": [
+								"account",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "Application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "password",
+									"value": "AnotherPass$1234",
+									"type": "text"
+								},
+								{
+									"key": "new_password",
+									"value": "NewPassword$1234",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "NewPassword$1234",
+									"type": "text"
+								},
+								{
+									"key": "_method",
+									"value": "PUT",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Domain}}/account/change-password",
+							"host": [
+								"{{Domain}}"
+							],
+							"path": [
+								"account",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "test",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{Domain}}/test",
+					"host": [
+						"{{Domain}}"
+					],
+					"path": [
+						"test"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "41|HksRSZ0vGtgHUZNp8vXn777rOa4lRkkl4xIETXVr86e4491b",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
