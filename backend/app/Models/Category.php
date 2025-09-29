@@ -17,9 +17,7 @@ class Category extends Model
     protected static function booted(): void
     {
         static::saving(function ($category) {
-            $slug = self::makeSimpleSlug($category->name);
-            $count = Category::where('slug', $slug)->where('id', '!=', $category->id)->count();
-            $category->slug = $count ? $slug . '-' . ($count + 1) : $slug;
+            $category->slug = self::makeSimpleSlug($category->name);
         });
     }
 

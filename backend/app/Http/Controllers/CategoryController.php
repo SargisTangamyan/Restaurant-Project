@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\ResponseStrategy;
+use App\Enums\ResponseStatus;
+use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -15,13 +17,6 @@ class CategoryController extends Controller
         parent::__construct($responder);
         // Resource authorisation injecting
         $this->authorizeResource(Category::class, 'category');
-    }
-
-    private function checkForSimilarName(string $name): bool
-    {
-        $slug = Category::makeSimpleSlug($name);
-        $categoryWithSameSlug = Category::where('slug', $slug)->first();
-        return (bool)$categoryWithSameSlug;
     }
 
     /**
@@ -40,22 +35,13 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:categories',
-        ]);
-
-        if ($this->checkForSimilarName($request->name)) {
-            throw ValidationException::withMessages([
-                'name' => 'There is a category with almost same name'
-            ]);
-        }
-
         Category::create(['name' => $request->name]);
 
         return $this->responder->send(
             'The new category successfully created.',
+            status: ResponseStatus::CREATED->value,
         );
     }
 
@@ -73,18 +59,8 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(CategoryRequest $request, Category $category)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:categories',
-        ]);
-
-        if ($this->checkForSimilarName($request->name)) {
-            throw ValidationException::withMessages([
-                'name' => 'There is a category with almost same name'
-            ]);
-        }
-
         $category->update(['name' => $request->name]);
         return $this->responder->send(
             'Category updated successfully.',
