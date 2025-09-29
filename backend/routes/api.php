@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test', function () {
@@ -14,6 +15,7 @@ Route::get('/test', function () {
     ]);
 })->middleware(['auth:sanctum']);
 
+// Authentication
 Route::name('account.')->prefix('account')->group(function () {
     Route::post('/login', [LoginController::class, 'store'])->name('login');
     Route::post('/register', [RegisterController::class, 'store'])->name('register');
@@ -29,3 +31,6 @@ Route::name('account.')->prefix('account')->group(function () {
 
 // Verify Email
 Route::get('/verify-email/{id}/{hash}', EmailVerificationController::class)->middleware(['signed'])->name('verification.verify');
+
+// Category Resource
+Route::apiResource('/categories', CategoryController::class);
