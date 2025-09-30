@@ -1,0 +1,7 @@
+1) Registration Test has an error, should be fixed
+2) The tests of Category should be modified to become more efficient
+3) Add test cases to Category to check adding and updating of the categories with same and almost the same name
+4) Ingredient and Category Models share same method, create a trait or something of that sort
+5) Ingredient and Category Policy are almost the same, merge into one
+6) Ingredient and Category Controllers are almost the same too
+7) Create test for Ingredient

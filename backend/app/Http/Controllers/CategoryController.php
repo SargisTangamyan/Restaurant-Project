@@ -28,7 +28,7 @@ class CategoryController extends Controller
         $categories = Category::paginate(10);
         return $this->responder->send(
             'The all category list.',
-            ['categories' => CategoryResource::collection($categories)],
+            ['categories' => $categories],
         );
     }
 
