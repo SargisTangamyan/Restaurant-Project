@@ -1,8 +1,5 @@
 <script setup>
 
-// STYLING
-import 'normalize.css'
-
 // COMPONENTS
 import TheHeader from '@/components/ui/TheHeader.vue'
 

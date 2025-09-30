@@ -1,5 +1,5 @@
 {
-  "name": "white-garage-front",
+  "name": "frontend",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -17,6 +17,7 @@
     "@fortawesome/free-regular-svg-icons": "^7.0.1",
     "@fortawesome/free-solid-svg-icons": "^7.0.1",
     "@fortawesome/vue-fontawesome": "^3.1.2",
+    "@tailwindcss/vite": "^4.1.13",
     "normalize.css": "^8.0.1",
     "pinia": "^3.0.3",
     "vue": "^3.5.18",
@@ -25,9 +26,12 @@
   "devDependencies": {
     "@eslint/js": "^9.31.0",
     "@vitejs/plugin-vue": "^6.0.1",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9.31.0",
     "eslint-plugin-vue": "~10.3.0",
     "globals": "^16.3.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.13",
     "vite": "^7.0.6",
     "vite-plugin-vue-devtools": "^8.0.0"
   }

@@ -11,6 +11,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {useLanguageStore} from "@/stores/config/language.js";
 import {useCurrencyStore} from "@/stores/index.js";
 
+// TAILWINDCSS
+import '@/assets/css/main.css'
+
 // Add icons to the library
 library.add(faCheck, faCoffee)
 
