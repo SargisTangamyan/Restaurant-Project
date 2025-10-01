@@ -1,43 +1,70 @@
-<script setup lang="ts">
+<script setup>
+
+// VUE
+import { ref } from 'vue';
+
+// STORE IMPORT
+import {useAuthStore} from "@/stores/index.js";
+
+// REFS
+const isLoading = ref(false);
+
+// USING STORE
+const user = useAuthStore();
 
 // UI COMPONENTS
 import TheBox from '@/components/ui/TheBox.vue';
+import PageName from '@/components/ui/PageName.vue';
+
+// VALIDATION
+import {useField, useForm} from 'vee-validate';
+import * as yup from 'yup';
+
+// VALIDATION SCHEMA
+const schema = yup.object({
+  email: yup.string().email('Invalid email address').required('Email is required'),
+  password: yup.string().min(8, 'Password must be at least 8 characters')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+      'Password must contain uppercase, lowercase, number, and special character'
+    )
+    .required('Password is required'),
+  passwordConfirm: yup.string().oneOf([yup.ref('password')], 'Passwords do not match').required('Password Confirmation is required'),
+  agree: yup.boolean().oneOf([true], 'You must agree the Terms and Privacy')
+})
+
+// SET UP FORM
+const {handleSubmit, errors, setErrors} = useForm({
+  validationSchema: schema,
+})
+
+// FIELDS
+const {value: email} = useField('email');
+const {value: password} = useField('password');
+const {value: passwordConfirm} = useField('passwordConfirm');
+const {value: agree} = useField('agree');
+
+// METHODS
+const registerUser = handleSubmit(async ({email, password, passwordConfirm}) => {
+  isLoading.value = true;
+  const result = await user.registerUser(email, password, passwordConfirm);
+  console.log(result);
+  const serverErrors = {};
+  if (!result.success && result.errors) {
+    for (const field in result.errors) {
+      serverErrors[field] = result.errors[field];
+    }
+    setErrors(serverErrors);
+  }
+  isLoading.value = false;
+})
 
 </script>
 
 <template>
-  <!-- Breadcrumb Section Start -->
-  <the-box class="bg-gray-100 py-4">
-    <section class="breadcrumb-section">
-      <div class="container mx-auto">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-          <!-- Page Title -->
-          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-0">
-            Sign In
-          </h2>
+  <the-loader v-if="isLoading" />
 
-          <!-- Breadcrumb Navigation -->
-          <nav class="text-gray-600" aria-label="Breadcrumb">
-            <ol class="flex flex-wrap items-center space-x-2 sm:space-x-3 text-sm sm:text-base">
-              <li class="breadcrumb-item">
-                <a href="index.html"
-                   class="flex items-center hover:text-gray-900 transition-colors">
-                  Home
-                </a>
-              </li>
-              <li class="breadcrumb-item text-gray-500">
-                <span>/</span>
-              </li>
-              <li class="breadcrumb-item text-gray-500" aria-current="page">
-                Sign In
-              </li>
-            </ol>
-          </nav>
-        </div>
-      </div>
-    </section>
-  </the-box>
-  <!-- Breadcrumb Section End -->
+  <page-name p-name="Sign Up"/>
 
   <!-- log in section start -->
   <the-box>
@@ -63,38 +90,57 @@ import TheBox from '@/components/ui/TheBox.vue';
           </div>
 
           <!-- Form -->
-          <form class="space-y-4">
-            <div>
-              <label for="fullname" class="block text-sm font-medium text-gray-700">Full Name</label>
-              <input type="text" id="fullname" placeholder="Full Name"
-                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0da487] focus:border-[#0da487]">
-            </div>
+          <form @submit.prevent="registerUser" class="space-y-4">
 
             <div>
-              <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-              <input type="email" id="email" placeholder="Email Address"
-                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0da487] focus:border-[#0da487]">
+              <label for="email" class="block text-sm font-medium text-gray-700">Email
+                Address</label>
+              <input type="email" placeholder="Email Address"
+                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0da487] focus:border-[#0da487]"
+                     v-model="email"
+              >
+              <p v-if="errors.email" class="text-red-600 text-sm mt-1">{{ errors.email }}</p>
             </div>
 
             <div>
               <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-              <input type="password" id="password" placeholder="Password"
-                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0da487] focus:border-[#0da487]">
+              <input type="password" placeholder="Password"
+                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0da487] focus:border-[#0da487]"
+                     v-model="password"
+              >
+              <p v-if="errors.password" class="text-red-600 text-sm mt-1">{{ errors.password }}</p>
+            </div>
+
+            <div>
+              <label for="password" class="block text-sm font-medium text-gray-700">Password
+                Confirmation</label>
+              <input type="password" placeholder="Password"
+                     class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0da487] focus:border-[#0da487]"
+                     v-model="passwordConfirm"
+              >
+              <p v-if="errors.passwordConfirm" class="text-red-600 text-sm mt-1">
+                {{ errors.passwordConfirm }}</p>
             </div>
 
             <!-- Checkbox -->
             <div class="flex items-center">
-              <input id="flexCheckDefault" type="checkbox"
-                     class="h-4 w-4 bg-white border border-gray-300 rounded">
-              <label for="flexCheckDefault" class="ml-2 text-sm text-gray-600">
+              <input type="checkbox" id="agree"
+                     class="h-4 w-4 bg-white border border-gray-300 rounded"
+                     v-model="agree" name="agree"
+              >
+              <label for="agree" class="ml-2 text-sm text-gray-600">
                 I agree with <span class="text-[#0da487] cursor-pointer">Terms</span> and
                 <span class="text-[#0da487] cursor-pointer">Privacy</span>
               </label>
+              <p v-if="errors.agree" class="text-red-600 text-sm mt-1">{{ errors.agree }}</p>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit"
-                    class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition">
+            <button
+              type="submit"
+              :disabled="!agree"
+              class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
               Sign Up
             </button>
           </form>
@@ -108,8 +154,9 @@ import TheBox from '@/components/ui/TheBox.vue';
 
           <!-- Social Login -->
           <div class="space-y-3">
-            <a href="https://accounts.google.com/signin/v2/identifier?flowName=GlifWebSignIn&flowEntry=ServiceLogin"
-               class="flex items-center justify-center gap-2 w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition">
+            <a
+              href="https://accounts.google.com/signin/v2/identifier?flowName=GlifWebSignIn&flowEntry=ServiceLogin"
+              class="flex items-center justify-center gap-2 w-full border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition">
               <img src="../../assets/images/inner-page/google.png" alt="Google" class="w-5 h-5">
               <span>Sign up with Google</span>
             </a>
@@ -123,7 +170,9 @@ import TheBox from '@/components/ui/TheBox.vue';
           <!-- Already have account -->
           <div class="mt-6 text-center">
             <h4 class="text-gray-600">Already have an account?</h4>
-            <a href="login.html" class="text-[#0da487] font-medium hover:underline">Log In</a>
+            <router-link :to="{name: 'login'}" class="text-[#0da487] font-medium hover:underline">
+              Log In
+            </router-link>
           </div>
 
         </div>

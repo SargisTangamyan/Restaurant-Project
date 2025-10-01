@@ -6,12 +6,8 @@ import TheHeader from '@/components/ui/TheHeader.vue'
 </script>
 
 <template>
-  <the-header>
-
-  </the-header>
-  <router-view>
-
-  </router-view>
+  <the-header />
+  <router-view />
 </template>
 
 <style scoped>

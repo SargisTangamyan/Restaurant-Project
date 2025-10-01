@@ -344,15 +344,15 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
                       <div class="dropdown-menu onhover-div" v-show="showAccount" @mouseenter="!isTouch && openAccount()" @mouseleave="!isTouch && closeAccount()">
                         <ul class="user-box-name">
                           <li class="product-box-contain">
-                            <a class="dropdown-item" href="login.html">Log In</a>
+                            <router-link class="dropdown-item" :to="{name: 'login'}">Log In</router-link>
                           </li>
 
                           <li class="product-box-contain">
-                            <a class="dropdown-item" href="sign-up.html">Register</a>
+                            <router-link class="dropdown-item" :to="{name: 'register'}">Register</router-link>
                           </li>
 
                           <li class="product-box-contain">
-                            <a class="dropdown-item" href="forgot.html">Forgot Password</a>
+                            <router-link class="dropdown-item" :to="{name: 'forgot_password'}">Forgot Password</router-link>
                           </li>
                         </ul>
                       </div>

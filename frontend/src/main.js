@@ -14,18 +14,24 @@ import {useCurrencyStore} from "@/stores/index.js";
 // TAILWINDCSS
 import '@/assets/css/main.css'
 
-// Add icons to the library
-library.add(faCheck, faCoffee)
+// COMPONENTS
+import TheLoader from '@/components/ui/TheLoader.vue'
 
-const app = createApp(App)
+// Add icons to the library
+library.add(faCheck, faCoffee);
+
+const app = createApp(App);
 
 // Register the component globally
-app.component('font-awesome-icon', FontAwesomeIcon)
+app.component('font-awesome-icon', FontAwesomeIcon);
+app.component('the-loader', TheLoader);
 
+// Store
 app.use(createPinia())
 useLanguageStore().predefineLanguage();
 useCurrencyStore().predefineCurrency();
 
+// Router
 app.use(router)
 
 app.mount('#app')
