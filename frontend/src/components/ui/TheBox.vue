@@ -1,0 +1,22 @@
+<script setup>
+
+import { defineProps } from 'vue';
+
+defineProps({
+  mb: {
+    required: false,
+    default: true,
+  }
+});
+
+</script>
+
+<template>
+  <div class="w-full px-4 md:px-6 lg:px-8 box-border" :class="{'mb-8 md:mb-16': mb}">
+    <slot></slot>
+  </div>
+</template>
+
+<style scoped>
+
+</style>

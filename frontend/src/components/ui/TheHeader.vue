@@ -5,6 +5,9 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {faBars} from '@fortawesome/free-solid-svg-icons'
 
+// UI COMPONENTS
+import TheBox from '@/components/ui/TheBox.vue'
+
 // DEFAULT VUE METHODS
 import { onUnmounted, ref, computed, onMounted } from "vue";
 
@@ -134,9 +137,9 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
 </script>
 
 <template>
-  <header class="pb-md-4 pb-0">
+  <header class="pb-md-4">
     <div class="header-top">
-      <div class="container-fluid-lg">
+      <the-box :mb="false">
         <div class="row">
 
           <div class="address">
@@ -202,11 +205,11 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
           </div>
 
         </div>
-      </div>
+      </the-box>
     </div>
 
     <div class="top-nav">
-      <div class="container-fluid-lg">
+      <the-box :mb="false">
         <div class="row">
           <div class="navbar-container">
             <div class="navbar">
@@ -360,16 +363,18 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
             </div>
           </div>
         </div>
-      </div>
+      </the-box>
     </div>
 
-    <div class="container-fluid-lg">
+    <the-box :mb="false">
       <div class="row">
         <div class="main-nav">
           <div class="menu-container">
             <div class="header-nav-left">
               <button class="btn-outline btn-struct dropdown-category">
-                <svg class="menu-icon category-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M112 176L112 144L144 144L144 176L112 176zM80 136L80 184C80 197.3 90.7 208 104 208L152 208C165.3 208 176 197.3 176 184L176 136C176 122.7 165.3 112 152 112L104 112C90.7 112 80 122.7 80 136zM240 144C231.2 144 224 151.2 224 160C224 168.8 231.2 176 240 176L560 176C568.8 176 576 168.8 576 160C576 151.2 568.8 144 560 144L240 144zM240 304C231.2 304 224 311.2 224 320C224 328.8 231.2 336 240 336L560 336C568.8 336 576 328.8 576 320C576 311.2 568.8 304 560 304L240 304zM240 464C231.2 464 224 471.2 224 480C224 488.8 231.2 496 240 496L560 496C568.8 496 576 488.8 576 480C576 471.2 568.8 464 560 464L240 464zM112 304L144 304L144 336L112 336L112 304zM104 272C90.7 272 80 282.7 80 296L80 344C80 357.3 90.7 368 104 368L152 368C165.3 368 176 357.3 176 344L176 296C176 282.7 165.3 272 152 272L104 272zM112 496L112 464L144 464L144 496L112 496zM80 456L80 504C80 517.3 90.7 528 104 528L152 528C165.3 528 176 517.3 176 504L176 456C176 442.7 165.3 432 152 432L104 432C90.7 432 80 442.7 80 456z"/></svg>
+                <svg class="menu-icon category-icon" width="17" height="14" viewBox="0 0 17 14" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0.875 2C0.875 2.49728 1.07254 2.97419 1.42417 3.32583C1.77581 3.67746 2.25272 3.875 2.75 3.875C3.24728 3.875 3.72419 3.67746 4.07583 3.32583C4.42746 2.97419 4.625 2.49728 4.625 2C4.625 1.50272 4.42746 1.02581 4.07583 0.674175C3.72419 0.322544 3.24728 0.125 2.75 0.125C2.25272 0.125 1.77581 0.322544 1.42417 0.674175C1.07254 1.02581 0.875 1.50272 0.875 2ZM6.5 1.25C6.5 0.973858 6.72386 0.75 7 0.75H16C16.2761 0.75 16.5 0.973858 16.5 1.25V2.75C16.5 3.02614 16.2761 3.25 16 3.25H7C6.72386 3.25 6.5 3.02614 6.5 2.75V1.25ZM0.875 7C0.875 7.49728 1.07254 7.97419 1.42417 8.32583C1.77581 8.67746 2.25272 8.875 2.75 8.875C3.24728 8.875 3.72419 8.67746 4.07583 8.32583C4.42746 7.97419 4.625 7.49728 4.625 7C4.625 6.50272 4.42746 6.02581 4.07583 5.67417C3.72419 5.32254 3.24728 5.125 2.75 5.125C2.25272 5.125 1.77581 5.32254 1.42417 5.67417C1.07254 6.02581 0.875 6.50272 0.875 7ZM6.5 6.25C6.5 5.97386 6.72386 5.75 7 5.75H16C16.2761 5.75 16.5 5.97386 16.5 6.25V7.75C16.5 8.02614 16.2761 8.25 16 8.25H7C6.72386 8.25 6.5 8.02614 6.5 7.75V6.25ZM0.875 12C0.875 12.4973 1.07254 12.9742 1.42417 13.3258C1.77581 13.6775 2.25272 13.875 2.75 13.875C3.24728 13.875 3.72419 13.6775 4.07583 13.3258C4.42746 12.9742 4.625 12.4973 4.625 12C4.625 11.5027 4.42746 11.0258 4.07583 10.6742C3.72419 10.3225 3.24728 10.125 2.75 10.125C2.25272 10.125 1.77581 10.3225 1.42417 10.6742C1.07254 11.0258 0.875 11.5027 0.875 12ZM6.5 11.25C6.5 10.9739 6.72386 10.75 7 10.75H16C16.2761 10.75 16.5 10.9739 16.5 11.25V12.75C16.5 13.0261 16.2761 13.25 16 13.25H7C6.72386 13.25 6.5 13.0261 6.5 12.75V11.25Z" fill="#ffffff" />
+                </svg>
                 <span class="category-text">All Categories</span>
               </button>
             </div>
@@ -403,27 +408,17 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
           </div>
         </div>
       </div>
-    </div>
+    </the-box>
   </header>
 </template>
 
 <style scoped>
-
-.pb-0 {
-  padding-bottom: 0 !important;
-}
 
 .header-top {
   background-color: #0da487;
   padding: 10px 0;
   color: #fff;
   font-size: 14px;
-}
-
-.container-fluid-lg {
-  width: 100%;
-  padding: 0 1rem;
-  box-sizing: border-box;
 }
 
 .row {
@@ -603,13 +598,15 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
 }
 
 .nav-logo {
+  flex-shrink: 0;
   display: block;
-  height: 1.6rem;
+  height: 25px;
+  width: 141px;
 }
 
 .logo-img {
   height: 100%;
-  width: auto;
+  width: 100%;
   display: block;
 }
 
@@ -810,6 +807,7 @@ input::-webkit-clear-button {
 .category-text {
   display: block;
   font-weight: bold;
+  line-height: 100%;
 }
 
 .header-nav-middle {
@@ -864,10 +862,6 @@ input::-webkit-clear-button {
     margin-bottom: 1.5rem;
   }
 
-  .container-fluid-lg {
-    padding: 0 3.5rem;
-  }
-
   .navbar {
     height: 3.5rem;
     justify-content: flex-start;
@@ -902,10 +896,6 @@ input::-webkit-clear-button {
 }
 
 @media (min-width: 1300px) {
-  .container-fluid-lg {
-    padding: 0 5rem;
-  }
-
   .address {
     display: block;
     align-self: center;
@@ -929,9 +919,6 @@ input::-webkit-clear-button {
 }
 
 @media (max-width: 767px) { /* md breakpoint */
-  .container-fluid-lg {
-    padding: 0 1.5rem;
-  }
 
   .lang-cur {
     width: 100%; /* same as Bootstrap */
