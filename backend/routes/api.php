@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DishController;
 use App\Http\Controllers\IngredientController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,5 +37,8 @@ Route::get('/verify-email/{id}/{hash}', EmailVerificationController::class)->mid
 // Category Resource
 Route::apiResource('/categories', CategoryController::class);
 
-// Ingredient Resourc
+// Ingredient Resource
 Route::apiResource('/ingredients', IngredientController::class);
+
+// Dish Resource
+Route::apiResource('/dishes', DishController::class);

@@ -3,5 +3,7 @@
 3) Add test cases to Category to check adding and updating of the categories with same and almost the same name
 4) Ingredient and Category Models share same method, create a trait or something of that sort
 5) Ingredient and Category Policy are almost the same, merge into one
-6) Ingredient and Category Controllers are almost the same too
+6) Ingredient and Category Controllers are almost the same
 7) Create test for Ingredient
+8) Dish Update Request
+9) Dish tests

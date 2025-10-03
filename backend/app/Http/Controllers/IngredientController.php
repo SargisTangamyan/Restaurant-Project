@@ -58,7 +58,7 @@ class IngredientController extends Controller
     {
         return $this->responder->send(
             'The ingredient retrieved.',
-            ['ingredient' => new Ingredient($ingredient)],
+            ['ingredient' => $ingredient->toResource()],
         );
     }
 

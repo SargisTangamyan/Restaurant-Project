@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('dish_ingredient', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('dish_id')->constrained('dishes', 'id');
-            $table->foreignId('ingredient_id')->constrained('ingredients', 'id');
+            $table->foreignId('dish_id')->constrained('dishes', 'id')->cascadeOnDelete();
+            $table->foreignId('ingredient_id')->constrained('ingredients', 'id')->cascadeOnDelete();
+            $table->decimal('quantity', 8, 2);
             $table->timestamps();
         });
     }

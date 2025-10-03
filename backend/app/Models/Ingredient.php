@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
 class Ingredient extends Model
@@ -25,5 +26,12 @@ class Ingredient extends Model
     public static function makeSimpleSlug(string $name): string
     {
         return Str::slug($name);
+    }
+
+    public function dishes(): BelongsToMany
+    {
+        return $this->belongsToMany(Dish::class, 'dish_ingredient')
+            ->withPivot('quantity')
+            ->withTimestamps();
     }
 }
