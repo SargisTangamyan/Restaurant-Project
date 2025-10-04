@@ -1,33 +1,46 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 // PAGES
-import UserRegistration from '@/pages/Auth/UserRegistration.vue'
-import UserLogin from "@/pages/Auth/UserLogin.vue";
-import ForgotPassword from "@/pages/Auth/ForgotPassword.vue";
+import HomePage from "@/pages/HomePage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: "/",
+      redirect: 'home',
+    },
+    {
+      path: '/home',
+      name: 'home',
+      component: HomePage,
+    },
     {
       path: '/account',
       children: [
         {
           path: 'register',
           name: 'register',
-          component: UserRegistration,
+          component: () => import('@/pages/Auth/UserRegistration.vue'),
         },
         {
           path: 'login',
           name: 'login',
-          component: UserLogin,
+          component: () => import('@/pages/Auth/UserLogin.vue'),
         },
         {
           path: 'forgot-password',
           name: 'forgot_password',
-          component: ForgotPassword,
+          component: () => import('@/pages/Auth/ForgotPassword.vue'),
+
         }
       ]
     },
+    {
+      path: '/verification-success',
+      name: 'verification_success',
+      component: () => import('@/pages/VerificationSuccess.vue')
+    }
   ],
 })
 

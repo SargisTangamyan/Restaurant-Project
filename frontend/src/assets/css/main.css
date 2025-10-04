@@ -1,1 +1,17 @@
 @import 'tailwindcss';
+@tailwind utilities;
+
+@layer components {
+  .text-cgreen {
+    @apply text-[#0DA487];
+  }
+  .text-darkGreen {
+    @apply text-[#0B8C74];
+  }
+  .bg-cgreen {
+    @apply bg-[#0DA487];
+  }
+  .bg-darkGreen {
+    @apply bg-[#0B8C74];
+  }
+}

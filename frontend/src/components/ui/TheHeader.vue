@@ -217,9 +217,9 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
                 <FontAwesomeIcon class="bar-icon" :icon="faBars" />
               </button>
 
-              <a href="index.html" class="web-logo nav-logo">
+              <router-link :to="{'name': 'home'}" class="web-logo nav-logo">
                 <img src="../../assets/images/logo/1.png" class="logo-img" alt="">
-              </a>
+              </router-link>
 
               <!-- Now Working on -->
               <div class="middle-box">
@@ -383,7 +383,7 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
           <div class="header-nav-middle">
             <ul class="navbar-nav">
               <li class="nav-item dropdown">
-                <a class="nav-link" href="#">Home</a>
+                <router-link class="nav-link" :to="{name: 'home'}">Home</router-link>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link" href="#">Menu</a>
@@ -854,10 +854,6 @@ input::-webkit-clear-button {
 
 
 @media (min-width: 768px) { /* md breakpoint */
-  .pb-md-4 {
-    padding-bottom: 1.5rem !important; /* same as Bootstrap */
-  }
-
   .top-nav {
     margin-bottom: 1.5rem;
   }
