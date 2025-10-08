@@ -1,7 +1,8 @@
 import {defineStore} from 'pinia'
+import {sender} from '@/api/Sender.js'
 
 // URLS
-import {REGISTER_URL} from '@/constants/urls.js'
+import {REGISTER_URL, REDIRECT_URL} from '@/constants/urls.js'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -26,7 +27,8 @@ export const useAuthStore = defineStore('auth', {
           body: JSON.stringify({
             email,
             password,
-            password_confirmation: passwordConfirm
+            password_confirmation: passwordConfirm,
+            redirect_url: REDIRECT_URL,
           }),
         });
 
@@ -42,6 +44,10 @@ export const useAuthStore = defineStore('auth', {
       } catch (error) {
         console.log(error.message);
       }
+    },
+
+    async verifyEmail(url){
+      return await sender.sendGetRequest(url);
     }
   }
 });

@@ -3,6 +3,10 @@
 // VUE
 import { ref } from 'vue';
 
+// ROUTER
+import { useRouter } from 'vue-router'
+const router = useRouter();
+
 // STORE IMPORT
 import {useAuthStore} from "@/stores/index.js";
 
@@ -50,7 +54,11 @@ const registerUser = handleSubmit(async ({email, password, passwordConfirm}) => 
   const result = await user.registerUser(email, password, passwordConfirm);
   console.log(result);
   const serverErrors = {};
-  if (!result.success && result.errors) {
+  if (result.success) {
+    await router.replace({name: 'home'})
+    return;
+  }
+  else if (!result.success && result.errors) {
     for (const field in result.errors) {
       serverErrors[field] = result.errors[field];
     }

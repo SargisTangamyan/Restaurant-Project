@@ -13,29 +13,35 @@ class ApiVerifyEmail extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private function generateSignedUrl($notifiable): string
+    private ?string $redirectUrl;
+
+    public function __construct(?string $redirectUrl = null)
     {
-        return URL::temporarySignedRoute(
-            'verification.verify', // route name
-            Carbon::now()->addMinutes(60), // giving expiration time for the url
-            ['id' => $notifiable->id, 'hash' => sha1($notifiable->getEmailForVerification())],
-        );
+        $this->redirectUrl = $redirectUrl;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
-    public function via(object $notifiable): array
+    private function generateSignedUrl($notifiable): string
+    {
+        $hash = sha1($notifiable->getEmailForVerification());
+        $id = $notifiable->id;
+
+        $signedUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            Carbon::now()->addMinutes(60),
+            ['id' => $id, 'hash' => $hash],
+        );
+
+        $separator = str_contains($this->redirectUrl, '?') ? '&' : '?';
+
+        return $this->redirectUrl ? $this->redirectUrl . $separator . 'url=' . urlencode($signedUrl) : $signedUrl;
+    }
+
+    public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
+    public function toMail($notifiable): MailMessage
     {
         $verificationUrl = $this->generateSignedUrl($notifiable);
 
@@ -47,3 +53,4 @@ class ApiVerifyEmail extends Notification implements ShouldQueue
             ->line('If you did not create an account, no further action is required.');
     }
 }
+

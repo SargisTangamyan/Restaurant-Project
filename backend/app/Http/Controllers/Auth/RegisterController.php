@@ -35,7 +35,7 @@ class RegisterController extends Controller
         $token = $this->generateUserToken($user);
 
         // Send notification for email verification
-        $user->notify(new ApiVerifyEmail());
+        $user->notify(new ApiVerifyEmail($request->redirect_url));
 
         // Send response telling that the registration was successful
         return $this->responder->send(

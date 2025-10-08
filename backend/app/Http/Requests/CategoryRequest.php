@@ -35,7 +35,7 @@ class CategoryRequest extends FormRequest
                 if ($this->checkForSimilarName($this->name)) {
                     $validator->errors()->add(
                         'name',
-                        'There is a category with almost the same name!'
+                        'There is a dish with almost the same name!'
                     );
                 }
             }

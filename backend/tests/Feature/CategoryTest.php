@@ -51,7 +51,7 @@ class CategoryTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure([
                 'message',
-                'category',
+                'dish',
             ]);
     }
 

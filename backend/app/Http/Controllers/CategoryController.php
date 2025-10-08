@@ -16,7 +16,7 @@ class CategoryController extends Controller
     {
         parent::__construct($responder);
         // Resource authorisation injecting
-        $this->authorizeResource(Category::class, 'category');
+        $this->authorizeResource(Category::class, 'dish');
     }
 
     /**
@@ -27,7 +27,7 @@ class CategoryController extends Controller
         // The needed page is taken based on the query of the url
         $categories = Category::paginate(10);
         return $this->responder->send(
-            'The all category list.',
+            'The all dish list.',
             ['categories' => $categories],
         );
     }
@@ -40,7 +40,7 @@ class CategoryController extends Controller
         Category::create(['name' => $request->name]);
 
         return $this->responder->send(
-            'The new category successfully created.',
+            'The new dish successfully created.',
             status: ResponseStatus::CREATED->value,
         );
     }
@@ -51,8 +51,8 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         return $this->responder->send(
-            'The category',
-            ['category' => new CategoryResource($category)],
+            'The dish',
+            ['dish' => new CategoryResource($category)],
         );
     }
 

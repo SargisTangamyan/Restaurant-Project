@@ -8,10 +8,22 @@
   .text-darkGreen {
     @apply text-[#0B8C74];
   }
+  .text-cgreen:hover {
+    @apply text-[#0B8C74]; /* different color on hover */
+  }
+
+  .border-cgreen {
+    @apply border-[#0DA487];
+  }
+
   .bg-cgreen {
     @apply bg-[#0DA487];
   }
   .bg-darkGreen {
     @apply bg-[#0B8C74];
+  }
+
+  .discount-box {
+    @apply text-[#FF7272] bg-red-50 px-3 py-2 text-sm rounded-3xl w-fit
   }
 }

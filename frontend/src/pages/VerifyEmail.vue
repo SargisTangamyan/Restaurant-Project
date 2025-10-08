@@ -1,9 +1,47 @@
 <script setup>
+// VUE
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+
+// COMPONENTS
 import TheBox from "@/components/ui/TheBox.vue";
+import TheLoader from "@/components/ui/TheLoader.vue";
+
+// STORE
+import {useAuthStore} from "@/stores/index.js";
+
+// STORE INIT
+const store = useAuthStore();
+
+// REF
+const isLoading = ref(true);
+const successfulVerification = ref(false);
+const verificationFailed = ref(false);
+
+// ROUTER
+const route = useRoute();
+const apiVerifyUrl = route.query.url;
+
+// METHODS
+const waitResponse = async function () {
+  const response = await store.verifyEmail(apiVerifyUrl);
+  isLoading.value = false;
+  if (response.success) {
+    successfulVerification.value = true;
+  } else {
+    verificationFailed.value = true;
+  }
+}
+
+// MOUNTING
+onMounted(() => {
+  waitResponse();
+});
 </script>
 
 <template>
-    <the-box>
+  <the-loader v-if="isLoading"></the-loader>
+    <the-box v-if="successfulVerification">
       <div class="container mx-auto px-4 py-12">
         <div class="flex flex-col items-center justify-center text-center">
           <!-- Checkmark Animation -->
@@ -60,9 +98,61 @@ import TheBox from "@/components/ui/TheBox.vue";
         </div>
       </div>
     </the-box>
+  <the-box v-else-if="verificationFailed">
+    <div>
+      <div class="flex items-center justify-center min-h-screen bg-gray-100">
+        <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
+
+          <!-- Cross Icon -->
+          <div class="flex items-center justify-center w-16 h-16 mx-auto mb-6 bg-red-100 rounded-full">
+            <svg
+              class="w-10 h-10 text-red-600 animate-pulse"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </div>
+
+          <!-- Title -->
+          <h1 class="text-2xl font-bold mb-2">
+            Verification Failed
+          </h1>
+
+          <!-- Message -->
+          <p class="text-gray-600 dark:text-gray-300 mb-6">
+            We couldn't verify your email. The verification link may have expired or is invalid.
+          </p>
+
+          <!-- Retry Button -->
+          <router-link
+            to="/resend-verification"
+            class="inline-block bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300"
+          >
+            Resend Verification Email
+          </router-link>
+
+          <!-- Back Home Link -->
+          <div class="mt-4">
+            <router-link
+              to="home"
+              class="text-sm text-gray-500 hover:text-gray-700 transition duration-200"
+            >
+              Go back to Home
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </the-box>
 
 </template>
 
 <style scoped>
-
 </style>

@@ -37,9 +37,30 @@ const router = createRouter({
       ]
     },
     {
-      path: '/verification-success',
-      name: 'verification_success',
-      component: () => import('@/pages/VerificationSuccess.vue')
+      path: '/verify-email',
+      name: 'verify_email',
+      component: () => import('@/pages/VerifyEmail.vue'),
+    },
+    {
+      path: '/dishes/:id',
+      name: 'dish',
+      component: () => import ('@/pages/ProductDetail.vue'),
+      props: true,
+    },
+    {
+      path: '/dishes',
+      name: 'dishes',
+      component: () => import('@/pages/MenuPage.vue'),
+    },
+    {
+      path: '/wishlist',
+      name: 'wishlist',
+      component: () => import('@/pages/WishList.vue'),
+    },
+    {
+      path: '/cart',
+      name: 'cart',
+
     }
   ],
 })
