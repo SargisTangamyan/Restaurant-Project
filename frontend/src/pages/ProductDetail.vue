@@ -73,6 +73,9 @@ const props = defineProps({
 
         <!-- Quantity + Add to Cart -->
         <the-counter></the-counter>
+        <button class="flex-1 bg-cgreen hover:bg-emerald-700 text-white font-medium rounded-lg px-5 py-3 transition">
+          Add To Cart
+        </button>
 
         <!-- Wishlist + Compare -->
         <div class="flex gap-4 text-sm font-medium">

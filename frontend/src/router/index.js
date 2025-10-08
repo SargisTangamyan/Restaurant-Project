@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 // PAGES
 import HomePage from "@/pages/HomePage.vue";
+import NotFound from "@/pages/NotFound.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -60,8 +61,10 @@ const router = createRouter({
     {
       path: '/cart',
       name: 'cart',
+      component: () => import('@/pages/TheCart.vue'),
+    },
 
-    }
+    { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
   ],
 })
 

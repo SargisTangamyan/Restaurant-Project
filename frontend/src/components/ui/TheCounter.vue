@@ -20,9 +20,6 @@ const changeCounterBy = (number) => {
       <input type="text" :value="count" class="w-12 text-center border-x border-gray-200">
       <button @click="changeCounterBy(1)" class="px-3 py-2 cursor-pointer"><font-awesome-icon :icon="['fas', 'plus']"/></button>
     </div>
-    <button class="flex-1 bg-cgreen hover:bg-emerald-700 text-white font-medium rounded-lg px-5 py-3 transition">
-      Add To Cart
-    </button>
   </div>
 </template>
 

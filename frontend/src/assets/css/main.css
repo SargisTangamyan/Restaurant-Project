@@ -2,6 +2,7 @@
 @tailwind utilities;
 
 @layer components {
+  /* Text Colors */
   .text-cgreen {
     @apply text-[#0DA487];
   }
@@ -9,13 +10,15 @@
     @apply text-[#0B8C74];
   }
   .text-cgreen:hover {
-    @apply text-[#0B8C74]; /* different color on hover */
+    @apply text-[#0B8C74];
   }
 
+  /* Border Colors */
   .border-cgreen {
     @apply border-[#0DA487];
   }
 
+  /* Background Colors */
   .bg-cgreen {
     @apply bg-[#0DA487];
   }
@@ -23,7 +26,13 @@
     @apply bg-[#0B8C74];
   }
 
+  /* Discount Tag */
   .discount-box {
-    @apply text-[#FF7272] bg-red-50 px-3 py-2 text-sm rounded-3xl w-fit
+    @apply text-[#FF7272] bg-red-50 px-3 py-2 text-sm rounded-3xl w-fit;
+  }
+
+  /* Button Styles */
+  .button-cgreen {
+    @apply block w-fit bg-[#0DA487] hover:bg-[#0B8C74] text-white font-medium rounded-lg px-5 py-3 mt-4 transition;
   }
 }
