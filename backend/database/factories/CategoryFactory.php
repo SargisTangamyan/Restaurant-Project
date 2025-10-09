@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,16 +10,23 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CategoryFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
-        $name = fake()->unique()->name();
+        $name = fake()->unique()->word();
+
         return [
             'name' => ucfirst($name),
+            'parent_id' => null, // default to top-level
         ];
+    }
+
+    /**
+     * Optional: state for subcategory
+     */
+    public function child(Category $parent): static
+    {
+        return $this->state([
+            'parent_id' => $parent->id,
+        ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class CategoryRequest extends FormRequest
@@ -18,16 +19,38 @@ class CategoryRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
+        // When updating, we must ignore the current record in the unique rule.
+        $categoryId = $this->route('category')?->id;
+
         return [
-            'name' => 'required|string|max:255|unique:categories',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories', 'name')->ignore($categoryId),
+            ],
+
+            // parent_id is optional, but if present it must point to an existing category
+            // and cannot point to itself
+            'parent_id' => [
+                'nullable',
+                'integer',
+                'exists:categories,id',
+                function ($attribute, $value, $fail) use ($categoryId) {
+                    if ($value && $categoryId && $value == $categoryId) {
+                        $fail('A category cannot be its own parent.');
+                    }
+                },
+            ],
         ];
     }
 
+    /**
+     * Additional validation after basic rules.
+     */
     public function after(): array
     {
         return [
@@ -35,17 +58,27 @@ class CategoryRequest extends FormRequest
                 if ($this->checkForSimilarName($this->name)) {
                     $validator->errors()->add(
                         'name',
-                        'There is a dish with almost the same name!'
+                        'There is a category with almost the same name!'
                     );
                 }
-            }
+            },
         ];
     }
 
+    /**
+     * Custom method to check for similar names using slug comparison.
+     */
     private function checkForSimilarName(string $name): bool
     {
         $slug = Category::makeSimpleSlug($name);
-        $categoryWithSameSlug = Category::where('slug', $slug)->first();
-        return (bool)$categoryWithSameSlug;
+
+        $query = Category::where('slug', $slug);
+
+        // Ignore the current category when updating
+        if ($this->route('category')) {
+            $query->where('id', '!=', $this->route('category')->id);
+        }
+
+        return $query->exists();
     }
 }

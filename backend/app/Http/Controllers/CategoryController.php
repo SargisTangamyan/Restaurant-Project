@@ -8,15 +8,13 @@ use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class CategoryController extends Controller
 {
     public function __construct(ResponseStrategy $responder)
     {
         parent::__construct($responder);
-        // Resource authorisation injecting
-        $this->authorizeResource(Category::class, 'dish');
+        $this->authorizeResource(Category::class, 'category');
     }
 
     /**
@@ -24,11 +22,32 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        // The needed page is taken based on the query of the url
+        // Return full tree if ?tree=true
+        if ($request->boolean('tree')) {
+            $categories = Category::whereNull('parent_id')
+                ->with('childrenRecursive')
+                ->get();
+
+            return $this->responder->send(
+                'Full category tree.',
+                ['categories' => CategoryResource::collection($categories)]
+            );
+        }
+
+        // Paginated flat list
         $categories = Category::paginate(10);
+
         return $this->responder->send(
-            'The all dish list.',
-            ['categories' => $categories],
+            'All categories list.',
+            [
+                'categories' => CategoryResource::collection($categories),
+                'pagination' => [
+                    'current_page' => $categories->currentPage(),
+                    'last_page' => $categories->lastPage(),
+                    'per_page' => $categories->perPage(),
+                    'total' => $categories->total(),
+                ]
+            ]
         );
     }
 
@@ -37,11 +56,15 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        Category::create(['name' => $request->name]);
+        $data = $request->only(['name', 'parent_id']);
+        $category = Category::create($data);
 
         return $this->responder->send(
-            'The new dish successfully created.',
-            status: ResponseStatus::CREATED->value,
+            'New category created successfully.',
+            [
+                'categories' => new CategoryResource($category->load('childrenRecursive'))
+            ],
+            ResponseStatus::CREATED->value
         );
     }
 
@@ -50,9 +73,11 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
+        $category->load('childrenRecursive');
+
         return $this->responder->send(
-            'The dish',
-            ['dish' => new CategoryResource($category)],
+            'The category',
+            ['category' => new CategoryResource($category)]
         );
     }
 
@@ -61,9 +86,12 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, Category $category)
     {
-        $category->update(['name' => $request->name]);
+        $data = $request->only(['name', 'parent_id']);
+        $category->update($data);
+
         return $this->responder->send(
             'Category updated successfully.',
+            ['category' => new CategoryResource($category->load('childrenRecursive'))]
         );
     }
 
@@ -72,7 +100,17 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        if ($category->children()->exists()) {
+            return $this->responder->send(
+                'Cannot delete category with subcategories.',
+                status: ResponseStatus::UNPROCESSABLE->value
+            );
+        }
+
         $category->delete();
-        return $this->responder->send('Category deleted successfully.');
+
+        return $this->responder->send(
+            'Category deleted successfully.'
+        );
     }
 }

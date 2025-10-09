@@ -13,6 +13,27 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        Category::factory()->count(10)->create();
+        // Create top-level categories
+        $parents = Category::factory(5)->create();
+
+        // For each parent, create subcategories
+        $parents->each(function ($parent) {
+            Category::factory(rand(2, 3))
+                ->create([
+                    'parent_id' => $parent->id,
+                ]);
+        });
+
+        // Optionally create deeper levels (nested)
+        $subcategories = Category::whereNotNull('parent_id')->get();
+        $subcategories->each(function ($subcategory) {
+            // 50% chance to give this subcategory some children
+            if (rand(0, 1)) {
+                Category::factory(rand(1, 2))
+                    ->create([
+                        'parent_id' => $subcategory->id,
+                    ]);
+            }
+        });
     }
 }
