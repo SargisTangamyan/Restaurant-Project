@@ -20,7 +20,7 @@ class DishResource extends JsonResource
             'description' => $this->description,
             'price' => $this->price,
             'image' => $this->image,
-            'dish' => new CategoryResource($this->category),
+            'category' => new CategoryResource($this->category),
             'ingredients' => IngredientResource::collection($this->ingredients),
         ];
     }

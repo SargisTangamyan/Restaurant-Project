@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test', function () {
@@ -42,3 +43,10 @@ Route::apiResource('/ingredients', IngredientController::class);
 
 // Dish Resource
 Route::apiResource('/dishes', DishController::class);
+
+// Wishlist
+Route::prefix('/wishlist')->controller(WishlistController::class)->middleware('auth:sanctum')->name('wishlist.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/{dish}', 'store')->name('store');
+    Route::delete('/{id}', 'destroy')->name('destroy');
+});

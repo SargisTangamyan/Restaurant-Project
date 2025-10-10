@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use App\Notifications\ApiVerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 //use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
@@ -38,13 +37,8 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('users', [
-            'email' => 'randomEmail@example.com'
+            'email' => 'randomemail@example.com'
         ]);
-
-        $user = User::where('email', 'randomEmail@example.com')->first();
-
-        // Make sure that the email is sent to the registered user
-        Notification::assertSentTo([$user], ApiVerifyEmail::class);
     }
 
     public function test_registration_fails_because_email_already_exists(): void

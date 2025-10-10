@@ -23,7 +23,7 @@ class DishController extends Controller
      */
     public function index()
     {
-        return DishResource::collection(Dish::with(['dish', 'ingredients'])->paginate(10));
+        return DishResource::collection(Dish::with(['category', 'ingredients'])->paginate(10));
     }
 
     /**
@@ -39,7 +39,7 @@ class DishController extends Controller
             $dish->ingredients()->attach($ingredients);
         }
 
-        return new DishResource($dish->load(['dish','ingredients']));
+        return new DishResource($dish->load(['category','ingredients']));
     }
 
     /**
@@ -47,7 +47,7 @@ class DishController extends Controller
      */
     public function show(Dish $dish)
     {
-        return new DishResource($dish->load(['dish', 'ingredients']));
+        return new DishResource($dish->load(['category', 'ingredients']));
     }
 
     /**
@@ -65,7 +65,7 @@ class DishController extends Controller
 
         return $this->responder->send(
             'Dish updated successfully',
-            ['dish' => new DishResource($dish->load(['dish','ingredients']))],
+            ['dish' => new DishResource($dish->load(['category','ingredients']))],
         );
     }
 

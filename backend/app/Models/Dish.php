@@ -32,4 +32,9 @@ class Dish extends Model
             ->withPivot('quantity')
             ->withTimestamps();
     }
+
+    public function wishedBy(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'wishlists')->withTimestamps();
+    }
 }

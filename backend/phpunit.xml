@@ -19,7 +19,6 @@
         </include>
     </source>
 
-    <!-- ✅ Important part: Use .env.testing instead of .env -->
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
