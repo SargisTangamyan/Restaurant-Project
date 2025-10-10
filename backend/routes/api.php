@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\IngredientController;
@@ -49,4 +50,12 @@ Route::prefix('/wishlist')->controller(WishlistController::class)->middleware('a
     Route::get('/', 'index')->name('index');
     Route::post('/{dish}', 'store')->name('store');
     Route::delete('/{id}', 'destroy')->name('destroy');
+});
+
+// Cart
+Route::prefix('/cart')->controller(CartController::class)->middleware('auth:sanctum')->name('cart.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/{dish}', 'store')->name('store');
+    Route::put('/{dish}', 'update')->name('update');
+    Route::delete('/{dish}', 'destroy')->name('destroy');
 });
