@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Enums\ResponseStatus;
 
 class AdminMiddleware
 {
@@ -17,10 +18,11 @@ class AdminMiddleware
     {
         $user = $request->user();
 
-        if (!$user || $user->role !== 'admin') {
+        if (!$user?->isAdmin()) {
             return response()->json([
-                'message' => 'Unauthorized. Admins only.'
-            ], 403);
+                'message' => 'Unauthorized. Admins only.',
+                'user' => $user,
+            ], ResponseStatus::FORBIDDEN->value);
         }
 
         return $next($request);

@@ -9,7 +9,9 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test', function () {
@@ -58,4 +60,13 @@ Route::prefix('/cart')->controller(CartController::class)->middleware('auth:sanc
     Route::post('/{dish}', 'store')->name('store');
     Route::put('/{dish}', 'update')->name('update');
     Route::delete('/{dish}', 'destroy')->name('destroy');
+});
+
+// Orders
+Route::prefix('/orders')->controller(OrderController::class)->middleware('auth:sanctum')->name('order.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/{order}', 'show')->name('show');
+    Route::post('/', 'store')->name('store');
+    Route::post('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
+    Route::patch('/{order}/status', [OrderController::class, 'updateStatus'])->name('update_status')->middleware(AdminMiddleware::class);
 });
