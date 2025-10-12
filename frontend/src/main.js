@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 import App from './App.vue'
 import router from './router'
@@ -27,7 +28,9 @@ app.component('font-awesome-icon', FontAwesomeIcon);
 app.component('the-loader', TheLoader);
 
 // Store
-app.use(createPinia())
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+app.use(pinia);
 useLanguageStore().predefineLanguage();
 useCurrencyStore().predefineCurrency();
 

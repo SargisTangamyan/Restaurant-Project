@@ -38,9 +38,7 @@ class LoginController extends Controller
         return $this->responder->send(
             message: 'Login Successful',
             payload: [
-                'data' => [
-                    'token' => $token
-                ]
+                'token' => $token
             ]);
     }
 }

@@ -1,4 +1,8 @@
+// ROUTER
 import { createRouter, createWebHistory } from 'vue-router'
+
+// STORE
+import {useAuthStore} from "@/stores/index.js";
 
 // PAGES
 import HomePage from "@/pages/HomePage.vue";
@@ -18,6 +22,7 @@ const router = createRouter({
     },
     {
       path: '/account',
+      meta: {requiresUnauth: true},
       children: [
         {
           path: 'register',
@@ -66,6 +71,18 @@ const router = createRouter({
 
     { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
   ],
+})
+
+router.beforeEach((to, _, next) => {
+  // USING STORE
+  const authStore = useAuthStore();
+
+  if (to.meta.requiresUnauth && authStore.getIsLoggedIn)
+  {
+    next('/home');
+  } else {
+    next();
+  }
 })
 
 export default router

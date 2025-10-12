@@ -1,8 +1,10 @@
 import {defineStore} from 'pinia'
+
+// HELPERS
 import {sender} from '@/api/Sender.js'
 
 // URLS
-import {REGISTER_URL, REDIRECT_URL} from '@/constants/urls.js'
+import {REGISTER_URL, REDIRECT_URL, LOGIN_URL, LOGOUT_URL} from '@/constants/urls.js'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -13,6 +15,9 @@ export const useAuthStore = defineStore('auth', {
     getIsLoggedIn(state) {
       return !!state.userToken;
     },
+    getUserToken(state) {
+      return state.userToken;
+    }
   },
 
   actions: {
@@ -48,6 +53,28 @@ export const useAuthStore = defineStore('auth', {
 
     async verifyEmail(url){
       return await sender.sendGetRequest(url);
+    },
+
+    async loginUser(email, password) {
+      const response = await sender.sendRequest('POST', LOGIN_URL, {email, password});
+      if (response.success) {
+        this.userToken = response.data.token;
+        return {success: true};
+      }
+      return {
+        success: false,
+        errors: {
+          overall: response.errors
+        }
+      };
+    },
+
+    async logoutUser() {
+      const response = await sender.sendRequest('DELETE', LOGOUT_URL);
+      console.log(response);
+      this.userToken = null;
     }
-  }
+  },
+
+  persist: true,
 });

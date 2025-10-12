@@ -14,6 +14,7 @@ import { onUnmounted, ref, computed, onMounted } from "vue";
 // STORES
 import { useLanguageStore } from "@/stores/index.js";
 import { useCurrencyStore } from "@/stores/index.js";
+import { useAuthStore } from "@/stores/index.js";
 
 // COMPOSABLES
 import { useBoxOpenClose } from "@/composables/useBoxOpenClose.js";
@@ -21,6 +22,7 @@ import { useBoxOpenClose } from "@/composables/useBoxOpenClose.js";
 // DEFINING STORE
 const languageStore = useLanguageStore();
 const currencyStore = useCurrencyStore();
+const authStore = useAuthStore();
 
 // CONSTANT DATA
 const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -125,6 +127,10 @@ const useMenuLogic = function () {
   const {openBox: openAccount, closeBox: closeAccount, toggleShowBox: toggleShowAccount} = useBoxOpenClose(showAccount);
 
   return {showAccount, toggleShowAccount, openAccount, closeAccount};
+}
+
+const logoutUser = function () {
+  authStore.logoutUser();
 }
 
 // USING THE LOGIC
@@ -339,20 +345,31 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
                     </div>
 
                     <transition name="menu-slide">
-                      <div class="dropdown-menu onhover-div" v-show="showAccount" @mouseenter="!isTouch && openAccount()" @mouseleave="!isTouch && closeAccount()">
-                        <ul class="user-box-name">
-                          <li class="product-box-contain">
-                            <router-link class="dropdown-item" :to="{name: 'login'}">Log In</router-link>
-                          </li>
+                      <div class="dropdown-menu onhover-div" v-if="showAccount" @mouseenter="!isTouch && openAccount()" @mouseleave="!isTouch && closeAccount()">
+                        <div>
 
-                          <li class="product-box-contain">
-                            <router-link class="dropdown-item" :to="{name: 'register'}">Register</router-link>
-                          </li>
+                          <ul v-if="!authStore.getIsLoggedIn" class="user-box-name">
+                            <li class="product-box-contain">
+                              <router-link class="dropdown-item" :to="{name: 'login'}">Log In</router-link>
+                            </li>
+                            <li class="product-box-contain">
+                              <router-link class="dropdown-item" :to="{name: 'register'}">Register</router-link>
+                            </li>
+                            <li class="product-box-contain">
+                              <router-link class="dropdown-item" :to="{name: 'forgot_password'}">Forgot Password</router-link>
+                            </li>
+                          </ul>
 
-                          <li class="product-box-contain">
-                            <router-link class="dropdown-item" :to="{name: 'forgot_password'}">Forgot Password</router-link>
-                          </li>
-                        </ul>
+                          <ul v-else class="user-box-name">
+                            <li class="product-box-contain">
+                              <router-link class="dropdown-item" :to="{name: 'home'}">Account Profile</router-link>
+                            </li>
+                            <li class="product-box-contain">
+                              <button @click="logoutUser" class="dropdown-item">Log Out</button>
+                            </li>
+                          </ul>
+
+                        </div>
                       </div>
                     </transition>
                   </li>
