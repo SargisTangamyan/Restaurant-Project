@@ -362,7 +362,7 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
 
                           <ul v-else class="user-box-name">
                             <li class="product-box-contain">
-                              <router-link class="dropdown-item" :to="{name: 'home'}">Account Profile</router-link>
+                              <router-link class="dropdown-item" :to="{name: 'user'}">Account Profile</router-link>
                             </li>
                             <li class="product-box-contain">
                               <button @click="logoutUser" class="dropdown-item">Log Out</button>

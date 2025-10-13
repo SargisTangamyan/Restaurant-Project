@@ -39,6 +39,7 @@ Route::name('account.')->prefix('account')->group(function () {
 Route::get('/verify-email/{id}/{hash}', EmailVerificationController::class)->middleware(['signed'])->name('verification.verify');
 
 // Category Resource
+Route::get('/categories/search', [CategoryController::class, 'search'])->name('categories.search');
 Route::apiResource('/categories', CategoryController::class);
 
 // Ingredient Resource

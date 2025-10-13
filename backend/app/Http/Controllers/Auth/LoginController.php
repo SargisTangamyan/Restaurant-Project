@@ -8,6 +8,7 @@ use App\Http\Controllers\Traits\CredentialValidator;
 use App\Http\Controllers\Traits\FindUserByEmail;
 use App\Http\Controllers\Traits\LoginTokenGenerator;
 use App\Http\Requests\UserLoginRequest;
+use App\Http\Resources\Auth\UserResource;
 use Illuminate\Http\JsonResponse;
 
 class LoginController extends Controller
@@ -38,7 +39,8 @@ class LoginController extends Controller
         return $this->responder->send(
             message: 'Login Successful',
             payload: [
-                'token' => $token
+                'token' => $token,
+                'user' => new UserResource($user),
             ]);
     }
 }

@@ -68,6 +68,15 @@ const router = createRouter({
       name: 'cart',
       component: () => import('@/pages/TheCart.vue'),
     },
+    {
+      path: '/user',
+      name: 'user',
+      component: () => import('@/pages/profile/UserDashboard.vue'),
+      children: [
+        {path: 'categories', name: 'categories', component: () => import('@/pages/profile/seller/CategoryBox.vue')},
+        {path: 'ingredients', name: 'ingredients', component: () => import('@/pages/profile/seller/IngredientBox.vue')},
+      ]
+    },
 
     { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
   ],

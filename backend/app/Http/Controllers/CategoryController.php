@@ -8,6 +8,7 @@ use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use function Laravel\Prompts\error;
 
 class CategoryController extends Controller
 {
@@ -35,7 +36,7 @@ class CategoryController extends Controller
         }
 
         // Paginated flat list
-        $categories = Category::paginate(10);
+        $categories = Category::paginate($request->per_page ?? 10);
 
         return $this->responder->send(
             'All categories list.',
@@ -57,7 +58,10 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         $data = $request->only(['name', 'parent_id']);
-        $category = Category::create($data);
+
+        $category = new Category(['name' => $data['name']]);
+        $category->parent_id = $data['parent_id'];
+        $category->save();
 
         return $this->responder->send(
             'New category created successfully.',
@@ -67,6 +71,35 @@ class CategoryController extends Controller
             ResponseStatus::CREATED->value
         );
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        if (!$query) {
+            return $this->responder->send(
+                'Query Not given',
+                ['error' => 'No Query given'],
+                status: ResponseStatus::BAD_REQUEST->value
+            );
+        }
+
+        $categories = Category::where('name', 'LIKE', "%{$query}%")->orderBy('name')->paginate($request->per_page ?? 10);
+
+        if ($categories->isEmpty()) {
+            return $this->responder->send(
+                'No categories found',
+                ['error' => 'No categories found'],
+                status: ResponseStatus::BAD_REQUEST->value
+            );
+        }
+
+        return $this->responder->send(
+            'Categories found',
+            ['categories' => CategoryResource::collection($categories)]
+        );
+    }
+
 
     /**
      * Display the specified resource.
