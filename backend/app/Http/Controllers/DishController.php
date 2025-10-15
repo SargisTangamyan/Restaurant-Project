@@ -23,7 +23,7 @@ class DishController extends Controller
      */
     public function index()
     {
-        return DishResource::collection(Dish::with(['category', 'ingredients'])->paginate(10));
+        return DishResource::collection(Dish::paginate(10));
     }
 
     /**

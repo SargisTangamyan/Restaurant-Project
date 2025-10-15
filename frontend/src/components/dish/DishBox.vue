@@ -1,9 +1,36 @@
 <script setup>
 
+// VUE
+import {defineProps} from 'vue'
+
 // COMPONENTS
 import RatingStars from "@/components/ui/RatingStars.vue";
 
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+
+// DEFINING PROPS
+const props = defineProps({
+  name: {
+    required: true,
+    type: String,
+  },
+  description: {
+    required: true,
+    type: String,
+  },
+  category: {
+    required: true,
+    type: String,
+  },
+  price: {
+    required: true,
+    type: Number,
+  },
+  image: {
+    required: true,
+    type: String,
+  }
+})
 </script>
 
 <template>
@@ -44,17 +71,16 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
     <!-- Product Info -->
     <div class="flex flex-col flex-grow p-4">
-      <span class="text-sm text-gray-400">Vegetable</span>
+      <span class="text-sm text-gray-400">{{props.category}}</span>
 
       <a href="product-left-thumbnail.html" class="mt-1">
         <h3 class="font-semibold text-gray-800 text-lg hover:text-emerald-600 transition-colors">
-          Fresh Bread and Pastry Flour 200 g
+          {{ props.name }}
         </h3>
       </a>
 
       <p class="text-sm text-gray-500 mt-2 mb-3 line-clamp-3">
-        Cheesy feet cheesy grin brie. Mascarpone cheese and wine hard cheese the big cheese everyone
-        loves smelly cheese macaroni cheese croque monsieur.
+        {{ props.description }}
       </p>
 
       <!-- Rating -->
@@ -67,8 +93,8 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
       <div class="mt-2">
         <h6 class="text-xs text-gray-400">250 ml</h6>
         <h5 class="text-lg font-semibold">
-          <span class="text-emerald-600">$08.02</span>
-          <del class="ml-1 text-gray-400 text-sm">$15.15</del>
+          <span class="text-emerald-600">${{ props.price }}</span>
+<!--          <del class="ml-1 text-gray-400 text-sm">$15.15</del>-->
         </h5>
       </div>
 

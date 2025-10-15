@@ -7,6 +7,14 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class DishResource extends JsonResource
 {
+    protected bool $showIngredients = false;
+
+    public function withIngredients(bool $show = true) {
+        $this->showIngredients = $show;
+        return $this;
+    }
+
+
     /**
      * Transform the resource into an array.
      *
@@ -21,7 +29,9 @@ class DishResource extends JsonResource
             'price' => $this->price,
             'image' => $this->image,
             'category' => new CategoryResource($this->category),
-            'ingredients' => IngredientResource::collection($this->ingredients),
+            $this->mergeWhen($this->showIngredients, [
+                'ingredients' => IngredientResource::collection($this->ingredients),
+            ]),
         ];
     }
 }
