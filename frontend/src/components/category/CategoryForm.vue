@@ -29,7 +29,7 @@ const blockSubmit = function() {
 
 const clearForm = function () {
   cName.value = '';
-  parentCategory.value.resetParentCategory();
+  parentCategory.value.clearQuery();
 }
 
 const showErrors = function (errors) {

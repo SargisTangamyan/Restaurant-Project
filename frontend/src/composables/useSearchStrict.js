@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import debounce from 'lodash/debounce'
 import { useRouter, useRoute } from 'vue-router'
 
-export function useSearch({ searchFn, queryParam = 'q', emitWordChosen, emitIncorrectWord, debounceTime = 300 }) {
+export function useSearchStrict({ searchFn, queryParam = 'q', jsonName, emitWordChosen, emitIncorrectWord, debounceTime = 300 }) {
   const query = ref('')
   const filteredItems = ref([])
   const message = ref('')
@@ -11,8 +11,10 @@ export function useSearch({ searchFn, queryParam = 'q', emitWordChosen, emitInco
   const router = useRouter()
   const route = useRoute()
 
-  // Load initial value from URL
-  query.value = route.query[queryParam] || ''
+  const init = function () {
+    // Load initial value from URL
+    query.value = route.query[queryParam] || ''
+  }
 
   const updateQuery = () => {
     router.replace({
@@ -27,10 +29,11 @@ export function useSearch({ searchFn, queryParam = 'q', emitWordChosen, emitInco
       return
     }
 
+    console.log(query.value)
     const res = await searchFn(query.value)
-
+    console.log(res)
     if (res.success) {
-      filteredItems.value = res.foundItems ?? []
+      filteredItems.value = res[jsonName] ?? []
       message.value = ''
     } else {
       filteredItems.value = []
@@ -64,6 +67,7 @@ export function useSearch({ searchFn, queryParam = 'q', emitWordChosen, emitInco
     message,
     onInput,
     selectItem,
-    clearQuery
+    clearQuery,
+    init,
   }
 }

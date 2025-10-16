@@ -1,78 +1,35 @@
 <script setup>
-import { ref, onMounted, defineEmits, defineExpose } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import debounce from 'lodash/debounce'
-import { useCategoryStore } from '@/stores/index.js'
+// VUE
+import {defineEmits, onMounted} from 'vue'
+// COMPONENTS
 import ErrorMessage from "@/components/ui/ErrorMessage.vue";
+// COMPOSABLE
+import { useSearchStrict } from '@/composables/useSearchStrict.js'
+// STORE
+import { useCategoryStore } from '@/stores/index.js'
 
-const categoryStore = useCategoryStore()
+// USING STORE
+const categoryStore = useCategoryStore();
+
+// USING EMITS
 const emits = defineEmits(['wordChosen', 'incorrectWord'])
 
-const route = useRoute()
-const router = useRouter()
-
-const query = ref('')
-const filteredCategories = ref([])
-const message = ref('')
-
-// Load input value from URL on mount
-onMounted(() => {
-  query.value = route.query.parent || ''
+// USING COMPOSABLE
+const { query, filteredItems: filteredCategories, message, onInput, selectItem: selectCategory, clearQuery, init } = useSearchStrict({
+  searchFn: categoryStore.searchCategories,
+  queryParam: 'parent',
+  jsonName: 'foundCategories',
+  emitWordChosen: (id) => {emits('wordChosen', id)},
+  emitIncorrectWord: () => {emits('incorrectWord')},
 })
 
-// Update URL instantly when input changes
-const updateQuery = () => {
-  router.replace({
-    query: { ...route.query, parent: query.value || undefined },
-  })
-}
+// MOUNTING
+onMounted(() => {
+  init();
+})
 
-// Debounced category filter (API call)
-const filterCategories = debounce(async () => {
-  if (!query.value) {
-    filteredCategories.value = []
-    message.value = ''
-    return
-  }
-
-  const response = await categoryStore.searchCategories(query.value)
-
-  if (response.success) {
-    message.value = ''
-    filteredCategories.value = response.foundCategories ?? []
-  } else {
-    message.value = response.message || 'No Parent Found'
-    filteredCategories.value = []
-    emits('incorrectWord')
-  }
-}, 300)
-
-// Handle input
-function onInput() {
-  updateQuery()
-  filterCategories()
-}
-
-// Select category
-function selectCategory(category) {
-  query.value = category.name
-  filteredCategories.value = []
-  emits('wordChosen', category.id)
-  updateQuery()
-}
-
-const clearQuery = function () {
-  router.replace({
-    query: { ...route.query, parent: undefined },
-  })
-}
-
-const resetParentCategory = function () {
-  clearQuery();
-  query.value = '';
-}
-
-defineExpose({resetParentCategory})
+// EXPOSING FUNCTION
+defineExpose({clearQuery})
 </script>
 
 <template>
