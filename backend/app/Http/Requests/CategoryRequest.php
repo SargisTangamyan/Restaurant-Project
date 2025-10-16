@@ -55,7 +55,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             function (Validator $validator) {
-                if ($this->checkForSimilarName($this->name)) {
+                if (isset($this->name) && $this->checkForSimilarName($this->name)) {
                     $validator->errors()->add(
                         'name',
                         'There is a category with almost the same name!'
