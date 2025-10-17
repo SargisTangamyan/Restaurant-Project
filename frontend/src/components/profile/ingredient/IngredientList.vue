@@ -31,7 +31,7 @@ const getNewIngredients = async function (movePage=1, perPage=10, force = false)
   const res = await ingredientStore.fetchIngredients(movePage, perPage, force)
   if (res.success) {
     ingredients.value = ingredientStore.getIngredients;
-    pagination.value = { ...ingredientStore.getPagination };
+    pagination.value = ingredientStore.getPagination;
   }
   isLoading.value = false;
 }
@@ -46,9 +46,9 @@ const deleteIngredient = async (id) => {
 }
 
 // MOUNTING
-onMounted(() => {
+onMounted(async () => {
   isLoading.value = true;
-  getNewIngredients();
+  await getNewIngredients();
   isLoading.value = false;
 })
 </script>

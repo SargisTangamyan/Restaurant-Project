@@ -59,7 +59,7 @@ class CategoryController extends Controller
     {
         $data = $request->only(['name', 'parent_id']);
 
-        $category = new Category(['name' => $data['name']]);
+        $category = new Category(['name' => strtolower($data['name'])]);
         $category->parent_id = $data['parent_id'];
         $category->save();
 

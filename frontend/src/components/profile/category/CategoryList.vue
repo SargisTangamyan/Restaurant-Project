@@ -7,6 +7,7 @@ import {ref, onMounted, watch} from 'vue'
 import ThePagination from '@/components/ui/ThePagination.vue'
 import TheLoader from "@/components/ui/TheLoader.vue";
 import ListTable from "@/components/ui/table/ListTable.vue";
+import TableColumn from "@/components/ui/table/TableColumn.vue";
 
 // STORES
 import { useCategoryStore } from '@/stores/index.js'
@@ -66,11 +67,10 @@ onMounted(() => {
         :loading="isLoading"
       >
         <template #row="{ item, index }">
-          <td class="p-3 border-b font-medium">{{ item.name }}</td>
-          <td class="p-3 border-b">
-            {{ item.parent_id ? categoryStore.getParentCategories[item.parent_id] : 'root' }}
-          </td>
-          <td class="p-3 border-b text-center">
+
+          <table-column :element="item.name"/>
+          <table-column :element="item.parent_id ? categoryStore.getParentCategories[item.parent_id] : 'root'"/>
+          <table-column class="text-center">
             <button class="text-blue-600 hover:underline">Edit</button> |
             <button
               @click.prevent="deleteCategory(item.id, index)"
@@ -78,7 +78,7 @@ onMounted(() => {
             >
               Delete
             </button>
-          </td>
+          </table-column>
         </template>
       </list-table>
       <the-pagination :current-page="pagination.current_page" :totalPages="pagination.last_page" @move-to="getNewCategories"></the-pagination>

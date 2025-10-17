@@ -1,5 +1,6 @@
 <script setup>
 import CategorySearch from "@/components/profile/category/CategorySearch.vue";
+import FormInput from "@/components/ui/form/FormInput.vue";
 import ErrorMessage from "@/components/ui/form/ErrorMessage.vue";
 import FormBox from "@/components/ui/form/FormBox.vue";
 import { ref } from 'vue';
@@ -41,13 +42,18 @@ const showErrors = function (errors) {
   }
 }
 
+const clearErrors = function () {
+  nameErrors.value = [];
+  parentErrors.value = [];
+}
+
 const addCategory = async function() {
   if (invalidParent.value === true) return;
   const res = await categoryStore.addCategory({'name': cName.value, 'parent_id': parentId.value});
   if (res.success) {
     clearForm();
-    console.log('success');
     await categoryStore.fetchCategories(1, 10, true);
+    clearErrors();
   } else {
     showErrors(res.errors);
   }
@@ -57,14 +63,7 @@ const addCategory = async function() {
 <template>
   <form-box @form-submit="addCategory" button-text="Add Category" heading="Add Category">
     <template #inputs>
-      <div>
-        <label class="block text-sm text-gray-600 mb-1">Category Name</label>
-        <input type="text" placeholder="e.g. Cakes"
-               class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-600"
-          v-model="cName"
-        >
-        <error-message v-for="(error, index) in nameErrors" :key="index" :message="error"/>
-      </div>
+      <form-input v-model="cName" placeholder="e.g. Cakes" input-type="text" label="Category Name" :errors="nameErrors" />
 
       <category-search ref="parentCategory" @word-chosen="chooseParentId" @incorrect-word="blockSubmit" />
       <error-message v-for="(error, index) in parentErrors" :key="index" :message="error"/>

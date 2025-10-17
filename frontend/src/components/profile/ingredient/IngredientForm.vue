@@ -32,6 +32,12 @@ const clearForm = function () {
   price.value = 0;
 }
 
+const clearErrors = function () {
+  nameErrors.value = [];
+  unitErrors.value = [];
+  priceErrors.value = [];
+}
+
 const showErrors = function (errors) {
   if (errors.name) {
     nameErrors.value = errors.name;
@@ -69,6 +75,7 @@ const addIngredient = async function() {
   const res = await ingredientStore.addIngredient({'name': iName.value, 'unit': unit.value, 'price': price.value});
   if (res.success) {
     clearForm();
+    clearErrors();
     console.log('success');
   } else {
     showErrors(res.errors);

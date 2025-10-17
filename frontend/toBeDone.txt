@@ -1,1 +1,5 @@
 1) Category Edit
+2) Ingredient Edit
+3) Category fetchCategories logic should be corrected
+4) Category delete has a bug showing the all categories
+5) The pagination should be changed
