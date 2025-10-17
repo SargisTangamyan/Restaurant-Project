@@ -7,3 +7,4 @@
 7) Create test for Ingredient
 8) Dish Update Request
 9) Dish tests
+10) Save the data in lowercase in categories and in ingredients

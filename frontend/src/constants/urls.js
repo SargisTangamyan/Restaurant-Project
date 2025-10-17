@@ -13,5 +13,8 @@ export const REDIRECT_URL = 'http://localhost:5173/verify-email';
 export const CATEGORY_ALL = `${BASE_URL}/categories`;
 export const CATEGORY_SEARCH = `${BASE_URL}/categories/search`;
 
+// INGREDIENT
+export const INGREDIENT_ALL = `${BASE_URL}/ingredients`;
+
 // DISHES
 export const DISHES = `${BASE_URL}/dishes`;

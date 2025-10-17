@@ -2,7 +2,7 @@
 // VUE
 import {defineEmits, onMounted} from 'vue'
 // COMPONENTS
-import ErrorMessage from "@/components/ui/ErrorMessage.vue";
+import ErrorMessage from "@/components/ui/form/ErrorMessage.vue";
 // COMPOSABLE
 import { useSearchStrict } from '@/composables/useSearchStrict.js'
 // STORE

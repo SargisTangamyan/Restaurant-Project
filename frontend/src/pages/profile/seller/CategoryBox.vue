@@ -1,8 +1,8 @@
 <script setup>
 
 // COMPONENTS
-import CategoryList from '@/components/category/CategoryList.vue'
-import CategoryForm from "@/components/category/CategoryForm.vue";
+import CategoryList from '@/components/profile/category/CategoryList.vue'
+import CategoryForm from "@/components/profile/category/CategoryForm.vue";
 import ProfileBox from "@/components/profile/ProfileBox.vue";
 
 </script>

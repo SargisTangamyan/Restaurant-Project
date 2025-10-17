@@ -1,7 +1,10 @@
 <script setup>
 import { defineProps } from 'vue'
 
-const props = defineProps({
+// COMPONENTS
+import TableColumn from "@/components/ui/table/TableColumn.vue";
+
+defineProps({
   /**
    * Table header labels
    * Example: ['#', 'Name', 'Parent', 'Actions']
@@ -62,9 +65,9 @@ const props = defineProps({
         class="hover:bg-gray-50 text-sm text-gray-600"
       >
         <!-- default index column -->
-        <td class="p-3 border-b">
-          {{ (pagination.current_page - 1) * pagination.per_page + index + 1 }}
-        </td>
+        <table-column
+            :element="(pagination.current_page - 1) * pagination.per_page + index + 1"
+       />
 
         <!-- default content slot for each row -->
         <slot name="row" :item="item" :index="index"></slot>

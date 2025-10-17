@@ -4,7 +4,7 @@ import ToggleFilter from "@/components/ui/ToggleFilter.vue";
 import FilterBox from "@/components/filter/FilterBox.vue";
 import UnderlinedText from "@/components/ui/UnderlinedText.vue";
 import ChosenFilters from "@/components/filter/ChosenFilters.vue";
-import PriceRange from "@/components/ui/PriceRange.vue";
+import PriceRange from "@/components/ui/form/PriceRange.vue";
 </script>
 
 <template>

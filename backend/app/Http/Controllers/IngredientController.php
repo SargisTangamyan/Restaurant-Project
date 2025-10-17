@@ -26,11 +26,7 @@ class IngredientController extends Controller
     public function index(Request $request)
     {
         // The needed page is taken based on the query of the url
-        $ingredients = Ingredient::paginate(10);
-        return $this->responder->send(
-            'The all ingredient list.',
-            ['ingredients' => $ingredients],
-        );
+        return Ingredient::latest()->paginate($request->query('per_page') ?? 10)->toResourceCollection();
     }
 
     /**
@@ -39,8 +35,8 @@ class IngredientController extends Controller
     public function store(IngredientStoreRequest $request)
     {
         Ingredient::create([
-            'name'  => $request->name,
-            'unit'  => $request->unit,
+            'name'  => strtolower($request->name),
+            'unit'  => strtolower($request->unit),
             'price' => $request->price ?? 0, // fallback to 0 if null
         ]);
 

@@ -1,7 +1,7 @@
 <script setup>
-import CategorySearch from "@/components/category/CategorySearch.vue";
-import ErrorMessage from "@/components/ui/ErrorMessage.vue";
-import FormBox from "@/components/ui/FormBox.vue";
+import CategorySearch from "@/components/profile/category/CategorySearch.vue";
+import ErrorMessage from "@/components/ui/form/ErrorMessage.vue";
+import FormBox from "@/components/ui/form/FormBox.vue";
 import { ref } from 'vue';
 import { useCategoryStore } from '@/stores/index.js'
 

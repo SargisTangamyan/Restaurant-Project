@@ -10,8 +10,8 @@ import ProfileHeader from "@/components/profile/ProfileHeader.vue";
     <profile-header />
 
     <profile-navigation :links="[
-          {routeName: 'categories',
-          name: 'Categories'},
+          {routeName: 'categories', name: 'Categories'},
+          {routeName: 'ingredients', name: 'Ingredients'},
         ]">
 
     </profile-navigation>

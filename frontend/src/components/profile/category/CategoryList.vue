@@ -6,7 +6,7 @@ import {ref, onMounted, watch} from 'vue'
 // COMPONENTS
 import ThePagination from '@/components/ui/ThePagination.vue'
 import TheLoader from "@/components/ui/TheLoader.vue";
-import ListTable from "@/components/ui/ListTable.vue";
+import ListTable from "@/components/ui/table/ListTable.vue";
 
 // STORES
 import { useCategoryStore } from '@/stores/index.js'
