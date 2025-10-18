@@ -5,7 +5,7 @@
 <template>
   <div class="relative w-full mb-6 mx-auto overflow-hidden rounded-2xl h-56">
     <img
-      src="../../assets/images/shop/1.jpg"
+      src="../../../assets/images/shop/1.jpg"
       alt="Healthy fruits and veggies"
       class="object-cover object-center w-full h-full"
     />

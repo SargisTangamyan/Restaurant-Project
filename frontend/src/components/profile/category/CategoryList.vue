@@ -46,9 +46,9 @@ const deleteCategory = async (id, arrayId) => {
 }
 
 // MOUNTING
-onMounted(() => {
+onMounted(async () => {
   isLoading.value = true;
-  getNewCategories();
+  await getNewCategories();
   isLoading.value = false;
 })
 </script>
@@ -56,8 +56,6 @@ onMounted(() => {
 <template>
   <the-loader v-show="isLoading"/>
   <section class="lg:col-span-2 h-full">
-    <h2 class="text-lg font-semibold mb-4 text-gray-700">All Categories</h2>
-
     <div class="overflow-x-auto">
       <list-table
         :header="['#', 'Name', 'Parent', 'Actions']"

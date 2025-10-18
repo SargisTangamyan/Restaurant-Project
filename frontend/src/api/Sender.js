@@ -36,8 +36,14 @@ class Sender {
       },
     };
 
-    // Add body only for methods that support it
-    if (payload && method !== 'GET' && method !== 'HEAD') {
+    const isFormData = payload instanceof FormData;
+
+    // If it's FormData, remove JSON header and don't stringify
+    if (isFormData) {
+      delete options.headers['Content-Type']; // ❗ Let browser set correct boundary
+      options.body = payload;
+    }
+    else if (payload && method !== 'GET' && method !== 'HEAD') {
       options.body = JSON.stringify(payload);
     }
 

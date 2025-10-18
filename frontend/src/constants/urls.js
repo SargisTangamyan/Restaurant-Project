@@ -15,6 +15,7 @@ export const CATEGORY_SEARCH = `${BASE_URL}/categories/search`;
 
 // INGREDIENT
 export const INGREDIENT_ALL = `${BASE_URL}/ingredients`;
+export const INGREDIENT_SEARCH = `${BASE_URL}/ingredients/search`;
 
 // DISHES
 export const DISHES = `${BASE_URL}/dishes`;

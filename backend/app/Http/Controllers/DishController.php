@@ -7,6 +7,7 @@ use App\Http\Requests\DishStoreRequest;
 use App\Http\Requests\DishUpdateRequest;
 use App\Http\Resources\DishResource;
 use App\Models\Dish;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 
 class DishController extends Controller
@@ -29,9 +30,22 @@ class DishController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(DishStoreRequest $request)
+    public function store(DishStoreRequest $request, ImageService $imageService)
     {
-        $dish = Dish::create($request->only(['category_id','name','description','price','image']));
+        $imagePaths = null;
+
+        if ($request->hasFile('image')) {
+            $imagePaths = $imageService->saveImage($request->file('image'));
+        }
+
+        $dish = Dish::create([
+            'category_id' => $request->category_id,
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'image' => $imagePaths['original'],
+            'thumbnail' => $imagePaths['thumbnail'],
+        ]);
 
         if ($request->has('ingredients')) {
             $ingredients = collect($request->input('ingredients'))
@@ -39,7 +53,8 @@ class DishController extends Controller
             $dish->ingredients()->attach($ingredients);
         }
 
-        return new DishResource($dish->load(['category','ingredients']));
+        return $this->responder->send('message', ['path' => $imagePaths]);
+        return new DishResource($dish->load(['category', 'ingredients']));
     }
 
     /**
@@ -55,7 +70,7 @@ class DishController extends Controller
      */
     public function update(DishUpdateRequest $request, Dish $dish)
     {
-        $dish->update($request->only(['category_id','name','description','price','image']));
+        $dish->update($request->only(['category_id', 'name', 'description', 'price', 'image']));
 
         if ($request->has('ingredients')) {
             $ingredients = collect($request->input('ingredients'))
@@ -65,7 +80,7 @@ class DishController extends Controller
 
         return $this->responder->send(
             'Dish updated successfully',
-            ['dish' => new DishResource($dish->load(['category','ingredients']))],
+            ['dish' => new DishResource($dish->load(['category', 'ingredients']))],
         );
     }
 

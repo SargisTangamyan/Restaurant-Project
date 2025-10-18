@@ -19,6 +19,7 @@ class Dish extends Model
         'description',
         'price',
         'image',
+        'thumbnail',
     ];
 
     public function category(): BelongsTo

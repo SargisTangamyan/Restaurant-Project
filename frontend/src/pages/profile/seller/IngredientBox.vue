@@ -6,11 +6,12 @@ import IngredientForm from "@/components/profile/ingredient/IngredientForm.vue";
 
 <template>
   <profile-box heading="Manage Ingredients">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-    <ingredient-list />
+      <ingredient-list />
+      <ingredient-form />
 
-    <ingredient-form />
-
+    </div>
   </profile-box>
 </template>
 

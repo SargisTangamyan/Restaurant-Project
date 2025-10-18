@@ -58,6 +58,34 @@ class IngredientController extends Controller
         );
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        if (!$query) {
+            return $this->responder->send(
+                'Query Not given',
+                ['error' => 'No Query given'],
+                status: ResponseStatus::BAD_REQUEST->value
+            );
+        }
+
+        $categories = Ingredient::where('name', 'LIKE', "%{$query}%")->orderBy('name')->paginate($request->per_page ?? 10);
+
+        if ($categories->isEmpty()) {
+            return $this->responder->send(
+                'No ingredients found',
+                ['error' => 'No ingredients found'],
+                status: ResponseStatus::BAD_REQUEST->value
+            );
+        }
+
+        return $this->responder->send(
+            'Ingredients found',
+            ['ingredients' => IngredientResource::collection($categories)]
+        );
+    }
+
     /**
      * Update the specified resource in storage.
      */

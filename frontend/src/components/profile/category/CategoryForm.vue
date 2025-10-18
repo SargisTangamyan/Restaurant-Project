@@ -63,10 +63,12 @@ const addCategory = async function() {
 <template>
   <form-box @form-submit="addCategory" button-text="Add Category" heading="Add Category">
     <template #inputs>
-      <form-input v-model="cName" placeholder="e.g. Cakes" input-type="text" label="Category Name" :errors="nameErrors" />
+      <form-input class="pb-0" v-model="cName" placeholder="e.g. Cakes" input-type="text" label="Category Name" :errors="nameErrors" />
 
-      <category-search ref="parentCategory" @word-chosen="chooseParentId" @incorrect-word="blockSubmit" />
-      <error-message v-for="(error, index) in parentErrors" :key="index" :message="error"/>
+      <div>
+        <category-search ref="parentCategory" @word-chosen="chooseParentId" @incorrect-word="blockSubmit" />
+        <error-message v-for="(error, index) in parentErrors" :key="index" :message="error"/>
+      </div>
     </template>
   </form-box>
 </template>

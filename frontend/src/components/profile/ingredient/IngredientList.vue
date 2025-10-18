@@ -56,8 +56,6 @@ onMounted(async () => {
 <template>
   <the-loader v-show="isLoading"/>
   <section class="lg:col-span-2 h-full">
-    <h2 class="text-lg font-semibold mb-4 text-gray-700">All Ingredients</h2>
-
     <div class="overflow-x-auto">
       <list-table
         :header="['#', 'Name', 'Unit', 'Price', 'Actions']"

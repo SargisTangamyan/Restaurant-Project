@@ -1,8 +1,8 @@
 <script setup>
 
 // COMPONENTS
-import TheHeader from '@/components/ui/TheHeader.vue'
-import TheFooter from '@/components/ui/TheFooter.vue'
+import TheHeader from '@/layouts/TheHeader.vue'
+import TheFooter from '@/layouts/TheFooter.vue'
 
 </script>
 

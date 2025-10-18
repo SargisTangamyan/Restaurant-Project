@@ -2,7 +2,7 @@
 // COMPONENTS
 import TheBox from "@/components/ui/TheBox.vue";
 import TheBanner from "@/components/home/TheBanner.vue";
-import ImageText from "@/components/ui/ImageText.vue";
+import ImageText from "@/components/ui/image/ImageText.vue";
 
 // IMAGES TO PASS TO THE COMPONENT
 import homeImage1 from '@/assets/images/restaurant/banner/1.jpg'

@@ -222,7 +222,7 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
               </button>
 
               <router-link :to="{'name': 'home'}" class="web-logo nav-logo">
-                <img src="../../assets/images/logo/1.png" class="logo-img" alt="">
+                <img src="../assets/images/logo/1.png" class="logo-img" alt="">
               </router-link>
 
               <!-- Now Working on -->

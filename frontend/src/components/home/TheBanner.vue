@@ -4,7 +4,7 @@ import {ref, computed, onMounted, onBeforeUnmount} from 'vue';
 
 // COMPONENTS
 import TheBox from '@/components/ui/TheBox.vue'
-import ImageText from '@/components/ui/ImageText.vue';
+import ImageText from '@/components/ui/image/ImageText.vue';
 
 // IMPORTING IMAGE TO USE
 import bannerImage1 from '@/assets/images/restaurant/banner/1.jpg'

@@ -1,6 +1,6 @@
 <script setup>
 
-import ToggleFilter from "@/components/ui/ToggleFilter.vue";
+import ToggleFilter from "@/components/filter/ToggleFilter.vue";
 import FilterBox from "@/components/filter/FilterBox.vue";
 import UnderlinedText from "@/components/ui/UnderlinedText.vue";
 import ChosenFilters from "@/components/filter/ChosenFilters.vue";

@@ -7,20 +7,20 @@ import FormLabel from "@/components/ui/form/FormLabel.vue";
 // COMPOSABLE
 import { useSearchStrict } from '@/composables/useSearchStrict.js'
 // STORE
-import { useCategoryStore } from '@/stores/index.js'
+import { useIngredientStore } from '@/stores/index.js'
 
 // USING STORE
-const categoryStore = useCategoryStore();
+const ingredientStore = useIngredientStore();
 
 // USING EMITS
 const emits = defineEmits(['wordChosen', 'incorrectWord'])
 
 // USING COMPOSABLE
-const { query, filteredItems: filteredCategories, message, onInput, selectItem: selectCategory, clearQuery, init } = useSearchStrict({
-  searchFn: categoryStore.searchCategories,
-  queryParam: 'parent',
-  jsonName: 'foundCategories',
-  emitWordChosen: (id) => {emits('wordChosen', id)},
+const { query, filteredItems: filteredIngredients, message, onInput, selectItem: selectIngredient, clearQuery, init } = useSearchStrict({
+  searchFn: ingredientStore.searchIngredients,
+  queryParam: 'ingredient',
+  jsonName: 'foundIngredients',
+  emitWordChosen: (id, name) => {emits('wordChosen', id, name)},
   emitIncorrectWord: () => {emits('incorrectWord')},
 })
 
@@ -35,7 +35,7 @@ defineExpose({clearQuery})
 
 <template>
   <div class="relative">
-    <form-label label="Parent Category" />
+    <form-label label="Ingredients" />
 
     <input
       type="text"
@@ -48,16 +48,16 @@ defineExpose({clearQuery})
     <error-message :message="message" />
 
     <ul
-      v-if="filteredCategories.length"
+      v-if="filteredIngredients.length"
       class="absolute z-10 bg-white border border-gray-300 mt-1 w-full rounded-lg max-h-40 overflow-auto"
     >
       <li
-        v-for="category in filteredCategories"
-        :key="category.id"
-        @click="selectCategory(category)"
+        v-for="ingredient in filteredIngredients"
+        :key="ingredient.id"
+        @click="selectIngredient(ingredient)"
         class="p-2 hover:bg-blue-100 cursor-pointer"
       >
-        {{ category.name }}
+        {{ ingredient.name }}
       </li>
     </ul>
   </div>

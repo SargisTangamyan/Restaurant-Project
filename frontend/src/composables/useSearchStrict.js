@@ -50,7 +50,7 @@ export function useSearchStrict({ searchFn, queryParam = 'q', jsonName, emitWord
   function selectItem(item) {
     query.value = item.name
     filteredItems.value = []
-    emitWordChosen?.(item.id)
+    emitWordChosen?.(item.id, item.name)
     updateQuery()
   }
 

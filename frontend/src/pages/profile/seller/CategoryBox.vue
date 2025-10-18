@@ -9,10 +9,12 @@ import ProfileBox from "@/components/profile/ProfileBox.vue";
 
 <template>
   <profile-box heading="Manage Categories">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
       <category-list />
       <category-form />
 
+    </div>
   </profile-box>
 </template>
 

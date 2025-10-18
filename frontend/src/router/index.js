@@ -75,6 +75,7 @@ const router = createRouter({
       children: [
         {path: 'categories', name: 'categories', component: () => import('@/pages/profile/seller/CategoryBox.vue')},
         {path: 'ingredients', name: 'ingredients', component: () => import('@/pages/profile/seller/IngredientBox.vue')},
+        {path: 'add-product', name: 'add_product', component: () => import('@/pages/profile/seller/AddProduct.vue')},
       ]
     },
 

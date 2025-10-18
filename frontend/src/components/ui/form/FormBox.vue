@@ -20,9 +20,9 @@ const emits = defineEmits(['formSubmit'])
 
 <template>
   <section class="bg-gray-50 border border-gray-200 rounded-xl p-5 h-fit">
-    <h2 class="text-lg font-semibold text-gray-700">{{ props.heading }}</h2>
+    <h2 class="text-lg font-semibold pb-4 text-gray-700">{{ props.heading }}</h2>
 
-    <form @submit.prevent="emits('formSubmit')" class="flex flex-col gap-4">
+    <form @submit.prevent="emits('formSubmit')">
 
     <slot name="inputs" />
 

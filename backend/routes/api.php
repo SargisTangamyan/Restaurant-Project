@@ -43,6 +43,7 @@ Route::get('/categories/search', [CategoryController::class, 'search'])->name('c
 Route::apiResource('/categories', CategoryController::class);
 
 // Ingredient Resource
+Route::get('/ingredients/search', [IngredientController::class, 'search'])->name('ingredients.search');
 Route::apiResource('/ingredients', IngredientController::class);
 
 // Dish Resource

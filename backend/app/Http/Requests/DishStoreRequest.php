@@ -26,7 +26,7 @@ class DishStoreRequest extends FormRequest
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|max:2048', // 2MB
+            'image' => 'required|image|max:10240', // 10MB
             'ingredients' => 'nullable|array',
             'ingredients.*.id' => 'required|exists:ingredients,id',
             'ingredients.*.quantity' => 'nullable|decimal:0,2|max:50',

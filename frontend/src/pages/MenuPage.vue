@@ -5,7 +5,7 @@ import PageName from "@/components/ui/PageName.vue";
 import TheBox from "@/components/ui/TheBox.vue";
 import FilterSidebar from "@/components/filter/FilterSidebar.vue"
 import DishContainer from "@/components/dish/DishContainer.vue"
-import ImageBanner from "@/components/ui/ImageBanner.vue";
+import ImageBanner from "@/components/ui/image/ImageBanner.vue";
 
 </script>
 

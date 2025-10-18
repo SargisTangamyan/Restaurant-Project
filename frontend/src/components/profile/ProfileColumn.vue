@@ -12,6 +12,7 @@ import ProfileHeader from "@/components/profile/ProfileHeader.vue";
     <profile-navigation :links="[
           {routeName: 'categories', name: 'Categories'},
           {routeName: 'ingredients', name: 'Ingredients'},
+          {routeName: 'add_product', name: 'Add Product'},
         ]">
 
     </profile-navigation>

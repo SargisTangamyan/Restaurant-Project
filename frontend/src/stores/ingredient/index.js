@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {sender} from '@/api/Sender.js'
-import {INGREDIENT_ALL} from '@/constants/urls.js'
+import {CATEGORY_SEARCH, INGREDIENT_ALL, INGREDIENT_SEARCH} from '@/constants/urls.js'
 
 export const useIngredientStore = defineStore('ingredient', {
   state: () => ({
@@ -48,6 +48,15 @@ export const useIngredientStore = defineStore('ingredient', {
       } else {
         return { success: false, errors: res.errors }
       }
+    },
+
+    async searchIngredients(pattern)
+    {
+      const res = await sender.sendRequest('GET', `${INGREDIENT_SEARCH}?query=${pattern}`);
+      if (res.success) {
+        return { success: true, foundIngredients: res.data.ingredients}
+      }
+      return { success: false, message: 'Failed to fetch categories' }
     },
 
     async deleteIngredient(id) {
