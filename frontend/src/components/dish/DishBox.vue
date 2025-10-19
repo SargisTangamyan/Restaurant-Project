@@ -6,10 +6,17 @@ import {defineProps} from 'vue'
 // COMPONENTS
 import RatingStars from "@/components/ui/RatingStars.vue";
 
+// URLS
+import { STORAGE } from '@/constants/urls.js'
+
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 // DEFINING PROPS
 const props = defineProps({
+  id: {
+    type: Number,
+    required: true,
+  },
   name: {
     required: true,
     type: String,
@@ -27,7 +34,7 @@ const props = defineProps({
     type: Number,
   },
   image: {
-    required: true,
+    required: false,
     type: String,
   }
 })
@@ -39,13 +46,13 @@ const props = defineProps({
     class="group relative flex flex-col bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
     <!-- Product Image -->
     <div class="relative w-full aspect-square overflow-hidden">
-      <a href="#">
+      <router-link :to="{name: 'dish', params: {id: props.id}}">
         <img
-          src="../../assets/images/dish/1.jpg"
+          :src="`${STORAGE}/${image}`"
           alt="Product"
           class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-      </a>
+      </router-link>
 
       <!-- Product Options (hover icons) -->
       <ul
@@ -73,11 +80,11 @@ const props = defineProps({
     <div class="flex flex-col flex-grow p-4">
       <span class="text-sm text-gray-400">{{props.category}}</span>
 
-      <a href="product-left-thumbnail.html" class="mt-1">
+      <router-link :to="{name: 'dish', params: {id: props.id}}" class="mt-1">
         <h3 class="font-semibold text-gray-800 text-lg hover:text-emerald-600 transition-colors">
           {{ props.name }}
         </h3>
-      </a>
+      </router-link>
 
       <p class="text-sm text-gray-500 mt-2 mb-3 line-clamp-3">
         {{ props.description }}

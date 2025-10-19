@@ -25,7 +25,7 @@ class ImageService
         if (in_array('thumbnail', $folders)) {
             $manager = new ImageManager(new Driver());
             $thumbnail = $manager->read($file);
-            $thumbnail->resize($thumbnailSize, $thumbnailSize);
+            $thumbnail->cover($thumbnailSize, $thumbnailSize);
 
             $thumbnailPath = 'images/thumbnail/' . $filename;
             Storage::disk($this->disk)->put($thumbnailPath, (string)$thumbnail->encode());

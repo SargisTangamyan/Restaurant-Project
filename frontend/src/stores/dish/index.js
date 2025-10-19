@@ -19,6 +19,15 @@ export const useDishStore = defineStore('dish', {
       return false;
     },
 
+    async fetchDishById(id) {
+      const response = await sender.sendRequest('GET', `${DISHES}/${id}`);
+      if (response.success) {
+        this.dishes = response.data.data
+        return {success: true, data: response.data.data}
+      }
+      return false;
+    },
+
     async addDish(dish) {
       const formData = new FormData();
 

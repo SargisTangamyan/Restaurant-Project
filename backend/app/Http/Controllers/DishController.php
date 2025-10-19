@@ -22,9 +22,9 @@ class DishController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return DishResource::collection(Dish::paginate(10));
+        return DishResource::collection(Dish::latest()->paginate(10));
     }
 
     /**
@@ -53,7 +53,6 @@ class DishController extends Controller
             $dish->ingredients()->attach($ingredients);
         }
 
-        return $this->responder->send('message', ['path' => $imagePaths]);
         return new DishResource($dish->load(['category', 'ingredients']));
     }
 
@@ -62,7 +61,7 @@ class DishController extends Controller
      */
     public function show(Dish $dish)
     {
-        return new DishResource($dish->load(['category', 'ingredients']));
+        return (new DishResource($dish))->withIngredients();
     }
 
     /**

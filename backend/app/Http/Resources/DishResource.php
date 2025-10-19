@@ -28,6 +28,7 @@ class DishResource extends JsonResource
             'description' => $this->description,
             'price' => $this->price,
             'image' => $this->image,
+            'thumbnail' => $this->thumbnail,
             'category' => new CategoryResource($this->category),
             $this->mergeWhen($this->showIngredients, [
                 'ingredients' => IngredientResource::collection($this->ingredients),

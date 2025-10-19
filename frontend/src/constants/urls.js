@@ -19,3 +19,6 @@ export const INGREDIENT_SEARCH = `${BASE_URL}/ingredients/search`;
 
 // DISHES
 export const DISHES = `${BASE_URL}/dishes`;
+
+// IMAGES
+export const STORAGE = 'http://localhost:8000/storage'
