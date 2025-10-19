@@ -1,10 +1,24 @@
 <script setup>
-
+// COMPONENTS
 import ToggleFilter from "@/components/filter/ToggleFilter.vue";
 import FilterBox from "@/components/filter/FilterBox.vue";
 import UnderlinedText from "@/components/ui/UnderlinedText.vue";
 import ChosenFilters from "@/components/filter/ChosenFilters.vue";
 import PriceRange from "@/components/ui/form/PriceRange.vue";
+
+// ROUTE
+import {useRoute} from 'vue-router'
+const route = useRoute();
+
+// STORE
+import {useDishStore} from '@/stores/index.js'
+const dishStore = useDishStore();
+
+// METHODS
+const filterDishes = async function () {
+  await dishStore.fetchDishes(route.query);
+}
+
 </script>
 
 <template>
@@ -71,6 +85,12 @@ import PriceRange from "@/components/ui/form/PriceRange.vue";
           <span class="text-yellow-500">★★★☆☆</span>
         </label>
       </div>
+    </div>
+
+    <div>
+      <button @click="filterDishes" class="button-cgreen w-full">
+        Filter
+      </button>
     </div>
 
   </aside>

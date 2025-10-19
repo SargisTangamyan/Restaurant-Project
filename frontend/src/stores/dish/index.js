@@ -7,11 +7,25 @@ export const useDishStore = defineStore('dish', {
     dishes: null,
   }),
 
-  getters: {},
+  getters: {
+    getDishes(state) {
+      return state.dishes
+    }
+  },
 
   actions: {
-    async fetchDishes() {
-      const response = await sender.sendRequest('GET', DISHES)
+    async fetchDishes(filters = {}) {
+      let query = '';
+      if (Object.keys(filters).length > 0)
+      {
+        query += '?';
+        for (const [key, value] of Object.entries(filters)) {
+          query += `${key}=${value}&`;
+        }
+        query = query.slice(0, -1);
+      }
+
+      const response = await sender.sendRequest('GET', `${DISHES}${query}`);
       if (response.success) {
         this.dishes = response.data.data
         return {success: true, data: response.data.data}
@@ -45,7 +59,11 @@ export const useDishStore = defineStore('dish', {
           'Content-Type': 'multipart/form-data',
         }
       );
-      console.log(response);
+      if (response.success) {
+        return {success: true, message: 'Dish Created successfully.'};
+      } else {
+        return {success: false, errors: response.errors};
+      }
     }
   }
 })

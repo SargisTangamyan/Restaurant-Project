@@ -17,6 +17,9 @@ import FormLabel from "@/components/ui/form/FormLabel.vue";
 import { useDishStore } from "@/stores/index.js";
 const dishStore = useDishStore();
 
+import { useMessageStore } from "@/stores/index.js";
+const messageStore = useMessageStore();
+
 // REF
 const name = ref('');
 const price = ref(0);
@@ -49,14 +52,20 @@ const handleFileUpload = (file) => {
   image.value = file
 }
 
-const addDish = function () {
-  dishStore.addDish({
+const addDish = async function () {
+  const res = await dishStore.addDish({
     name: name.value,
     price: price.value,
     description: description.value,
     category_id: category.value,
     image: image.value,
   });
+  if (res.success) {
+    messageStore.showMessage(res.message, 'success');
+  } else {
+    messageStore.showMessage(res.message, 'error');
+    console.log(res.errors)
+  }
 }
 
 </script>

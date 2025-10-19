@@ -24,7 +24,10 @@ class DishController extends Controller
      */
     public function index(Request $request)
     {
-        return DishResource::collection(Dish::latest()->paginate(10));
+        $filters = $request->only([
+            'price',
+        ]);
+        return DishResource::collection(Dish::latest()->filter($filters)->paginate(10));
     }
 
     /**

@@ -1,7 +1,7 @@
 <script setup>
 
 // VUE
-import { ref, onMounted} from 'vue'
+import { ref, onMounted, watch} from 'vue'
 
 // COMPONENTS
 import DishBox from "@/components/dish/DishBox.vue";
@@ -15,11 +15,17 @@ const dishStore = useDishStore();
 // REF
 const dishes = ref([]);
 
+// WATCH
+watch(() => dishStore.getDishes, () => {
+  console.log('dishes changed');
+  dishes.value = dishStore.getDishes;
+})
+
+// MOUNTING
 onMounted(async () => {
   const res = await dishStore.fetchDishes()
   if (res.success) {
     dishes.value = res.data
-    console.log(dishes.value[9].thumbnail)
   }
 })
 

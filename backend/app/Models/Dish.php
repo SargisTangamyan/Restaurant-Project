@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Builder;
 
 class Dish extends Model
 {
@@ -37,5 +38,13 @@ class Dish extends Model
     public function wishedBy(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'wishlists')->withTimestamps();
+    }
+
+    public function scopeFilter(Builder $query, array $filters): Builder
+    {
+        return $query->when(
+            $filters['price'] ?? false,
+            fn ($query, $value) => $query->where('price', '<=', $value)
+        );
     }
 }
