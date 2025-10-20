@@ -45,6 +45,32 @@ class Dish extends Model
         return $query->when(
             $filters['price'] ?? false,
             fn ($query, $value) => $query->where('price', '<=', $value)
+        )->when(
+            $filters['search'] ?? false,
+            fn ($query, $value) => $query->where('name', 'like', '%' . $value . '%')
+        )->when(
+            $filters['ingredients'] ?? false,
+            fn ($query) => $query->whereHas('ingredients', function ($query) use ($filters) {
+                $query->whereIn('ingredients.id', $filters['ingredients']);
+            })
+        )->when(
+            !empty($filters['categories']),
+            function ($query) use ($filters) {
+                // Collect all children recursively
+                $allCategoryIds = [];
+                $categories = Category::with('children')->findMany($filters['categories']);
+
+                foreach ($categories as $category) {
+                    $allCategoryIds = array_merge($allCategoryIds, $category->allChildrenIds());
+                }
+
+                $query->whereIn('category_id', $allCategoryIds);
+            }
         );
+    }
+
+    public function scopeHasPattern (Builder $query, string $pattern): Builder
+    {
+        return $query->where('name', 'like', '%' . $pattern . '%');
     }
 }

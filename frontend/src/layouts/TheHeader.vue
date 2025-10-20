@@ -18,6 +18,7 @@ import { useAuthStore } from "@/stores/index.js";
 
 // COMPOSABLES
 import { useBoxOpenClose } from "@/composables/useBoxOpenClose.js";
+import SearchBox from "@/components/search/SearchBox.vue";
 
 // DEFINING STORE
 const languageStore = useLanguageStore();
@@ -226,12 +227,7 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
               </router-link>
 
               <!-- Now Working on -->
-              <div class="middle-box">
-                <input type="search" class="search-input" placeholder="I'm searching for...">
-                <button class="btn-outline search-button" type="button">
-                  <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M448 272C448 174.8 369.2 96 272 96C174.8 96 96 174.8 96 272C96 369.2 174.8 448 272 448C369.2 448 448 369.2 448 272zM407.3 430C371 461.2 323.7 480 272 480C157.1 480 64 386.9 64 272C64 157.1 157.1 64 272 64C386.9 64 480 157.1 480 272C480 323.7 461.2 371 430 407.3L571.3 548.7C577.5 554.9 577.5 565.1 571.3 571.3C565.1 577.5 554.9 577.5 548.7 571.3L407.3 430z"/></svg>
-                </button>
-              </div>
+              <SearchBox />
               <!-- End -->
 
               <div class="rightside-box">
@@ -410,7 +406,7 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
                 <a class="nav-link" href="#">Contact Us</a>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link" href="#">Account</a>
+                <router-link class="nav-link" :to="{name: 'user'}">Account</router-link>
               </li>
             </ul>
           </div>

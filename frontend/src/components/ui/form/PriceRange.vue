@@ -1,6 +1,6 @@
 <script setup>
 // VUE
-import {defineProps, ref, onMounted } from 'vue'
+import {defineProps, ref, onMounted, watch } from 'vue'
 
 // DEBOUNCE
 import debounce from "lodash/debounce";
@@ -18,8 +18,11 @@ const props = defineProps({
   }
 })
 
+// Simple
+const initialPrice = Math.round(props.maxPrice)
+
 // REFS
-const currentPrice = ref(Math.round(props.maxPrice));
+const currentPrice = ref(initialPrice);
 
 // METHODS
 const filterPrice = debounce(() => {
@@ -27,6 +30,15 @@ const filterPrice = debounce(() => {
     query: { ...route.query, price: currentPrice.value || undefined }
   });
 }, 300);
+
+// WATCH
+watch(() => route.query.price, () => {
+  if (!route.query.price) {
+    currentPrice.value = initialPrice;
+  } else {
+    currentPrice.value = Number(route.query.price);
+  }
+});
 
 // MOUNTING
 onMounted(() => {

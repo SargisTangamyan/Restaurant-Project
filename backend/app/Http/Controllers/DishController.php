@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\ResponseStrategy;
+use App\Enums\ResponseStatus;
 use App\Http\Requests\DishStoreRequest;
 use App\Http\Requests\DishUpdateRequest;
 use App\Http\Resources\DishResource;
@@ -26,9 +27,47 @@ class DishController extends Controller
     {
         $filters = $request->only([
             'price',
+            'search',
         ]);
+
+        if ($request->ingredients) {
+            $filters['ingredients'] = explode(',', $request->ingredients);
+        }
+        if ($request->ingredients) {
+            $filters['categories'] = explode(',', $request->categories);
+        }
         return DishResource::collection(Dish::latest()->filter($filters)->paginate(10));
     }
+
+    public function search(Request $request)
+    {
+        $search = trim($request->get('search', ''));
+
+        if (empty($search)) {
+            return $this->responder->send(
+                'No search query provided.',
+                ['names' => []],
+                status: ResponseStatus::BAD_REQUEST->value,
+            );
+        }
+
+        $names = Dish::hasPattern($search)->pluck('name')->toArray();
+
+        if (empty($names)) {
+            return $this->responder->send(
+                'No search results found.',
+                ['names' => []],
+                status: ResponseStatus::BAD_REQUEST->value,
+
+            );
+        }
+
+        return $this->responder->send(
+            'Found dishes successfully.',
+            ['names' => $names],
+        );
+    }
+
 
     /**
      * Store a newly created resource in storage.

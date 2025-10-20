@@ -16,10 +16,6 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  filters: {
-    type: Array,
-    required: true,
-  }
 })
 
 // REFS
@@ -48,30 +44,7 @@ const toggleShowBox = function () {
     <template #default>
       <transition name="reveal">
         <div v-if="filterWindowOpen">
-          <div
-            class="relative flex items-center border border-gray-400 border-box rounded-sm overflow-hidden mb-4">
-            <input
-              type="search"
-              placeholder="Search ..."
-              class="flex-1 py-2 px-3 pr-10 outline-none placeholder-gray-400"
-            />
-            <font-awesome-icon
-              :icon="['fas', 'magnifying-glass']"
-              class="absolute right-3 text-md text-gray-500 pl-1 border-l border-gray-400"
-            />
-          </div>
-
-          <ul class="p-0 m-0">
-            <li v-for="(filter, id) in props.filters" :key="id" class="mb-4">
-              <div class="flex items-center gap-4">
-                <input class="w-4 h-4" type="checkbox" name="filter">
-                <label class="leading-none flex items-center justify-between w-full" for="fruit">
-                  <span class="block">{{ filter.name }}</span>
-                  <span class="block text-sm text-gray-400">({{ filter.count }})</span>
-                </label>
-              </div>
-            </li>
-          </ul>
+          <slot />
         </div>
       </transition>
     </template>

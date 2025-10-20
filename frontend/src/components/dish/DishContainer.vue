@@ -8,22 +8,29 @@ import DishBox from "@/components/dish/DishBox.vue";
 
 // STORE
 import { useDishStore } from "@/stores/index.js";
-
-// USING STORE
 const dishStore = useDishStore();
+
+// ROUTE
+import {useRoute} from "vue-router";
+const route = useRoute();
 
 // REF
 const dishes = ref([]);
 
 // WATCH
 watch(() => dishStore.getDishes, () => {
-  console.log('dishes changed');
   dishes.value = dishStore.getDishes;
+})
+
+watch(() => route.query, async () => {
+  if (Object.keys(route.query).length === 0) {
+    await dishStore.fetchDishes();
+  }
 })
 
 // MOUNTING
 onMounted(async () => {
-  const res = await dishStore.fetchDishes()
+  const res = await dishStore.fetchDishes(route.query);
   if (res.success) {
     dishes.value = res.data
   }

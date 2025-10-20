@@ -48,4 +48,15 @@ class Category extends Model
     {
         return $this->children()->with('childrenRecursive');
     }
+
+    public function allChildrenIds(): array
+    {
+        $ids = [$this->id];
+
+        foreach ($this->children as $child) {
+            $ids = array_merge($ids, $child->allChildrenIds());
+        }
+
+        return $ids;
+    }
 }

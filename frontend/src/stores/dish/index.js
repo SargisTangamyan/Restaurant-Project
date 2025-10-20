@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {sender} from '@/api/Sender.js'
-import {DISHES} from "@/constants/urls.js";
+import {DISHES, DISHES_SEARCH} from "@/constants/urls.js";
 
 export const useDishStore = defineStore('dish', {
   state: () => ({
@@ -31,6 +31,21 @@ export const useDishStore = defineStore('dish', {
         return {success: true, data: response.data.data}
       }
       return false;
+    },
+
+    async searchDishes(search = '') {
+      if (search === '')
+      {
+        return {success: false, message: 'Name is empty'}
+      }
+
+      const response = await sender.sendRequest('GET', `${DISHES_SEARCH}?search=${search}`);
+      if (response.success)
+      {
+        return {success: true, names: response.data.names}
+      } else {
+        return {success: false, message: 'No dishes found'};
+      }
     },
 
     async fetchDishById(id) {

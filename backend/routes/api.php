@@ -47,6 +47,7 @@ Route::get('/ingredients/search', [IngredientController::class, 'search'])->name
 Route::apiResource('/ingredients', IngredientController::class);
 
 // Dish Resource
+Route::get('dishes/search', [DishController::class, 'search'])->name('dishes.search');
 Route::apiResource('/dishes', DishController::class);
 
 // Wishlist
