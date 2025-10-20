@@ -1,6 +1,6 @@
 <script setup>
 // VUE
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 
 // EMITS
@@ -40,23 +40,35 @@ const toggleFilter = (event, id, name) => {
   }
 };
 
+// METHODS
+const checkTheBoxes = function (query) {
+  const selectedIds = (query || '')
+    .split(',')
+    .filter((x) => x); // remove empty
+
+  // Iterate through all checkboxes and uncheck those not in route
+  const checkboxes = filterList.value?.querySelectorAll('input[type="checkbox"]') || [];
+  checkboxes.forEach((checkbox) => {
+    const id = checkbox.id.replace('filter-', '');
+    checkbox.checked = selectedIds.includes(id);
+  });
+}
+
 // WATCHERS
 watch(
   () => route.query[props.type],
   (newQuery) => {
-    // When the route query changes, uncheck checkboxes that are no longer in it
-    const selectedIds = (newQuery || '')
-      .split(',')
-      .filter((x) => x); // remove empty
-
-    // Iterate through all checkboxes and uncheck those not in route
-    const checkboxes = filterList.value?.querySelectorAll('input[type="checkbox"]') || [];
-    checkboxes.forEach((checkbox) => {
-      const id = checkbox.id.replace('filter-', '');
-      checkbox.checked = selectedIds.includes(id);
-    });
+    checkTheBoxes(newQuery);
   }
 );
+
+// MOUNTING
+onMounted(() => {
+  if (route.query[props.type])
+  {
+    checkTheBoxes(route.query[props.type]);
+  }
+})
 </script>
 
 <template>
