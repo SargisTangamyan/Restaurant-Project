@@ -1,14 +1,30 @@
 <script setup>
 
+// VUE
 import { ref } from 'vue'
 
-const count = ref(1)
+// EMITS
+const emit = defineEmits(['counterChange'])
 
+// PROPS
+const props = defineProps({
+  counter: {
+    required: false,
+    type: Number,
+    default: 1,
+  }
+});
+
+// REF
+const count = ref(props.counter);
+
+// METHODS
 const changeCounterBy = (number) => {
   count.value += number
   if (count.value < 1) {
     count.value = 1;
   }
+  emit('counterChange', count.value);
 }
 
 </script>

@@ -5,15 +5,24 @@ import {DISHES, DISHES_SEARCH} from "@/constants/urls.js";
 export const useDishStore = defineStore('dish', {
   state: () => ({
     dishes: null,
+    pagination: null,
   }),
 
   getters: {
     getDishes(state) {
       return state.dishes
-    }
+    },
+    getPagination: state => state.pagination,
   },
 
   actions: {
+    async getOrFetchDishes() {
+      if (!this.getDishes)
+      {
+        await this.fetchDishes()
+      }
+    },
+
     async fetchDishes(filters = {}) {
       let query = '';
       if (Object.keys(filters).length > 0)
@@ -27,7 +36,8 @@ export const useDishStore = defineStore('dish', {
 
       const response = await sender.sendRequest('GET', `${DISHES}${query}`);
       if (response.success) {
-        this.dishes = response.data.data
+        this.dishes = response.data.data;
+        this.pagination = response.data.meta;
         return {success: true, data: response.data.data}
       }
       return false;

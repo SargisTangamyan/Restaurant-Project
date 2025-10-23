@@ -6,6 +6,7 @@ use App\Contracts\ResponseStrategy;
 use App\Enums\ResponseStatus;
 use App\Http\Requests\DishStoreRequest;
 use App\Http\Requests\DishUpdateRequest;
+use App\Http\Resources\DishCollection;
 use App\Http\Resources\DishResource;
 use App\Models\Dish;
 use App\Services\ImageService;
@@ -33,10 +34,11 @@ class DishController extends Controller
         if ($request->ingredients) {
             $filters['ingredients'] = explode(',', $request->ingredients);
         }
-        if ($request->ingredients) {
+        if ($request->categories) {
             $filters['categories'] = explode(',', $request->categories);
         }
-        return DishResource::collection(Dish::latest()->filter($filters)->paginate(10));
+        return new DishCollection(Dish::latest()->filter($filters)->paginate(10));
+//        return DishResource::collection(Dish::latest()->filter($filters)->paginate(10));
     }
 
     public function search(Request $request)

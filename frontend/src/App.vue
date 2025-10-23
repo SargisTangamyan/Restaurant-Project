@@ -8,10 +8,11 @@ import MessageBox from "@/components/message/MessageBox.vue";
 </script>
 
 <template>
-  <the-header />
-  <router-view />
-  <the-footer />
-
+  <div class="flex flex-col min-h-screen">
+    <the-header />
+    <router-view />
+    <the-footer />
+  </div>
   <message-box />
 </template>
 

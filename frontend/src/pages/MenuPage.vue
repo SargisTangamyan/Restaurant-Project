@@ -5,7 +5,6 @@ import PageName from "@/components/ui/PageName.vue";
 import TheBox from "@/components/ui/TheBox.vue";
 import FilterSidebar from "@/components/filter/FilterSidebar.vue"
 import DishContainer from "@/components/dish/DishContainer.vue"
-import ImageBanner from "@/components/ui/image/ImageBanner.vue";
 
 </script>
 
@@ -20,7 +19,6 @@ import ImageBanner from "@/components/ui/image/ImageBanner.vue";
 
         <!-- Main Content Placeholder -->
         <div class="bg-white col-start-2 col-span-3 rounded-2xl shadow-md text-gray-400 overflow-hidden">
-          <image-banner />
           <dish-container />
         </div>
 

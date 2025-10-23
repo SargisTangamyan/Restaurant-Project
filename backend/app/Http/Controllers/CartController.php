@@ -10,14 +10,25 @@ class CartController extends Controller
 {
     public function index(Request $request)
     {
-        $userId = $request->user()->id;
-        $cartItems = Cart::with('dish')->where('user_id', $userId)->get();
-        return $this->responder->send(
-            'Cart Content',
-            [
-                'dishes' => $cartItems,
-            ]
-        );
+        $user = $request->user();
+        $cartItems = Cart::with('dish')->where('user_id', $user->id)->get();
+
+        $total = $cartItems->sum(function ($item) {
+            return $item->dish->price * $item->quantity;
+        });
+
+        return $this->responder->send('Cart Content', [
+            'cart' => $cartItems,
+            'total' => $total,
+        ]);
+    }
+
+    public function count(Request $request)
+    {
+        $user = $request->user();
+        $count = Cart::where('user_id', $user->id)->count();
+
+        return $this->responder->send('Cart Count', ['count' => $count]);
     }
 
     public function store(Request $request, Dish $dish)
@@ -65,7 +76,7 @@ class CartController extends Controller
 
     public function destroy(Dish $dish)
     {
-        $cartItem = Cart::findOrFail($dish->id);
+        $cartItem = Cart::where('dish_id', $dish->id);
         $cartItem->delete();
 
         return $this->responder->send(

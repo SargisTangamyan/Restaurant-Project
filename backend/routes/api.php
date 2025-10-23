@@ -59,6 +59,7 @@ Route::prefix('/wishlist')->controller(WishlistController::class)->middleware('a
 
 // Cart
 Route::prefix('/cart')->controller(CartController::class)->middleware('auth:sanctum')->name('cart.')->group(function () {
+    Route::get('/count', 'count')->name('count');
     Route::get('/', 'index')->name('index');
     Route::post('/{dish}', 'store')->name('store');
     Route::put('/{dish}', 'update')->name('update');

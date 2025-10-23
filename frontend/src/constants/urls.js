@@ -23,3 +23,7 @@ export const DISHES_SEARCH = `${BASE_URL}/dishes/search`;
 
 // IMAGES
 export const STORAGE = 'http://localhost:8000/storage'
+
+// CART
+export const CART = `${BASE_URL}/cart`;
+export const CART_COUNT =  `${CART}/count`;
