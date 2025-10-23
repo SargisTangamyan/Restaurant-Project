@@ -1,7 +1,7 @@
 <script setup>
 
 // VUE
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 // EMITS
 const emit = defineEmits(['counterChange'])
@@ -17,6 +17,11 @@ const props = defineProps({
 
 // REF
 const count = ref(props.counter);
+
+// WATCH
+watch(() => props.counter, (newValue) => {
+  count.value = newValue;
+})
 
 // METHODS
 const changeCounterBy = (number) => {

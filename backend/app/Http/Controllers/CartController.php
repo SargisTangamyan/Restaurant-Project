@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    private function calculateTotal(int $userId)
+    {
+        return Cart::where('user_id', $userId)->with('dish')->get()->sum(function ($item) {
+            return $item->dish->price * $item->quantity;
+        });
+    }
+
     public function index(Request $request)
     {
         $user = $request->user();
@@ -62,25 +69,35 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $cartItem = Cart::findOrFail($dish->id);
+        $userId = $request->user()->id;
+
+        $cartItem = Cart::where('user_id', $userId)->where('dish_id', $dish->id)->firstOrFail();
         $cartItem->quantity = $request->quantity;
         $cartItem->save();
+
+        $total = $this->calculateTotal($userId);
 
         return $this->responder->send(
             'Cart updated',
             [
                 'cart' => $cartItem,
+                'total' => $total,
             ]
         );
     }
 
-    public function destroy(Dish $dish)
+    public function destroy(Request $request, Dish $dish)
     {
-        $cartItem = Cart::where('dish_id', $dish->id);
+        $userId = $request->user()->id;
+
+        $cartItem = Cart::where('user_id', $userId)->where('dish_id', $dish->id);
         $cartItem->delete();
 
+        $total = $this->calculateTotal($userId);
+
         return $this->responder->send(
-            'Dish removed from the cart'
+            'Dish removed from the cart',
+            ['total' => $total]
         );
     }
 }

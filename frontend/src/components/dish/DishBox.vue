@@ -1,36 +1,19 @@
+
 <script setup>
 // COMPONENTS
 import RatingStars from "@/components/ui/RatingStars.vue";
+import AddToCartButton from "@/components/cart/AddToCartButton.vue";
 
 // URLS
 import { STORAGE } from '@/constants/urls.js'
 
-// STORE
-import {useCartFunctionality} from "@/composables/useCartFunctionality.js";
-
-// COMPOSABLES
-const {addToCart, removeFromCart} = useCartFunctionality();
-
 // PROPS
-const props = defineProps({
+defineProps({
   dish: {
     required: true,
     type: Object,
-  },
-  isInCart: {
-    required: true,
-    type: Boolean,
   }
 })
-
-// METHODS
-const toggleCart = async () => {
-  if (props.isInCart) {
-    await removeFromCart(props.dish.id);
-  } else {
-    await addToCart(props.dish.id);
-  }
-};
 </script>
 
 <template>
@@ -100,23 +83,7 @@ const toggleCart = async () => {
 
       <!-- Add / Remove Cart -->
       <div class="mt-4">
-        <button
-          @click="toggleCart"
-          class="w-full flex items-center justify-between px-2 gap-2 py-2.5 rounded-lg border border-gray-200 font-medium transition-all"
-          :class="isInCart
-            ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-            : 'text-gray-700 hover:bg-emerald-600 hover:text-white'"
-        >
-          {{ isInCart ? 'Remove from Cart' : 'Add to Cart' }}
-          <span
-            class="inline-flex rounded-full h-8 w-8 bg-gray-100 text-gray-700 items-center justify-center"
-          >
-            <font-awesome-icon
-              class="block"
-              :icon="['fas', isInCart ? 'check' : 'plus']"
-            />
-          </span>
-        </button>
+        <add-to-cart-button :dish-id="dish.id" />
       </div>
     </div>
   </div>

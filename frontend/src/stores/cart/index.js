@@ -9,6 +9,7 @@ export const useCartStore = defineStore('cart', {
     total: 0,
     count: 0,
     loaded: false,
+    isLoading: false,
   }),
 
   getters: {
@@ -75,26 +76,61 @@ export const useCartStore = defineStore('cart', {
     },
 
     async addToCart(id) {
+      this.isLoading = true;
       const response = await sender.sendRequest('POST', `${CART}/${id}`);
       if (response.success) {
         this.chosenIds.add(+id);
         this.count += 1;
-        this.total += response.data?.price ?? 0; // assuming response includes price
+        this.total += response.data?.price ?? 0;
+        this.isLoading = false;
         return { success: true, message: 'Item added successfully.' };
       } else {
+        this.isLoading = false;
         return { success: false, errors: response.errors };
       }
     },
 
+    async updateQuantity(id, quantity) {
+      this.isLoading = true;
+      try {
+        const response = await sender.sendRequest('PUT', `${CART}/${id}`, { quantity });
+        if (response.success) {
+          // Update local cart item quantity
+          const item = this.cart.find(dish => dish.id === +id);
+          if (item) {
+            item.quantity = quantity;
+          }
+
+          // Recalculate total
+          this.total = response.data.total;
+
+          this.isLoading = false;
+          return { success: true, message: 'Quantity updated successfully.' };
+        } else {
+          this.isLoading = false;
+          return { success: false, errors: response.errors };
+        }
+      } catch (error) {
+        this.isLoading = false;
+        return { success: false, errors: error };
+      }
+    },
+
     async removeFromCart(id) {
+      this.isLoading = true;
       const response = await sender.sendRequest('DELETE', `${CART}/${id}`);
       if (response.success) {
-        this.cart = this.cart.filter((dish) => dish.id !== id);
-        this.chosenIds.delete(id);
+        this.cart = this.cart.filter((dish) => dish.id !== +id);
+        this.chosenIds.delete(+id);
         this.count = Math.max(this.count - 1, 0);
-        this.total = response.data?.total ?? this.total;
+
+        // Recalculate total from remaining items
+        this.total = this.cart.reduce((sum, dish) => sum + (dish.price * dish.quantity), 0);
+
+        this.isLoading = false;
         return { success: true, message: 'Item removed successfully.' };
       } else {
+        this.isLoading = false;
         return { success: false, errors: response.errors };
       }
     },

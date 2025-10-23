@@ -14,14 +14,12 @@ const cartStore = useCartStore()
 
 // COMPUTED
 const cartItems = computed(() => cartStore.getCart)
-const isLoaded = computed(() => cartStore.getIsLoaded)
 const total = computed(() => cartStore.getTotal)
 const hasItems = computed(() => cartItems.value.length > 0)
 
 onMounted(async () => {
-  if (!isLoaded.value) {
-    await cartStore.fetchCart()
-  }
+  await cartStore.fetchCart()
+
 })
 </script>
 

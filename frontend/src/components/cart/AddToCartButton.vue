@@ -1,27 +1,16 @@
-
 <script setup>
-import { computed } from 'vue'
-import { useCartStore } from '@/stores/index.js'
+import { toRef } from 'vue'
+import { useCartToggle } from '@/composables/useCartToggle.js'
 
 const props = defineProps({
   dishId: {
     type: [Number, String],
     required: true
-  },
-  isInCart: {
-    type: Boolean,
-    required: true
   }
 })
 
-const emit = defineEmits(['toggle-cart'])
-
-const cartStore = useCartStore()
-const isLoading = computed(() => cartStore.isLoading || false)
-
-const toggleCart = () => {
-  emit('toggle-cart')
-}
+const dishIdRef = toRef(props, 'dishId')
+const { isInCart, isLoading, toggleCart } = useCartToggle(dishIdRef)
 </script>
 
 <template>

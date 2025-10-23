@@ -10,6 +10,7 @@ import IngredientList from "@/components/detail/ingredients/IngredientList.vue";
 import TrendingList from "@/components/detail/trending/TrendingList.vue";
 import ReviewContainer from "@/components/detail/review/ReviewContainer.vue";
 import TheLoader from "@/components/ui/TheLoader.vue";
+import AddToCartButton from "@/components/cart/AddToCartButton.vue";
 
 // VUE
 import {ref, defineProps, onMounted} from 'vue';
@@ -21,7 +22,9 @@ const router = useRouter();
 
 // STORE
 import {useDishStore} from "@/stores/index.js";
+import {useCartStore} from "@/stores/index.js";
 
+const cartStore = useCartStore();
 const dishStore = useDishStore();
 
 // REF
@@ -38,6 +41,10 @@ const props = defineProps({
 
 // MOUNTING
 onMounted(async () => {
+  if (!cartStore.getIsLoaded) {
+    await cartStore.fetchCart();
+  }
+
   const res = await dishStore.fetchDishById(props.id);
   if (res.success) {
     dish.value = res.data;
@@ -109,9 +116,7 @@ onMounted(async () => {
 
           <!-- Quantity + Add to Cart -->
           <the-counter/>
-          <button class="button-cgreen w-full mt-0">
-            Add To Cart
-          </button>
+          <add-to-cart-button :dish-id="dish.id" />
 
           <!-- Wishlist + Compare -->
           <div class="flex gap-4 text-sm font-medium">
