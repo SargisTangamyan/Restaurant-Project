@@ -1,6 +1,6 @@
 <script setup>
 // VUE
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 // COMPONENTS
 import FilterBox from "@/components/filter/FilterBox.vue";
@@ -9,6 +9,7 @@ import ChosenFilters from "@/components/filter/ChosenFilters.vue";
 import PriceRange from "@/components/ui/form/PriceRange.vue";
 import IngredientFilter from "@/components/filter/IngredientFilter.vue";
 import CategoryFilter from "@/components/filter/CategoryFilter.vue";
+import SortBy from "@/components/filter/SortBy.vue";
 
 // ROUTE AND ROUTER
 import {useRoute, useRouter} from 'vue-router'
@@ -23,10 +24,6 @@ const dishStore = useDishStore();
 const filters = ref([]);
 
 // METHODS
-const filterDishes = async function () {
-  await dishStore.fetchDishes(route.query);
-}
-
 const addFilter = (filter) => {
   filters.value.push(filter)
   let query = filter.id;
@@ -71,13 +68,24 @@ const removeFilter = (filter) => {
 
 const clearFilters = function () {
   const search = route.query.search;
+  filters.value = [];
   router.replace({
     query: {
       search,
     }
   })
-  dishStore.fetchDishes({search});
 }
+
+// WATCH - Auto-fetch dishes when query changes
+watch(() => route.query, async (newQuery, oldQuery) => {
+  // Check if filter-related queries have changed (excluding page changes)
+  const filterKeys = ['categories', 'ingredients', 'min_price', 'max_price', 'price', 'sort_by', 'sort_direction'];
+  const hasFilterChanged = filterKeys.some(key => newQuery[key] !== oldQuery[key]);
+
+  if (hasFilterChanged) {
+    await dishStore.fetchDishes(newQuery);
+  }
+}, { deep: true });
 
 </script>
 
@@ -96,6 +104,9 @@ const clearFilters = function () {
       </template>
     </filter-box>
 
+    <!-- Sort By -->
+    <sort-by />
+
     <category-filter @add-filter="addFilter" @remove-filter="removeFilter" />
 
     <ingredient-filter @add-filter="addFilter" @remove-filter="removeFilter" />
@@ -105,7 +116,7 @@ const clearFilters = function () {
         <underlined-text name="Price"></underlined-text>
       </template>
       <template #default>
-        <price-range :max-price="100"></price-range>
+        <price-range :min-price="0" :max-price="100"></price-range>
       </template>
     </filter-box>
 
@@ -131,13 +142,6 @@ const clearFilters = function () {
         </label>
       </div>
     </div>
-
-    <div>
-      <button @click="filterDishes" class="button-cgreen w-full">
-        Filter
-      </button>
-    </div>
-
   </aside>
 </template>
 

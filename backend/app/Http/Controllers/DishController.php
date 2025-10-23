@@ -28,7 +28,11 @@ class DishController extends Controller
     {
         $filters = $request->only([
             'price',
+            'min_price',
+            'max_price',
             'search',
+            'sort_by',
+            'sort_direction',
         ]);
 
         if ($request->ingredients) {
@@ -37,7 +41,7 @@ class DishController extends Controller
         if ($request->categories) {
             $filters['categories'] = explode(',', $request->categories);
         }
-        return new DishCollection(Dish::latest()->filter($filters)->paginate(10));
+        return new DishCollection(Dish::filter($filters)->paginate(10));
 //        return DishResource::collection(Dish::latest()->filter($filters)->paginate(10));
     }
 

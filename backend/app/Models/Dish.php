@@ -42,9 +42,20 @@ class Dish extends Model
 
     public function scopeFilter(Builder $query, array $filters): Builder
     {
-        return $query->when(
-            $filters['price'] ?? false,
-            fn ($query, $value) => $query->where('price', '<=', $value)
+        $query = $query->when(
+            isset($filters['min_price']) || isset($filters['max_price']),
+            function ($query) use ($filters) {
+                if (isset($filters['min_price'])) {
+                    $query->where('price', '>=', $filters['min_price']);
+                }
+                if (isset($filters['max_price'])) {
+                    $query->where('price', '<=', $filters['max_price']);
+                }
+            }
+        )->when(
+        // Keep backward compatibility with old 'price' filter
+            !isset($filters['min_price']) && !isset($filters['max_price']) && isset($filters['price']),
+            fn ($query, $value) => $query->where('price', '<=', $filters['price'])
         )->when(
             $filters['search'] ?? false,
             fn ($query, $value) => $query->where('name', 'like', '%' . $value . '%')
@@ -67,6 +78,24 @@ class Dish extends Model
                 $query->whereIn('category_id', $allCategoryIds);
             }
         );
+
+        // Apply sorting
+        if (!empty($filters['sort_by'])) {
+            $direction = strtolower($filters['sort_direction'] ?? 'asc');
+            // Validate direction
+            $direction = in_array($direction, ['asc', 'desc']) ? $direction : 'asc';
+
+            match ($filters['sort_by']) {
+                'price' => $query->orderBy('price', $direction),
+                'name' => $query->orderBy('name', $direction),
+                'created_at' => $query->orderBy('created_at', $direction),
+                default => $query->latest(),
+            };
+        } else {
+            $query->latest();
+        }
+
+        return $query;
     }
 
     public function scopeHasPattern (Builder $query, string $pattern): Builder

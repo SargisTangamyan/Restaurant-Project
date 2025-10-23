@@ -39,13 +39,9 @@ watch(
   }
 );
 
-watch(() => route.query, async () => {
-  if (Object.keys(route.query).length === 0) {
-    isLoading.value = true;
-    await dishStore.fetchDishes();
-    isLoading.value = false;
-  } else if (route.query.page && route.query.page !== pagination.value.current_page)
-  {
+// Watch only for page changes (filters are handled in FilterSidebar now)
+watch(() => route.query.page, async (newPage, oldPage) => {
+  if (newPage && newPage !== oldPage && newPage !== pagination.value.current_page) {
     isLoading.value = true;
     await dishStore.fetchDishes(route.query);
     isLoading.value = false;
@@ -115,7 +111,6 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-
 
 <style scoped>
 </style>
