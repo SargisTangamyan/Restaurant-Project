@@ -69,6 +69,18 @@ const router = createRouter({
       component: () => import('@/pages/TheCart.vue'),
     },
     {
+      path: '/payment/success',
+      name: 'payment_success',
+      component: () => import('@/pages/payment/PaymentSuccess.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/payment/cancel',
+      name: 'payment_cancel',
+      component: () => import('@/pages/payment/PaymentCancel.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/user',
       name: 'user',
       component: () => import('@/pages/profile/UserDashboard.vue'),
@@ -90,6 +102,8 @@ router.beforeEach((to, _, next) => {
   if (to.meta.requiresUnauth && authStore.getIsLoggedIn)
   {
     next('/home');
+  } else if (to.meta.requiresAuth && !authStore.getIsLoggedIn) {
+    next('/account/login');
   } else {
     next();
   }

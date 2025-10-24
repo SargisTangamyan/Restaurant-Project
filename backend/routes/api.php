@@ -10,6 +10,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\StripePaymentController;
+use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -74,3 +76,13 @@ Route::prefix('/orders')->controller(OrderController::class)->middleware('auth:s
     Route::post('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
     Route::patch('/{order}/status', [OrderController::class, 'updateStatus'])->name('update_status')->middleware(AdminMiddleware::class);
 });
+
+// Payment
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/stripe/create-checkout-session', [StripePaymentController::class, 'createCheckoutSession']);
+    Route::post('/stripe/verify-payment', [StripePaymentController::class, 'verifyPayment']);
+    Route::post('/stripe/cancel-payment', [StripePaymentController::class, 'cancelPayment']);
+});
+
+// Stripe Webhook
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);

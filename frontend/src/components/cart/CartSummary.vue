@@ -1,5 +1,8 @@
 <script setup>
 
+// IMPORT SERVICE
+import { createCheckoutSession } from '@/services/paymentService.js'
+
 // PROPS
 defineProps({
   items: {
@@ -11,6 +14,17 @@ defineProps({
     type: Number,
   }
 })
+
+// METHODS
+const handleStripeCheckout = async () => {
+  try {
+    const response = await createCheckoutSession();
+    // Redirecting to stripe checkout
+    window.location.href = response.checkout_url;
+  } catch (error) {
+    console.error('Checkout failed: ', error);
+  }
+}
 
 </script>
 
@@ -30,7 +44,9 @@ defineProps({
       <span>${{ total.toFixed(2) }}</span>
     </div>
 
-    <button class="button-cgreen w-full">
+    <button class="button-cgreen w-full"
+    @click="handleStripeCheckout"
+    >
       Proceed to Checkout
     </button>
   </div>

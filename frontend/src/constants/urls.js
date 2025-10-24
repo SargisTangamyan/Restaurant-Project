@@ -27,3 +27,8 @@ export const STORAGE = 'http://localhost:8000/storage'
 // CART
 export const CART = `${BASE_URL}/cart`;
 export const CART_COUNT =  `${CART}/count`;
+
+// STRIPE
+export const STRIPE_CREATE_CHECKOUT = `${BASE_URL}/stripe/create-checkout-session`;
+export const STRIPE_VERIFY_PAYMENT = `${BASE_URL}/stripe/verify-payment`;
+export const STRIPE_CANCEL_PAYMENT = `${BASE_URL}/stripe/cancel-payment`;
