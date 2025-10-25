@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
+use App\Http\Resources\OrderCollection;
+use App\Http\Resources\OrderResource;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Enums\ResponseStatus;
@@ -14,23 +16,29 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
+        $perPage = $request->get('per_page', 10);
+        $page = $request->get('page', 1);
+
+        $user = $request->user();
+
         $orders = Order::with('items.dish')
-            ->where('user_id', $request->user()->id)
+            ->where('user_id', $user->id)
             ->latest()
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
 
         return $this->responder->send(
-            'All Orders',
-            ['orders' => $orders],
+            'Your Orders',
+            ['orders' => new OrderCollection($orders)],
         );
     }
 
-    public function show(Request $request, Order $order)
+    public function show(Request $request, int $id)
     {
-        $currentOrder = $order->load('items.dish');
+        $user = $request->user();
+        $currentOrder = $user->orders()->with('items.dish')->findOrFail($id);
         return $this->responder->send(
             'Current Order',
-            ['order' => $currentOrder],
+            ['order' => new OrderResource($currentOrder)],
         );
     }
 

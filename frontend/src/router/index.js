@@ -88,6 +88,8 @@ const router = createRouter({
         {path: 'categories', name: 'categories', component: () => import('@/pages/profile/seller/CategoryBox.vue')},
         {path: 'ingredients', name: 'ingredients', component: () => import('@/pages/profile/seller/IngredientBox.vue')},
         {path: 'add-product', name: 'add_product', component: () => import('@/pages/profile/seller/AddProduct.vue')},
+        {path: 'my-orders', name: 'my_orders', component: () => import('@/components/order/OrderList.vue'), meta: { requiresAuth: true }},
+        {path: 'my-orders/:id', name: 'order_detail', component: () => import('@/components/order/OrderDetail.vue'), meta: { requiresAuth: true }},
       ]
     },
 

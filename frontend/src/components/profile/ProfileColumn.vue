@@ -13,6 +13,7 @@ import ProfileHeader from "@/components/profile/ProfileHeader.vue";
           {routeName: 'categories', name: 'Categories'},
           {routeName: 'ingredients', name: 'Ingredients'},
           {routeName: 'add_product', name: 'Add Product'},
+          {routeName: 'my_orders', name: 'My Orders'},
         ]">
 
     </profile-navigation>

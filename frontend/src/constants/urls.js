@@ -32,3 +32,7 @@ export const CART_COUNT =  `${CART}/count`;
 export const STRIPE_CREATE_CHECKOUT = `${BASE_URL}/stripe/create-checkout-session`;
 export const STRIPE_VERIFY_PAYMENT = `${BASE_URL}/stripe/verify-payment`;
 export const STRIPE_CANCEL_PAYMENT = `${BASE_URL}/stripe/cancel-payment`;
+
+// ORDERS
+export const ORDERS = `${BASE_URL}/orders`;
+export const ORDERS_SEARCH = `${BASE_URL}/orders/search`;
