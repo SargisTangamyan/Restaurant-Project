@@ -91,7 +91,7 @@ watch(() => route.query, async (newQuery, oldQuery) => {
 
 <template>
   <!-- Sidebar -->
-  <aside class="sticky top-4 bg-white pr-6 border-r lg:col-span-1 border-gray-200">
+  <aside class="w-full lg:w-auto lg:sticky lg:top-4 self-start flex-none bg-white pr-6 border-r border-gray-200">
     <!-- Filter Header -->
     <filter-box>
       <template #header>

@@ -5,7 +5,7 @@ import ProfileHeader from "@/components/profile/ProfileHeader.vue";
 </script>
 
 <template>
-  <aside class="w-full lg:w-1/4 bg-white shadow-md rounded-xl overflow-hidden flex flex-col gap-6">
+  <aside class="w-full pb-2 lg:w-1/4 lg:sticky lg:top-4 self-start flex-none bg-white shadow-md rounded-xl overflow-hidden flex flex-col gap-6">
     <!-- Profile Box -->
     <profile-header />
 
