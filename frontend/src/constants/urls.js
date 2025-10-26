@@ -35,4 +35,6 @@ export const STRIPE_CANCEL_PAYMENT = `${BASE_URL}/stripe/cancel-payment`;
 
 // ORDERS
 export const ORDERS = `${BASE_URL}/orders`;
-export const ORDERS_SEARCH = `${BASE_URL}/orders/search`;
+export const ADMIN_ORDERS = `${BASE_URL}/admin/orders`;
+export const ORDER_CANCEL = (id) => `${BASE_URL}/orders/${id}/cancel`;
+export const ORDER_STATUS_UPDATE = (id) => `${BASE_URL}/admin/orders/${id}/status`;

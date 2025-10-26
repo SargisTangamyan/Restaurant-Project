@@ -9,13 +9,18 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Enums\ResponseStatus;
 use App\Models\OrderItem;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Order::class);
+
         $perPage = $request->get('per_page', 10);
         $page = $request->get('page', 1);
 
@@ -32,18 +37,44 @@ class OrderController extends Controller
         );
     }
 
-    public function show(Request $request, int $id)
+    public function adminIndex(Request $request)
     {
-        $user = $request->user();
-        $currentOrder = $user->orders()->with('items.dish')->findOrFail($id);
+        $this->authorize('viewAll', Order::class);
+
+        $perPage = $request->get('per_page', 10);
+        $page = $request->get('page', 1);
+        $status = $request->get('status');
+
+        $query = Order::with(['items.dish', 'user'])->latest();
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $orders = $query->paginate($perPage, ['*'], 'page', $page);
+
+        return $this->responder->send(
+            'All Orders',
+            ['orders' => new OrderCollection($orders)],
+        );
+    }
+
+    public function show(Request $request, Order $order)
+    {
+        $this->authorize('view', $order);
+
+        $order = $order->load(['items.dish', 'user']);
+
         return $this->responder->send(
             'Current Order',
-            ['order' => new OrderResource($currentOrder)],
+            ['order' => new OrderResource($order)],
         );
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', Order::class);
+
         $user = $request->user();
 
         $cartItems = Cart::with('dish')->where('user_id', $user->id)->get();
@@ -102,6 +133,8 @@ class OrderController extends Controller
     // Update order status (admin or system)
     public function updateStatus(Request $request, Order $order)
     {
+        $this->authorize('updateStatus', $order);
+
         $request->validate([
             'status' => 'required|in:pending,confirmed,preparing,completed,delivered,cancelled',
         ]);
@@ -111,14 +144,16 @@ class OrderController extends Controller
 
         return $this->responder->send(
             "Order status updated from {$oldStatus} to {$order->status->value}",
-            ['order' => $order],
+            ['order' => new OrderResource($order->load(['items.dish', 'user']))],
         );
     }
 
     // Cancel order (user)
-    public function cancel(Request $request, $id)
+    public function cancel(Request $request, int $id)
     {
         $order = Order::where('user_id', $request->user()->id)->findOrFail($id);
+
+        $this->authorize('cancel', $order);
 
         if (!$order->canBeCancelled()) {
             return $this->responder->send(

@@ -74,7 +74,12 @@ Route::prefix('/orders')->controller(OrderController::class)->middleware('auth:s
     Route::get('/{order}', 'show')->name('show');
     Route::post('/', 'store')->name('store');
     Route::post('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
-    Route::patch('/{order}/status', [OrderController::class, 'updateStatus'])->name('update_status')->middleware(AdminMiddleware::class);
+});
+
+// Orders for Admin
+Route::middleware(AdminMiddleware::class)->prefix('/admin')->controller(OrderController::class)->name('admin_orders.')->group(function () {
+    Route::get('/orders', 'adminIndex')->name('index');
+    Route::patch('/orders/{order}/status', 'updateStatus')->name('update_status');
 });
 
 // Payment

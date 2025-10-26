@@ -27,7 +27,7 @@
             <div class="space-y-2 text-sm">
               <p>
                 <span class="text-gray-600 inline-block pr-2">Status:</span>
-                <order-status :status="order.status" />
+                <order-status-badge :status="order.status" />
               </p>
               <p>
                 <span class="text-gray-600">Total:</span>
@@ -77,7 +77,7 @@ import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useOrderStore } from '@/stores/index.js'
 import ProfileBox from "@/components/profile/ProfileBox.vue"
-import OrderStatus from "@/components/order/OrderStatus.vue";
+import OrderStatusBadge from "@/components/order/OrderStatusBadge.vue";
 import ImageDisplay from "@/components/ui/image/ImageDisplay.vue";
 
 const route = useRoute()

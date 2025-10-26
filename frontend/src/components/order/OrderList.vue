@@ -10,7 +10,7 @@ import {useOrderStore} from '@/stores/index.js';
 
 // COMPONENTS
 import ProfileBox from "@/components/profile/ProfileBox.vue";
-import OrderStatus from "@/components/order/OrderStatus.vue";
+import OrderStatusBadge from "@/components/order/OrderStatusBadge.vue";
 import ThePagination from "@/components/ui/ThePagination.vue";
 
 // COMPOSABLES
@@ -85,7 +85,7 @@ watch(
             </div>
             <div class="text-right">
               <p class="font-bold text-lg">${{ order.total_price }}</p>
-              <order-status :status="order.status" />
+              <order-status-badge :status="order.status" />
             </div>
           </div>
 

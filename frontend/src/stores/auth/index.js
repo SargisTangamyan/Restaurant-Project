@@ -8,29 +8,28 @@ import {REGISTER_URL, REDIRECT_URL, LOGIN_URL, LOGOUT_URL} from '@/constants/url
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    userToken: null,
-    userName: null,
-    userEmail: null,
-    userEmailVerified: null,
-    userRole: null,
-    userImage: null,
+    token: null,
+    user: null, // { id, username, email, role, image, emailVerified }
   }),
 
   getters: {
+    // Backward compatible getters
     getIsLoggedIn(state) {
-      return !!state.userToken;
+      return !!state.token;
     },
     getUserToken(state) {
-      return state.userToken;
+      return state.token;
     },
     getUser(state) {
-      return {
-        'username': state.userName,
-        'email': state.userEmail,
-        'role': state.userRole,
-        'image': state.userImage,
-      }
-    }
+      return state.user ?? {};
+    },
+    // Convenience getters
+    isLoggedIn(state) {
+      return !!state.token;
+    },
+    isAdmin(state) {
+      return state.user?.role === 'admin';
+    },
   },
 
   actions: {
@@ -56,11 +55,13 @@ export const useAuthStore = defineStore('auth', {
         }
 
         const result = await response.json();
-        this.userToken = result.data?.token;
+        this.token = result.data?.token ?? null;
+        // user may be null until verification/login
         return {success: true};
 
       } catch (error) {
         console.log(error.message);
+        return { success: false, errors: { overall: [error.message] } };
       }
     },
 
@@ -71,10 +72,16 @@ export const useAuthStore = defineStore('auth', {
     async loginUser(email, password) {
       const response = await sender.sendRequest('POST', LOGIN_URL, {email, password});
       if (response.success) {
-        this.userToken = response.data.token;
-        this.userName = response.data.user.username;
-        this.userEmail = response.data.user.email;
-        this.userRole = response.data.user.role;
+        const data = response.data;
+        this.token = data.token;
+        this.user = {
+          id: data.user.id,
+          username: data.user.username,
+          email: data.user.email,
+          role: data.user.role,
+          image: data.user.image ?? null,
+          emailVerified: data.user.emailVerified ?? data.user.email_verified ?? null,
+        };
         return {success: true};
       }
       return {
@@ -88,7 +95,8 @@ export const useAuthStore = defineStore('auth', {
     async logoutUser() {
       const response = await sender.sendRequest('DELETE', LOGOUT_URL);
       console.log(response);
-      this.userToken = null;
+      this.token = null;
+      this.user = null;
     }
   },
 

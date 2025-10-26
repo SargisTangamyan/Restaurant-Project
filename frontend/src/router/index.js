@@ -84,12 +84,45 @@ const router = createRouter({
       path: '/user',
       name: 'user',
       component: () => import('@/pages/profile/UserDashboard.vue'),
+      meta: { requiresAuth: true },
       children: [
-        {path: 'categories', name: 'categories', component: () => import('@/pages/profile/seller/CategoryBox.vue')},
-        {path: 'ingredients', name: 'ingredients', component: () => import('@/pages/profile/seller/IngredientBox.vue')},
-        {path: 'add-product', name: 'add_product', component: () => import('@/pages/profile/seller/AddProduct.vue')},
-        {path: 'my-orders', name: 'my_orders', component: () => import('@/components/order/OrderList.vue'), meta: { requiresAuth: true }},
-        {path: 'my-orders/:id', name: 'order_detail', component: () => import('@/components/order/OrderDetail.vue'), meta: { requiresAuth: true }},
+        {
+          path: 'categories',
+          name: 'categories',
+          component: () => import('@/pages/profile/seller/CategoryBox.vue'),
+          meta: { requiresAuth: true, requiresAdmin: true }
+        },
+        {
+          path: 'ingredients',
+          name: 'ingredients',
+          component: () => import('@/pages/profile/seller/IngredientBox.vue'),
+          meta: { requiresAuth: true, requiresAdmin: true }
+        },
+        {
+          path: 'add-product',
+          name: 'add_product',
+          component: () => import('@/pages/profile/seller/AddProduct.vue'),
+          meta: { requiresAuth: true, requiresAdmin: true }
+        },
+        {
+          path: 'my-orders',
+          name: 'my_orders',
+          component: () => import('@/components/order/OrderList.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
+          path: 'my-orders/:id',
+          name: 'order_detail',
+          component: () => import('@/components/order/OrderDetail.vue'),
+          meta: { requiresAuth: true },
+          props: true
+        },
+        {
+          path: 'admin/orders',
+          name: 'admin_orders',
+          component: () => import('@/components/order/AdminOrderManagement.vue'),
+          meta: { requiresAuth: true, requiresAdmin: true }
+        },
       ]
     },
 
@@ -101,12 +134,25 @@ router.beforeEach((to, _, next) => {
   // USING STORE
   const authStore = useAuthStore();
 
-  if (to.meta.requiresUnauth && authStore.getIsLoggedIn)
-  {
+  // Check if user is authenticated
+  const isLoggedIn = authStore.isLoggedIn ?? authStore.getIsLoggedIn;
+
+  // Check if user is admin
+  const isAdmin = authStore.isAdmin ?? (authStore.user?.role === 'admin');
+
+  // Redirect authenticated users away from auth pages
+  if (to.meta.requiresUnauth && isLoggedIn) {
     next('/home');
-  } else if (to.meta.requiresAuth && !authStore.getIsLoggedIn) {
+  }
+  // Redirect unauthenticated users to login
+  else if (to.meta.requiresAuth && !isLoggedIn) {
     next('/account/login');
-  } else {
+  }
+  // Redirect non-admin users away from admin pages
+  else if (to.meta.requiresAdmin && !isAdmin) {
+    next('/home');
+  }
+  else {
     next();
   }
 })
