@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import { useCartStore } from '@/stores/index.js'
 
-export const useCartToggle = (dishId) => {
+export const useCartToggle = (dishId, quantity = 1) => {
   const cartStore = useCartStore()
 
   const isInCart = computed(() => {
@@ -20,7 +20,8 @@ export const useCartToggle = (dishId) => {
       }
       return response
     } else {
-      const response = await cartStore.addToCart(id)
+      const qt = quantity.value || quantity
+      const response = await cartStore.addToCart(id, qt)
       if (!response.success) {
         console.error('Failed to add item:', response.errors)
       }

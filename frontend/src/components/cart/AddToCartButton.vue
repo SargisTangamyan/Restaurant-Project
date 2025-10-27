@@ -6,11 +6,17 @@ const props = defineProps({
   dishId: {
     type: [Number, String],
     required: true
+  },
+  quantity: {
+    type: Number,
+    default: 1,
+    required: false,
   }
 })
 
 const dishIdRef = toRef(props, 'dishId')
-const { isInCart, isLoading, toggleCart } = useCartToggle(dishIdRef)
+const quantityRef = toRef(props, 'quantity')
+const { isInCart, isLoading, toggleCart } = useCartToggle(dishIdRef, quantityRef)
 </script>
 
 <template>

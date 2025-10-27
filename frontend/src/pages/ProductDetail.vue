@@ -120,7 +120,7 @@ onMounted(async () => {
 
           <!-- Quantity + Add to Cart -->
           <the-counter @counter-change="setCount"/>
-          <add-to-cart-button :dish-id="dish.id" />
+          <add-to-cart-button :dish-id="dish.id" :quantity="count" />
 
           <!-- Wishlist + Compare -->
           <div class="flex gap-4 text-sm font-medium">
