@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CartCollection;
+use App\Http\Resources\CartResource;
 use App\Models\Cart;
 use App\Models\Dish;
 use Illuminate\Http\Request;
@@ -20,14 +22,9 @@ class CartController extends Controller
         $user = $request->user();
         $cartItems = Cart::with('dish')->where('user_id', $user->id)->get();
 
-        $total = $cartItems->sum(function ($item) {
-            return $item->dish->price * $item->quantity;
-        });
+        $collection = new CartCollection($cartItems);
 
-        return $this->responder->send('Cart Content', [
-            'cart' => $cartItems,
-            'total' => $total,
-        ]);
+        return $this->responder->send('Cart Content', $collection->toArray($request));
     }
 
     public function count(Request $request)
@@ -55,10 +52,13 @@ class CartController extends Controller
         $cartItem->quantity += $quantity;
         $cartItem->save();
 
+        // Load the dish relationship
+        $cartItem->load('dish');
+
         return $this->responder->send(
             'Dish added to cart',
             [
-                'cart' => $cartItem,
+                'cart' => new CartResource($cartItem),
             ],
         );
     }
@@ -75,12 +75,15 @@ class CartController extends Controller
         $cartItem->quantity = $request->quantity;
         $cartItem->save();
 
+        // Load the dish relationship
+        $cartItem->load('dish');
+
         $total = $this->calculateTotal($userId);
 
         return $this->responder->send(
             'Cart updated',
             [
-                'cart' => $cartItem,
+                'cart' => new CartResource($cartItem),
                 'total' => $total,
             ]
         );
@@ -90,8 +93,11 @@ class CartController extends Controller
     {
         $userId = $request->user()->id;
 
-        $cartItem = Cart::where('user_id', $userId)->where('dish_id', $dish->id);
-        $cartItem->delete();
+        $cartItem = Cart::where('user_id', $userId)->where('dish_id', $dish->id)->first();
+
+        if ($cartItem) {
+            $cartItem->delete();
+        }
 
         $total = $this->calculateTotal($userId);
 

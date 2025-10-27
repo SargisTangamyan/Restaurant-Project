@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { sender } from '@/api/Sender.js';
+import { useAuthStore } from "@/stores/index.js";
 import {CART, CART_COUNT} from "@/constants/urls.js";
 
 export const useCartStore = defineStore('cart', {
@@ -18,20 +19,20 @@ export const useCartStore = defineStore('cart', {
     getTotal: (state) => +state.total,
     getIsLoaded: (state) => state.loaded,
     getChosenIds: (state) => Array.from(state.chosenIds),
+    isAuthenticated() {
+      const authStore = useAuthStore();
+      return authStore.isAuthenticated;
+    }
   },
 
   actions: {
-    async getOrFetchCart() {
-      if (this.getIsLoaded) {
-        return this.getCart;
-      } else {
-        const response = await this.fetchCart();
-        if (response.success)
-        {
-          return response.cartItems;
-        } else {
-          return []
-        }
+    _checkAuth() {
+      if (!this.isAuthenticated) {
+        return {
+          success: false,
+          errors: ['User not authenticated.'],
+          requiresAuth: true,
+        };
       }
     },
 
@@ -46,6 +47,9 @@ export const useCartStore = defineStore('cart', {
     },
 
     async fetchCount() {
+      const authCheck = this._checkAuth()
+      if (authCheck) return authCheck
+
       const response = await sender.sendRequest('GET', CART_COUNT);
       if (response.success) {
         this.count = response.data.count;
@@ -56,6 +60,9 @@ export const useCartStore = defineStore('cart', {
     },
 
     async fetchCart() {
+      const authCheck = this._checkAuth();
+      if (authCheck) return authCheck;
+
       const response = await sender.sendRequest('GET', CART);
       if (response.success) {
         const cartItems = response.data.cart || [];
@@ -75,13 +82,21 @@ export const useCartStore = defineStore('cart', {
       }
     },
 
-    async addToCart(id) {
+    async addToCart(id, quantity = 1) {
+      const authCheck = this._checkAuth()
+      if (authCheck) return authCheck
+
       this.isLoading = true;
-      const response = await sender.sendRequest('POST', `${CART}/${id}`);
+      const response = await sender.sendRequest('POST', `${CART}/${id}`, {quantity});
       if (response.success) {
         this.chosenIds.add(+id);
-        this.count += 1;
-        this.total += response.data?.price ?? 0;
+
+        const addedItem = response.data?.cart;
+        if (addedItem && addedItem.dish) {
+          this.count += 1;
+          this.total += (addedItem.dish.price * quantity);
+        }
+
         this.isLoading = false;
         return { success: true, message: 'Item added successfully.' };
       } else {
@@ -91,6 +106,9 @@ export const useCartStore = defineStore('cart', {
     },
 
     async updateQuantity(id, quantity) {
+      const authCheck = this._checkAuth()
+      if (authCheck) return authCheck
+
       this.isLoading = true;
       try {
         const response = await sender.sendRequest('PUT', `${CART}/${id}`, { quantity });
@@ -117,6 +135,9 @@ export const useCartStore = defineStore('cart', {
     },
 
     async removeFromCart(id) {
+      const authCheck = this._checkAuth()
+      if (authCheck) return authCheck
+
       this.isLoading = true;
       const response = await sender.sendRequest('DELETE', `${CART}/${id}`);
       if (response.success) {

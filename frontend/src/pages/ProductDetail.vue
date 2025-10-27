@@ -30,6 +30,10 @@ const dishStore = useDishStore();
 // REF
 const isLoading = ref(true);
 const dish = ref({});
+const count = ref(1);
+
+// METHODS
+const setCount = (value) => {count.value = value}
 
 // PROPS
 const props = defineProps({
@@ -115,7 +119,7 @@ onMounted(async () => {
           <!--        </div>-->
 
           <!-- Quantity + Add to Cart -->
-          <the-counter/>
+          <the-counter @counter-change="setCount"/>
           <add-to-cart-button :dish-id="dish.id" />
 
           <!-- Wishlist + Compare -->

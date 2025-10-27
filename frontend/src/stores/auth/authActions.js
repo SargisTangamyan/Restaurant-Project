@@ -88,7 +88,7 @@ export function createAuthActions(state) {
 
   const logout = async () => {
     try {
-      await sender.sendRequest('POST', LOGOUT_URL);
+      await sender.sendRequest('DELETE', LOGOUT_URL);
     } catch (error) {
       console.error('Logout error:', error);
     } finally {

@@ -68,6 +68,7 @@ const router = createRouter({
       path: '/cart',
       name: 'cart',
       component: () => import('@/pages/TheCart.vue'),
+      meta: { requiresAuth: true },
     },
     {
       path: '/payment/success',
