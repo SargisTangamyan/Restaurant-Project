@@ -1,0 +1,106 @@
+import { sender } from '@/api/Sender.js';
+import {
+  REGISTER_URL,
+  LOGIN_URL,
+  LOGOUT_URL,
+} from '@/constants/urls.js';
+
+export function createAuthActions(state) {
+  const register = async (email, password, passwordConfirm) => {
+    state.loading.value = true;
+    state.errors.value = {};
+
+    try {
+      const response = await sender.sendRequest('POST', REGISTER_URL, {
+        email,
+        password,
+        password_confirmation: passwordConfirm
+      });
+
+      if (response.data.token) {
+        state.token.value = response.data.token;
+        state.user.value = response.data.user;
+        localStorage.setItem('auth_token', response.data.token);
+
+        return { success: true, data: response.data };
+      }
+
+      return { success: false, errors: { overall: 'Registration failed' } };
+    } catch (error) {
+      const errors = {};
+
+      if (error.response?.data?.errors) {
+        // Laravel validation errors
+        Object.keys(error.response.data.errors).forEach(key => {
+          errors[key] = error.response.data.errors[key][0];
+        });
+      } else if (error.response?.data?.message) {
+        errors.overall = error.response.data.message;
+      } else {
+        errors.overall = 'Registration failed. Please try again.';
+      }
+
+      state.errors.value = error.response?.data?.errors || {};
+      return { success: false, errors };
+    } finally {
+      state.loading.value = false;
+    }
+  };
+
+  const login = async (credentials) => {
+    state.loading.value = true;
+    state.errors.value = {};
+
+    try {
+      const response = await sender.sendRequest('POST', LOGIN_URL, credentials);
+
+      if (response.data.token) {
+        state.token.value = response.data.token;
+        state.user.value = response.data.user;
+        localStorage.setItem('auth_token', response.data.token);
+
+        return { success: true, data: response.data };
+      }
+
+      return { success: false, errors: { overall: 'Login failed' } };
+    } catch (error) {
+      const errors = {};
+
+      if (error.response?.status === 401) {
+        errors.overall = 'Invalid email or password';
+      } else if (error.response?.data?.errors) {
+        // Laravel validation errors
+        Object.keys(error.response.data.errors).forEach(key => {
+          errors[key] = error.response.data.errors[key][0];
+        });
+      } else if (error.response?.data?.message) {
+        errors.overall = error.response.data.message;
+      } else {
+        errors.overall = 'Login failed. Please try again.';
+      }
+
+      state.errors.value = error.response?.data?.errors || {};
+      return { success: false, errors };
+    } finally {
+      state.loading.value = false;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await sender.sendRequest('POST', LOGOUT_URL);
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      state.user.value = null;
+      state.token.value = null;
+      localStorage.removeItem('auth_token');
+    }
+  };
+
+  return {
+    register,
+    login,
+    logout,
+  };
+}

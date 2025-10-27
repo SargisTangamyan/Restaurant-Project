@@ -10,6 +10,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StripePaymentController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\WishlistController;
@@ -39,6 +40,14 @@ Route::name('account.')->prefix('account')->group(function () {
 
 // Verify Email
 Route::get('/verify-email/{id}/{hash}', EmailVerificationController::class)->middleware(['signed'])->name('verification.verify');
+
+// Profile
+Route::middleware('auth:sanctum')->prefix('profile')->name('profile.')->group(function() {
+    Route::get('/', [ProfileController::class, 'show'])->name('show');
+    Route::put('/', [ProfileController::class, 'update'])->name('update');
+    Route::post('/image', [ProfileController::class, 'uploadImage'])->name('upload_image');
+    Route::delete('/image', [ProfileController::class, 'deleteImage'])->name('upload_image');
+});
 
 // Category Resource
 Route::get('/categories/search', [CategoryController::class, 'search'])->name('categories.search');

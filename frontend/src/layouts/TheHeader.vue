@@ -132,7 +132,7 @@ const useMenuLogic = function () {
 }
 
 const logoutUser = function () {
-  authStore.logoutUser();
+  authStore.logout();
 }
 
 // USING THE LOGIC
@@ -340,7 +340,7 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
                       <div class="dropdown-menu onhover-div" v-if="showAccount" @mouseenter="!isTouch && openAccount()" @mouseleave="!isTouch && closeAccount()">
                         <div>
 
-                          <ul v-if="!authStore.getIsLoggedIn" class="user-box-name">
+                          <ul v-if="!authStore.isAuthenticated" class="user-box-name">
                             <li class="product-box-contain">
                               <router-link class="dropdown-item" :to="{name: 'login'}">Log In</router-link>
                             </li>

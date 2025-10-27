@@ -25,6 +25,9 @@
   .bg-darkGreen {
     @apply bg-[#0B8C74];
   }
+  .bg-cgreen:hover {
+    @apply bg-[#0B8C74];
+  }
 
   /* Discount Tag */
   .discount-box {

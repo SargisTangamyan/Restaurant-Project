@@ -51,7 +51,7 @@ const {value: agree} = useField('agree');
 // METHODS
 const registerUser = handleSubmit(async ({email, password, passwordConfirm}) => {
   isLoading.value = true;
-  const result = await user.registerUser(email, password, passwordConfirm);
+  const result = await user.register(email, password, passwordConfirm);
   console.log(result);
   const serverErrors = {};
   if (result.success) {

@@ -44,7 +44,7 @@ const loginUser = handleSubmit(async (credentials) => {
   isLoading.value = true;
 
   // Call your Pinia store action
-  const result = await user.loginUser(credentials.email, credentials.password);
+  const result = await user.login({email: credentials.email, password: credentials.password});
 
   if (result.success) {
     // Redirect to home/dashboard

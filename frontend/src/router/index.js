@@ -1,3 +1,4 @@
+
 // ROUTER
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -87,6 +88,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
       children: [
         {
+          path: 'profile',
+          name: 'profile',
+          component: () => import('@/pages/profile/MainProfile.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
           path: 'categories',
           name: 'categories',
           component: () => import('@/pages/profile/seller/CategoryBox.vue'),
@@ -130,31 +137,47 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, _, next) => {
-  // USING STORE
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
 
-  // Check if user is authenticated
-  const isLoggedIn = authStore.isLoggedIn ?? authStore.getIsLoggedIn;
+  // Initialize auth if not already done and token exists
+  if (authStore.token && !authStore.user) {
+    try {
+      await authStore.initAuth();
+    } catch (error) {
+      console.error('Failed to initialize auth:', error);
+    }
+  }
 
-  // Check if user is admin
-  const isAdmin = authStore.isAdmin ?? (authStore.user?.role === 'admin');
+  const isLoggedIn = authStore.isAuthenticated;
+  const isAdmin = authStore.isAdmin;
+
+  // Debug logging
+  console.log('Navigation Guard:', {
+    to: to.name,
+    isLoggedIn,
+    isAdmin,
+    user: authStore.user,
+    token: authStore.token ? 'exists' : 'missing'
+  });
 
   // Redirect authenticated users away from auth pages
   if (to.meta.requiresUnauth && isLoggedIn) {
-    next('/home');
+    return next('/home');
   }
+
   // Redirect unauthenticated users to login
-  else if (to.meta.requiresAuth && !isLoggedIn) {
-    next('/account/login');
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    return next('/account/login');
   }
+
   // Redirect non-admin users away from admin pages
-  else if (to.meta.requiresAdmin && !isAdmin) {
-    next('/home');
+  if (to.meta.requiresAdmin && !isAdmin) {
+    console.warn('Access denied: Admin privileges required');
+    return next('/home');
   }
-  else {
-    next();
-  }
+
+  next();
 })
 
 export default router

@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class DishResource extends JsonResource
 {
@@ -28,7 +29,7 @@ class DishResource extends JsonResource
             'description' => $this->description,
             'price' => $this->price,
             'image' => $this->image,
-            'thumbnail' => $this->thumbnail,
+            'thumbnail' => $this->thumbnail ? Storage::url($this->thumbnail) : null,
             'category' => new CategoryResource($this->category),
             $this->mergeWhen($this->showIngredients, [
                 'ingredients' => IngredientResource::collection($this->ingredients),

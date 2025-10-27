@@ -22,7 +22,7 @@ export const DISHES = `${BASE_URL}/dishes`;
 export const DISHES_SEARCH = `${BASE_URL}/dishes/search`;
 
 // IMAGES
-export const STORAGE = 'http://localhost:8000/storage'
+export const STORAGE = 'http://localhost:8000/'
 
 // CART
 export const CART = `${BASE_URL}/cart`;
@@ -38,3 +38,12 @@ export const ORDERS = `${BASE_URL}/orders`;
 export const ADMIN_ORDERS = `${BASE_URL}/admin/orders`;
 export const ORDER_CANCEL = (id) => `${BASE_URL}/orders/${id}/cancel`;
 export const ORDER_STATUS_UPDATE = (id) => `${BASE_URL}/admin/orders/${id}/status`;
+
+// PROFILE
+export const PROFILE_GET = `${BASE_URL}/profile`;
+export const PROFILE_UPDATE = `${BASE_URL}/profile`;
+export const PROFILE_IMAGE_UPLOAD = `${BASE_URL}/profile/image`;
+export const PROFILE_IMAGE_DELETE = `${BASE_URL}/profile/image`;
+export const PROFILE_PASSWORD_UPDATE = `${BASE_URL}/account/change-password`;
+export const PROFILE_DELETE = `${BASE_URL}/account/delete-account`;
+

@@ -1,104 +1,61 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia';
+import { createAuthState } from './state.js';
+import { createAuthActions } from './authActions.js';
+import { createProfileActions } from './profileActions.js';
 
-// HELPERS
-import {sender} from '@/api/Sender.js'
+export const useAuthStore = defineStore('auth', () => {
+  // Initialize state
+  const state = createAuthState();
 
-// URLS
-import {REGISTER_URL, REDIRECT_URL, LOGIN_URL, LOGOUT_URL} from '@/constants/urls.js'
+  // Initialize auth actions
+  const authActions = createAuthActions(state);
 
-export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    token: null,
-    user: null, // { id, username, email, role, image, emailVerified }
-  }),
+  // Initialize profile actions (pass logout from authActions)
+  const profileActions = createProfileActions(state, authActions.logout);
 
-  getters: {
-    // Backward compatible getters
-    getIsLoggedIn(state) {
-      return !!state.token;
-    },
-    getUserToken(state) {
-      return state.token;
-    },
-    getUser(state) {
-      return state.user ?? {};
-    },
-    // Convenience getters
-    isLoggedIn(state) {
-      return !!state.token;
-    },
-    isAdmin(state) {
-      return state.user?.role === 'admin';
-    },
-  },
+  // Utility functions
+  const clearErrors = () => {
+    state.errors.value = {};
+  };
 
-  actions: {
-    async registerUser(email, password, passwordConfirm) {
+  const initAuth = async () => {
+    if (state.token.value) {
       try {
-        const response = await fetch(REGISTER_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify({
-            email,
-            password,
-            password_confirmation: passwordConfirm,
-            redirect_url: REDIRECT_URL,
-          }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          return {success: false, errors: errorData.errors};
-        }
-
-        const result = await response.json();
-        this.token = result.data?.token ?? null;
-        // user may be null until verification/login
-        return {success: true};
-
+        await profileActions.loadProfile();
       } catch (error) {
-        console.log(error.message);
-        return { success: false, errors: { overall: [error.message] } };
+        console.error('Failed to initialize auth:', error);
       }
-    },
-
-    async verifyEmail(url){
-      return await sender.sendGetRequest(url);
-    },
-
-    async loginUser(email, password) {
-      const response = await sender.sendRequest('POST', LOGIN_URL, {email, password});
-      if (response.success) {
-        const data = response.data;
-        this.token = data.token;
-        this.user = {
-          id: data.user.id,
-          username: data.user.username,
-          email: data.user.email,
-          role: data.user.role,
-          image: data.user.image ?? null,
-          emailVerified: data.user.emailVerified ?? data.user.email_verified ?? null,
-        };
-        return {success: true};
-      }
-      return {
-        success: false,
-        errors: {
-          overall: response.errors
-        }
-      };
-    },
-
-    async logoutUser() {
-      const response = await sender.sendRequest('DELETE', LOGOUT_URL);
-      console.log(response);
-      this.token = null;
-      this.user = null;
     }
-  },
+  };
 
-  persist: true,
+  // Return all state, computed, and actions
+  return {
+    // State
+    user: state.user,
+    token: state.token,
+    loading: state.loading,
+    errors: state.errors,
+
+    // Computed
+    isAuthenticated: state.isAuthenticated,
+    isAdmin: state.isAdmin,
+    isUser: state.isUser,
+
+    // Auth Actions
+    register: authActions.register,
+    login: authActions.login,
+    logout: authActions.logout,
+
+    // Profile Actions
+    loadProfile: profileActions.loadProfile,
+    updateProfile: profileActions.updateProfile,
+    uploadProfileImage: profileActions.uploadProfileImage,
+    deleteProfileImage: profileActions.deleteProfileImage,
+    updatePassword: profileActions.updatePassword,
+    deleteAccount: profileActions.deleteAccount,
+
+    // Utilities
+    clearErrors,
+    initAuth,
+  };
 });

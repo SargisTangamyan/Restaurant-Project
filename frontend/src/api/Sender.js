@@ -11,7 +11,7 @@ class Sender {
   #trySettingToken() {
     if (this.#tokenSet) return;
     const authStore = useAuthStore();
-    const token = authStore.getUserToken;
+    const token = authStore.token;
     if (token) {
       this.#headers['Authorization'] = `Bearer ${token}`;
       this.#tokenSet = true;

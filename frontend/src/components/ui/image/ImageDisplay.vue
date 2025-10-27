@@ -10,13 +10,18 @@ defineProps({
   alt: {
     required: true,
     type: String,
+  },
+  inner: {
+    required: false,
+    type: Boolean,
+    default: false,
   }
 })
 </script>
 
 <template>
   <img
-    :src="`${STORAGE}/${url}`"
+    :src="inner ? url : `${STORAGE}/${url}`"
     :alt="alt"
     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
   />

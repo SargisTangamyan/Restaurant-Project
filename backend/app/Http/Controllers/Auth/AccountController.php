@@ -44,7 +44,9 @@ class AccountController extends Controller
         $user = $request->user();
 
         if (!$this->validateCredentials($user, $request->password)) {
-            return $this->responder->send('The password is incorrect.', status: ResponseStatus::UNPROCESSABLE->value);
+            throw ValidationException::withMessages([
+                'password' => ['The current password is incorrect.'],
+            ]);
         }
 
         // Logging the user out
@@ -83,9 +85,9 @@ class AccountController extends Controller
             ]);
         }
 
-        $this->changeUserPassword($user, $request->new_password);
+        $this->changeUserPassword($user, $request->password);
 
-        // Log the user out from all teh device except the current one
+        // Log the user out from all the devices except the current one
         $this->logoutUser($user, true, true);
 
         return $this->responder->send('Password changed successfully.');
