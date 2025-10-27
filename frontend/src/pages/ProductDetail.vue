@@ -13,7 +13,7 @@ import TheLoader from "@/components/ui/TheLoader.vue";
 import AddToCartButton from "@/components/cart/AddToCartButton.vue";
 
 // VUE
-import {ref, defineProps, onMounted} from 'vue';
+import {ref, defineProps, onMounted, computed} from 'vue';
 
 // ROUTER
 import {useRouter} from "vue-router";
@@ -29,11 +29,17 @@ const dishStore = useDishStore();
 
 // REF
 const isLoading = ref(true);
-const dish = ref({});
+const dish = ref(null);
 const count = ref(1);
+const fetchError = ref(false);
+
+// COMPUTED
+const isDishLoaded = computed(() => dish.value !== null && !fetchError.value);
 
 // METHODS
-const setCount = (value) => {count.value = value}
+const setCount = (value) => {
+  count.value = value
+}
 
 // PROPS
 const props = defineProps({
@@ -45,15 +51,30 @@ const props = defineProps({
 
 // MOUNTING
 onMounted(async () => {
-  if (!cartStore.getIsLoaded) {
-    await cartStore.fetchCart();
-  }
+  try {
+    // Fetch cart only if not loaded (non-blocking)
+    if (!cartStore.getIsLoaded) {
+      cartStore.fetchCart().catch(err => {
+        // Don't block page load if cart fetch fails
+        console.warn('Failed to load cart:', err)
+      })
+    }
 
-  const res = await dishStore.fetchDishById(props.id);
-  if (res.success) {
-    dish.value = res.data;
-    isLoading.value = false;
-  } else {
+    // Fetch dish details
+    const res = await dishStore.fetchDishById(props.id);
+
+    if (res.success && res.data) {
+      dish.value = res.data;
+      isLoading.value = false;
+    } else {
+      // Dish not found or error occurred
+      fetchError.value = true;
+      isLoading.value = false;
+      await router.replace({name: 'NotFound'});
+    }
+  } catch (error) {
+    console.error('Error loading dish:', error);
+    fetchError.value = true;
     isLoading.value = false;
     await router.replace({name: 'NotFound'});
   }
@@ -63,7 +84,7 @@ onMounted(async () => {
 
 <template>
   <the-loader v-if="isLoading"/>
-  <div v-else>
+  <div v-else-if="isDishLoaded && dish">
     <page-name :p-name="dish.name"/>
     <the-box>
 
@@ -85,8 +106,11 @@ onMounted(async () => {
           <!-- Product Title -->
           <div>
             <h2 class="text-3xl font-bold text-gray-800">{{ dish.name }}</h2>
-            <div class="mb-2">
-              <span class="font-bold">Category:</span> <span class="inline-block pl-1 text-cgreen text-md font-bold hover:underline cursor-pointer">{{dish.category.name}}</span>
+            <div class="mb-2" v-if="dish.category">
+              <span class="font-bold">Category:</span>
+              <span class="inline-block pl-1 text-cgreen text-md font-bold hover:underline cursor-pointer">
+                {{ dish.category.name }}
+              </span>
             </div>
             <div class="flex flex-wrap items-center gap-3">
               <h3 class="text-2xl font-semibold text-cgreen">${{ dish.price }}</h3>
@@ -106,21 +130,12 @@ onMounted(async () => {
             {{ dish.description }}
           </p>
 
-          <!-- Weight Options -->
-          <!--        <div>-->
-          <!--          <h4 class="text-lg font-semibold mb-2">Weight</h4>-->
-          <!--          <ul class="flex flex-wrap gap-2">-->
-          <!--            <li><a href="#" class="px-3 py-1 bg-cgreen text-white rounded-full text-sm font-medium">1/2 KG</a></li>-->
-          <!--            <li><a href="#" class="px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-100">1 KG</a></li>-->
-          <!--            <li><a href="#" class="px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-100">1.5 KG</a></li>-->
-          <!--            <li><a href="#" class="px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-100">Red Roses</a></li>-->
-          <!--            <li><a href="#" class="px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-100">With Pink Roses</a></li>-->
-          <!--          </ul>-->
-          <!--        </div>-->
-
           <!-- Quantity + Add to Cart -->
           <the-counter @counter-change="setCount"/>
-          <add-to-cart-button :dish-id="dish.id" :quantity="count" />
+          <add-to-cart-button
+            :dish-id="dish.id"
+            :quantity="count"
+          />
 
           <!-- Wishlist + Compare -->
           <div class="flex gap-4 text-sm font-medium">
@@ -134,21 +149,19 @@ onMounted(async () => {
             </a>
           </div>
 
-          <ingredient-list :ingredients="dish.ingredients"/>
+          <ingredient-list v-if="dish.ingredients" :ingredients="dish.ingredients"/>
         </div>
-
 
         <!-- Last Column -->
         <trending-list/>
       </div>
 
-
       <!-- ✅ Review Section -->
       <review-container/>
     </the-box>
   </div>
+  <!-- Fallback if redirect fails -->
+  <div v-else class="flex items-center justify-center min-h-screen">
+    <p class="text-gray-500">Redirecting...</p>
+  </div>
 </template>
-
-<style scoped>
-
-</style>

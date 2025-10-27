@@ -64,7 +64,7 @@ export const useDishStore = defineStore('dish', {
         this.dishes = response.data.data
         return {success: true, data: response.data.data}
       }
-      return false;
+      return {success: false, message: 'No dish found'};
     },
 
     async addDish(dish) {
