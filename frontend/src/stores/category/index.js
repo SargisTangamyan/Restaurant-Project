@@ -8,15 +8,27 @@ const paginatedCategories = function (catList, currentPage, perPage) {
 
 export const useCategoryStore = defineStore('category', {
   state: () => ({
-    flatCategories: null,
+    flatCategories: [],
+    treeCategories: [],
     parentCategories: {},
-    pagination: {},
+    pagination: {
+      current_page: 1,
+      per_page: 10,
+      total: 0,
+      last_page: 1
+    },
     loaded: false,
+    loading: false,
+    error: null,
   }),
 
   getters: {
     getCategories(state) {
       return state.flatCategories || [];
+    },
+
+    getTreeCategories(state) {
+      return state.treeCategories || [];
     },
 
     getParentCategories(state) {
@@ -25,89 +37,199 @@ export const useCategoryStore = defineStore('category', {
 
     getPagination(state) {
       return state.pagination;
+    },
+
+    isLoading(state) {
+      return state.loading;
+    },
+
+    hasError(state) {
+      return state.error !== null;
     }
 
   },
 
   actions: {
     async fetchCategories(currentPage = 1, perPage = 10, force = false) {
-      this.pagination['current_page'] = currentPage;
-      this.pagination['per_page'] = perPage;
+      this.pagination.current_page = currentPage;
+      this.pagination.per_page = perPage;
+
       if (this.loaded && !force) {
-        return { success: true, categories: paginatedCategories(this.flatCategories, currentPage, perPage) };
+        return {
+          success: true,
+          categories: this.getPaginatedCategories(currentPage, perPage) };
       }
-      console.log('fetching')
 
-      const res = await sender.sendRequest('GET', `${CATEGORY_ALL}?tree=true`)
+      this.loading = true;
+      this.error = null;
 
-      if (res.success) {
-        const categories = res.data.categories
+      try {
+        const res = await sender.sendRequest('GET', `${CATEGORY_ALL}?tree=true`)
 
-        // Reset state
-        this.flatCategories = []
-        this.parentCategories = {}
+        if (res.success) {
+          const categories = res.data.categories;
+          // Reset state
+          this.flatCategories = []
+          this.parentCategories = {};
+          this.treeCategories = categories;
 
-        // Recursive function to flatten tree
-        const flatten = (catList) => {
-          catList.forEach(cat => {
-            this.flatCategories.push(cat)           // add to flat list
-            this.parentCategories[cat.id] = cat.name // store parent id
-            if (cat.children && cat.children.length > 0) {
-              flatten(cat.children, cat.id)          // recurse
-            }
-          })
+          this.flattenCategories(categories);
+
+          const total = this.flatCategories.length;
+          this.pagination.total = total;
+          this.pagination.last_page = Math.ceil(total / perPage);
+
+          this.loaded = true
+
+          return {
+            success: true,
+            categories: this.getPaginatedCategories(currentPage, perPage)
+          };
+        } else {
+          this.error = 'Failed to fetch categories';
+          return { success: false, message: this.error };
         }
-
-        flatten(categories)
-
-        // Getting pagination
-        const total = this.flatCategories.length;
-        this.pagination['total'] = total
-        this.pagination['last_page'] = Math.ceil(total / perPage);
-
-
-        this.loaded = true
-
-        return { success: true, categories: paginatedCategories(this.flatCategories, currentPage, perPage) }
-      } else {
-        return { success: false, message: 'Failed to fetch categories' }
+      } catch (error) {
+        this.error = error.message || 'Network error';
+        return { success: false, message: this.error };
+      } finally {
+        this.loading = false;
       }
     },
 
+    flattenCategories(categories, parentName = null) {
+      categories.forEach(cat => {
+        const categoryData = {
+          ...cat,
+          parent_name: parentName
+        };
+
+        this.flatCategories.push(categoryData);
+        this.parentCategories[cat.id] = cat.name;
+
+        if (cat.children && cat.children.length > 0) {
+          this.flattenCategories(cat.children, cat.name);
+        }
+      });
+    },
+
+    getPaginatedCategories(currentPage, perPage) {
+      const start = (currentPage - 1) * perPage;
+      const end = currentPage * perPage;
+      return this.flatCategories.slice(start, end);
+    },
+
     async getCategoryById(id) {
-      const res = await sender.sendRequest('GET', `${CATEGORY_ALL}/${id}`);
-      if (res.success) {
-        return { success: true, categories: res.data.category };
-      } else {
-        return { success: false, error: res.errors }
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const res = await sender.sendRequest('GET', `${CATEGORY_ALL}/${id}`);
+
+        if (res.success) {
+          return { success: true, category: res.data.category };
+        } else {
+          return { success: false, error: res.errors };
+        }
+      } catch (error) {
+        return { success: false, error: error.message };
+      } finally {
+        this.loading = false;
       }
     },
 
     async searchCategories(pattern)
     {
-      const res = await sender.sendRequest('GET', `${CATEGORY_SEARCH}?query=${pattern}`);
-      if (res.success) {
-        return { success: true, foundCategories: res.data.categories}
+      if (!pattern || pattern.trim() === '') {
+        return { success: false, message: 'Search query is empty' };
       }
-      return { success: false, message: 'Failed to fetch categories' }
+
+      try {
+        const res = await sender.sendRequest('GET', `${CATEGORY_SEARCH}?query=${encodeURIComponent(pattern)}`);
+
+        if (res.success) {
+          return { success: true, foundCategories: res.data.categories };
+        }
+
+        return { success: false, message: res.message || 'No categories found' };
+      } catch (error) {
+        return { success: false, message: error.message || 'Search failed' };
+      }
     },
 
     async addCategory(payload) {
-      const res = await sender.sendRequest('POST', CATEGORY_ALL, payload);
-      if (res.success) {
-        return { success: true, message: 'Category added successfully.' };
-      } else {
-        return { success: false, errors: res.errors }
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const res = await sender.sendRequest('POST', CATEGORY_ALL, payload);
+
+        if (res.success) {
+          // Invalidate cache to force refresh
+          this.loaded = false;
+          return { success: true, message: 'Category added successfully.', category: res.data.category };
+        } else {
+          return { success: false, errors: res.errors };
+        }
+      } catch (error) {
+        return { success: false, errors: { general: [error.message] } };
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async updateCategory(id, payload) {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const res = await sender.sendRequest('PUT', `${CATEGORY_ALL}/${id}`, payload);
+
+        if (res.success) {
+          this.loaded = false; // Force refresh
+          return { success: true, message: 'Category updated successfully.', category: res.data.category };
+        } else {
+          return { success: false, errors: res.errors };
+        }
+      } catch (error) {
+        return { success: false, errors: { general: [error.message] } };
+      } finally {
+        this.loading = false;
       }
     },
 
     async deleteCategory(id) {
-      const res = await sender.sendRequest('DELETE', `${CATEGORY_ALL}/${id}`);
-      if (res.success) {
-        return { success: true, message: 'Category deleted successfully.' };
-      } else {
-        return { success: false, errors: 'Failed to delete category' }
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const res = await sender.sendRequest('DELETE', `${CATEGORY_ALL}/${id}`);
+        if (res.success) {
+          this.loaded = false; // Force refresh
+          return { success: true, message: 'Category deleted successfully.' };
+        } else {
+          return { success: false, error: res.errors || 'Failed to delete category' };
+        }
+      } catch (error) {
+        return { success: false, error: error.errors || 'Delete failed' };
+      } finally {
+        this.loading = false;
       }
+    },
+
+    clearState() {
+      this.flatCategories = [];
+      this.treeCategories = [];
+      this.parentCategories = {};
+      this.pagination = {
+        current_page: 1,
+        per_page: 10,
+        total: 0,
+        last_page: 1
+      };
+      this.loaded = false;
+      this.loading = false;
+      this.error = null;
     }
   },
 })

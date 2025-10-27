@@ -7,12 +7,16 @@ use App\Enums\ResponseStatus;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use App\Services\CategoryService;
 use Illuminate\Http\Request;
 use function Laravel\Prompts\error;
 
 class CategoryController extends Controller
 {
-    public function __construct(ResponseStrategy $responder)
+    public function __construct(
+        ResponseStrategy $responder,
+        private CategoryService $categoryService
+    )
     {
         parent::__construct($responder);
         $this->authorizeResource(Category::class, 'category');
@@ -23,11 +27,9 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        // Return full tree if ?tree=true
+        // Return the full tree if ?tree=true
         if ($request->boolean('tree')) {
-            $categories = Category::whereNull('parent_id')
-                ->with('childrenRecursive')
-                ->get();
+            $categories = $this->categoryService->getCategoryTree();
 
             return $this->responder->send(
                 'Full category tree.',
@@ -57,19 +59,22 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        $data = $request->only(['name', 'parent_id']);
+        try {
+            $category = $this->categoryService->createCategory(
+                $request->only(['name', 'parent_id'])
+            );
 
-        $category = new Category(['name' => strtolower($data['name'])]);
-        $category->parent_id = $data['parent_id'];
-        $category->save();
-
-        return $this->responder->send(
-            'New category created successfully.',
-            [
-                'categories' => new CategoryResource($category->load('childrenRecursive'))
-            ],
-            ResponseStatus::CREATED->value
-        );
+            return $this->responder->send(
+                'New category created successfully.',
+                ['category' => new CategoryResource($category)],
+                ResponseStatus::CREATED->value
+            );
+        } catch (\Exception $e) {
+            return $this->responder->send(
+                $e->getMessage(),
+                status: ResponseStatus::UNPROCESSABLE->value
+            );
+        }
     }
 
     public function search(Request $request)
@@ -84,19 +89,29 @@ class CategoryController extends Controller
             );
         }
 
-        $categories = Category::where('name', 'LIKE', "%{$query}%")->orderBy('name')->paginate($request->per_page ?? 10);
+        $categories = $this->categoryService->searchCategories(
+            $query,
+            $request->per_page ?? 10
+        );
 
         if ($categories->isEmpty()) {
             return $this->responder->send(
                 'No categories found',
-                ['error' => 'No categories found'],
-                status: ResponseStatus::BAD_REQUEST->value
+                ['categories' => []],
             );
         }
 
         return $this->responder->send(
             'Categories found',
-            ['categories' => CategoryResource::collection($categories)]
+            [
+                'categories' => CategoryResource::collection($categories),
+                'pagination' => [
+                    'current_page' => $categories->currentPage(),
+                    'last_page' => $categories->lastPage(),
+                    'per_page' => $categories->perPage(),
+                    'total' => $categories->total(),
+                ]
+            ]
         );
     }
 
@@ -119,13 +134,22 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, Category $category)
     {
-        $data = $request->only(['name', 'parent_id']);
-        $category->update($data);
+        try {
+            $category = $this->categoryService->updateCategory(
+                $category,
+                $request->only(['name', 'parent_id'])
+            );
 
-        return $this->responder->send(
-            'Category updated successfully.',
-            ['category' => new CategoryResource($category->load('childrenRecursive'))]
-        );
+            return $this->responder->send(
+                'Category updated successfully.',
+                ['category' => new CategoryResource($category)]
+            );
+        } catch (\Exception $e) {
+            return $this->responder->send(
+                $e->getMessage(),
+                status: ResponseStatus::UNPROCESSABLE->value
+            );
+        }
     }
 
     /**
@@ -133,17 +157,17 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        if ($category->children()->exists()) {
+        try {
+            $this->categoryService->deleteCategory($category);
+
             return $this->responder->send(
-                'Cannot delete category with subcategories.',
+                'Category deleted successfully.'
+            );
+        } catch (\Exception $e) {
+            return $this->responder->send(
+                $e->getMessage(),
                 status: ResponseStatus::UNPROCESSABLE->value
             );
         }
-
-        $category->delete();
-
-        return $this->responder->send(
-            'Category deleted successfully.'
-        );
     }
 }
