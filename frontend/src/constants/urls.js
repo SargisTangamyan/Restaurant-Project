@@ -20,6 +20,7 @@ export const INGREDIENT_SEARCH = `${BASE_URL}/ingredients/search`;
 // DISHES
 export const DISHES = `${BASE_URL}/dishes`;
 export const DISHES_SEARCH = `${BASE_URL}/dishes/search`;
+export const DISHES_RELATED = (id) => `${BASE_URL}/dishes/${id}/related`;
 
 // IMAGES
 export const STORAGE = 'http://localhost:8000/'

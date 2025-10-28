@@ -112,6 +112,25 @@ class DishController extends Controller
         return (new DishResource($dish))->withIngredients();
     }
 
+    public function related(Dish $dish, Request $request)
+    {
+        $limit = $request->query('limit', 5);
+
+        $relatedDishes = Dish::where('category_id', $dish->category_id)
+            ->where('id', '!=', $dish->id)
+            ->latest()
+            ->limit($limit)
+            ->get();
+
+        return $this->responder->send(
+            'Related dishes fetched successfully',
+            [
+                'dishes' => new DishCollection($relatedDishes),
+                'count' => $relatedDishes->count(),
+            ]
+        );
+    }
+
     /**
      * Update the specified resource in storage.
      */

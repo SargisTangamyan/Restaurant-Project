@@ -1,11 +1,12 @@
 import {defineStore} from 'pinia'
 import {sender} from '@/api/Sender.js'
-import {DISHES, DISHES_SEARCH} from "@/constants/urls.js";
+import {DISHES, DISHES_RELATED, DISHES_SEARCH} from "@/constants/urls.js";
 
 export const useDishStore = defineStore('dish', {
   state: () => ({
     dishes: null,
     pagination: null,
+    relatedDishes: [],
   }),
 
   getters: {
@@ -13,16 +14,10 @@ export const useDishStore = defineStore('dish', {
       return state.dishes
     },
     getPagination: state => state.pagination,
+    getRelatedDishes: state => state.relatedDishes,
   },
 
   actions: {
-    async getOrFetchDishes() {
-      if (!this.getDishes)
-      {
-        await this.fetchDishes()
-      }
-    },
-
     async fetchDishes(filters = {}) {
       let query = '';
       if (Object.keys(filters).length > 0)
@@ -89,6 +84,28 @@ export const useDishStore = defineStore('dish', {
       } else {
         return {success: false, errors: response.errors};
       }
-    }
+    },
+
+    async fetchRelatedDishes(dishId, limit = 5) {
+      try {
+        const response = await sender.sendRequest('GET', DISHES_RELATED(dishId));
+
+        if (response.success) {
+          this.relatedDishes = response.data.dishes || [];
+          return {
+            success: true,
+            dishes: this.relatedDishes,
+            count: response.data.count || 0,
+          }
+        }
+        return {success: false, errors: response.errors};
+      } catch (error) {
+        return {success: false, errors: error.message};
+      }
+    },
+
+    clearRelatedDishes() {
+      this.relatedDishes = [];
+    },
   }
 })

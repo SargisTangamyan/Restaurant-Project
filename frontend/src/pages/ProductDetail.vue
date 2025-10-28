@@ -13,7 +13,7 @@ import TheLoader from "@/components/ui/TheLoader.vue";
 import AddToCartButton from "@/components/cart/AddToCartButton.vue";
 
 // VUE
-import {ref, defineProps, onMounted, computed} from 'vue';
+import {ref, defineProps, onMounted, computed, watch} from 'vue';
 
 // ROUTER
 import {useRouter} from "vue-router";
@@ -41,6 +41,22 @@ const setCount = (value) => {
   count.value = value
 }
 
+const fetchDish = async (id) => {
+  isLoading.value = true;
+  // Fetch dish details
+  const res = await dishStore.fetchDishById(id);
+
+  if (res.success && res.data) {
+    dish.value = res.data;
+    isLoading.value = false;
+  } else {
+    // Dish not found or error occurred
+    fetchError.value = true;
+    isLoading.value = false;
+    await router.replace({name: 'NotFound'});
+  }
+}
+
 // PROPS
 const props = defineProps({
   id: {
@@ -48,6 +64,9 @@ const props = defineProps({
     type: String,
   }
 })
+
+// WATCH
+watch(() => props.id, async (newId) => {await fetchDish(newId);})
 
 // MOUNTING
 onMounted(async () => {
@@ -61,17 +80,7 @@ onMounted(async () => {
     }
 
     // Fetch dish details
-    const res = await dishStore.fetchDishById(props.id);
-
-    if (res.success && res.data) {
-      dish.value = res.data;
-      isLoading.value = false;
-    } else {
-      // Dish not found or error occurred
-      fetchError.value = true;
-      isLoading.value = false;
-      await router.replace({name: 'NotFound'});
-    }
+    await fetchDish(props.id);
   } catch (error) {
     console.error('Error loading dish:', error);
     fetchError.value = true;
@@ -153,7 +162,7 @@ onMounted(async () => {
         </div>
 
         <!-- Last Column -->
-        <trending-list/>
+        <trending-list :dish-id="dish.id"/>
       </div>
 
       <!-- ✅ Review Section -->

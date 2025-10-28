@@ -47,7 +47,7 @@
               class="flex gap-4 p-4 border rounded-lg bg-white hover:shadow-sm transition"
             >
               <div class="w-20 h-20 object-cover rounded">
-                <image-display :url="item.dish.thumbnail" :alt="item.dish.name" />
+                <image-display :image-path="item.dish.thumbnail" :alt="item.dish.name" />
               </div>
               <div class="flex-1">
                 <h4 class="font-semibold">{{ item.dish.name }}</h4>
