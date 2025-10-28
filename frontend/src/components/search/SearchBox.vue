@@ -1,16 +1,17 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useDishStore } from '@/stores/index.js'
 import { useQueryWriter } from '@/composables/useQueryWriter.js'
 
 import debounce from 'lodash/debounce'
 
 const route = useRoute()
+const router = useRouter()
 const dishStore = useDishStore()
 
 // Use composable for managing search query in the route
-const { query:search, writeQuery, clearAllExceptCurrent } = useQueryWriter({ queryParam: 'search' })
+const { query: search } = useQueryWriter({ queryParam: 'search' })
 
 // Refs
 const results = ref([])
@@ -47,24 +48,28 @@ const searchDishes = debounce(async () => {
   loading.value = false
 }, 300);
 
-// --- Fetch dishes (triggered by Enter or Search button)
-const fetchDishes = async (clearOtherParams = false) => {
+// --- Navigate to menu page with search query
+const navigateToMenuWithSearch = async () => {
   const queryValue = search.value.trim()
+
   if (!queryValue) {
-    results.value = []
-    showDropdown.value = false
-    writeQuery('') // update route
+    // If empty, just navigate to menu without query
+    if (route.name !== 'menu') {
+      await router.push({ name: 'menu' })
+    }
     return
   }
 
-  if (clearOtherParams) {
-    await clearAllExceptCurrent()
-  }
-
-  await dishStore.fetchDishes({ search: queryValue })
+  // Always navigate to menu page with search query
+  await router.push({
+    name: 'dishes',
+    query: {
+      search: queryValue
+    }
+  })
 }
 
-// --- Clear search input and dropdown (without touching route)
+// --- Clear search input and dropdown
 const clearSearch = () => {
   search.value = ''
   results.value = []
@@ -72,10 +77,10 @@ const clearSearch = () => {
 }
 
 // --- Handle Enter key
-const handleEnter = (event) => {
+const handleEnter = async (event) => {
   event.preventDefault()
-  fetchDishes(true)
-  clearSearch();
+  await navigateToMenuWithSearch()
+  clearSearch()
 }
 
 // --- Hide dropdown after blur
@@ -84,14 +89,12 @@ const hideDropdown = () => {
 }
 
 // --- Select a dish from dropdown
-const selectDish = (dishName) => {
+const selectDish = async (dishName) => {
   search.value = dishName
-  fetchDishes(true) // keeps search query in route
+  await navigateToMenuWithSearch()
   clearSearch()
 }
 </script>
-
-
 
 <template>
   <div class="relative w-full">
@@ -109,7 +112,7 @@ const selectDish = (dishName) => {
       <button
         class="w-16 bg-orange-400 flex items-center justify-center cursor-pointer hover:bg-orange-600 transition duration-150"
         type="button"
-        @click="fetchDishes(true)"
+        @click="navigateToMenuWithSearch"
       >
         <svg class="h-6 w-6 fill-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
           <path d="M448 272C448 174.8 369.2 96 272 96C174.8 96 96 174.8 96 272C96 369.2 174.8 448 272 448C369.2 448 448 369.2 448 272zM407.3 430C371 461.2 323.7 480 272 480C157.1 480 64 386.9 64 272C64 157.1 157.1 64 272 64C386.9 64 480 157.1 480 272C480 323.7 461.2 371 430 407.3L571.3 548.7C577.5 554.9 577.5 565.1 571.3 571.3C565.1 577.5 554.9 577.5 548.7 571.3L407.3 430z"/>
