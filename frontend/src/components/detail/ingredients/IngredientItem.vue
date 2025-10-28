@@ -16,7 +16,7 @@ defineProps({
 <template>
   <div class="flex items-center gap-2 text-sm font-medium">
     <font-awesome-icon class="text-cgreen" :icon="['fas', 'circle']" />
-    <span>{{ ingredient }}</span>
+    <span>{{ ingredient.name }}</span> - <span>{{ingredient.quantity}} {{ingredient.unit}}</span>
   </div>
 </template>
 

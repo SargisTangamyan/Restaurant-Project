@@ -9,7 +9,7 @@ import RatingStars from "@/components/ui/RatingStars.vue";
   <div class="border-b border-gray-100 pb-4">
     <div class="flex items-center justify-between mb-2">
       <div class="flex items-center gap-2">
-        <img src="../../../assets/images/profile/1.jpg" alt="user"
+        <img src="../../../assets/images/profile/no-avatar.jpg" alt="user"
              class="w-10 h-10 rounded-full object-cover">
         <div>
           <h6 class="font-semibold text-gray-800">John Doe</h6>

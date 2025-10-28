@@ -2,10 +2,6 @@
 // VUE
 import {ref, computed, onMounted, onBeforeUnmount} from 'vue';
 
-// ROUTER
-import {useRouter} from 'vue-router';
-const router = useRouter();
-
 // COMPONENTS
 import TheBox from '@/components/ui/TheBox.vue'
 import BannerImage from "@/components/ui/BannerImage.vue";
@@ -41,14 +37,6 @@ const fetchLatestDishes = async () => {
     latestDishes.value = response.data;
   }
   loading.value = false;
-}
-
-const viewDish = (dishId) => {
-  router.push({name: 'dish', params: {id: dishId}})
-}
-
-const goToMenu = () => {
-  router.push({name: 'dishes'})
 }
 
 // COMPUTED
@@ -87,12 +75,11 @@ onBeforeUnmount(() => {
             <p class="text-lg md:text-2xl text-gray-700 mb-6 drop-shadow-md">
               Discover the freshest dishes made with love and quality ingredients
             </p>
-            <button
-              @click="goToMenu"
+            <router-link :to="{name: 'dishes' }"
               class="px-8 py-4 bg-white text-gray-700 font-semibold rounded-lg shadow-lg hover:bg-gray-100 transition duration-300"
             >
               View Menu
-            </button>
+            </router-link>
           </div>
         </section>
 
@@ -117,11 +104,11 @@ onBeforeUnmount(() => {
                 class="absolute inset-0 flex flex-col justify-center left-8 text-white space-y-2">
                 <h5 class="text-2xl md:text-4xl font-bold">{{dish.name}}</h5>
                 <h6 class="text-sm md:text-base">{{dish.description}}</h6>
-                <button
-                  @click="viewDish(dish.id)"
+                <router-link
+                  :to="{name: 'dish', params: {id: dish.id}}"
                    class="button-cgreen">
                   Order Now
-                </button>
+                </router-link>
               </div>
             </banner-image>
           </SwiperSlide>

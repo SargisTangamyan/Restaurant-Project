@@ -24,7 +24,7 @@ defineProps({
     </p>
 
     <div class="grid grid-cols-2 gap-x-4 gap-y-3 text-gray-700">
-        <ingredient-item v-for="(ingredient, index) in ingredients" :key="index" :ingredient="ingredient.name" />
+        <ingredient-item v-for="(ingredient, index) in ingredients" :key="index" :ingredient="ingredient" />
     </div>
   </div>
 </template>

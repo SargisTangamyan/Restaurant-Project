@@ -117,7 +117,7 @@ onMounted(async () => {
             <h2 class="text-3xl font-bold text-gray-800">{{ dish.name }}</h2>
             <div class="mb-2" v-if="dish.category">
               <span class="font-bold">Category:</span>
-              <span class="inline-block pl-1 text-cgreen text-md font-bold hover:underline cursor-pointer">
+              <span class="inline-block pl-1 text-cgreen text-md font-bold">
                 {{ dish.category.name }}
               </span>
             </div>
