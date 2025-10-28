@@ -41,10 +41,8 @@ class RegisterController extends Controller
         return $this->responder->send(
             message: 'Registration Successful',
             payload: [
-                'data' => [
-                    'email' => $user->email,
-                    'token' => $token,
-                ]
+                'email' => $user->email,
+                'token' => $token,
             ],
             status: ResponseStatus::CREATED->value,
         );

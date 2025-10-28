@@ -16,6 +16,9 @@ import { useLanguageStore } from "@/stores/index.js";
 import { useCurrencyStore } from "@/stores/index.js";
 import { useAuthStore } from "@/stores/index.js";
 
+import { useAuthActions} from "@/composables/useAuthActions.js";
+const {logout} = useAuthActions()
+
 // COMPOSABLES
 import { useBoxOpenClose } from "@/composables/useBoxOpenClose.js";
 import SearchBox from "@/components/search/SearchBox.vue";
@@ -132,7 +135,7 @@ const useMenuLogic = function () {
 }
 
 const logoutUser = function () {
-  authStore.logout();
+  logout()
 }
 
 // USING THE LOGIC

@@ -16,8 +16,9 @@ export function createAuthActions(state) {
         password,
         password_confirmation: passwordConfirm
       });
+      console.log(response)
 
-      if (response.data.token) {
+      if (response.data && response.data.token) {
         state.token.value = response.data.token;
         state.user.value = response.data.user;
         localStorage.setItem('auth_token', response.data.token);
@@ -25,7 +26,7 @@ export function createAuthActions(state) {
         return { success: true, data: response.data };
       }
 
-      return { success: false, errors: { overall: 'Registration failed' } };
+      return { success: false, errors: response.errors };
     } catch (error) {
       const errors = {};
 
