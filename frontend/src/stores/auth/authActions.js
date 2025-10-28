@@ -2,7 +2,7 @@ import { sender } from '@/api/Sender.js';
 import {
   REGISTER_URL,
   LOGIN_URL,
-  LOGOUT_URL,
+  LOGOUT_URL, REDIRECT_URL,
 } from '@/constants/urls.js';
 
 export function createAuthActions(state) {
@@ -14,7 +14,8 @@ export function createAuthActions(state) {
       const response = await sender.sendRequest('POST', REGISTER_URL, {
         email,
         password,
-        password_confirmation: passwordConfirm
+        password_confirmation: passwordConfirm,
+        // redirect_url: REDIRECT_URL,
       });
       console.log(response)
 

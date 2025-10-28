@@ -55,7 +55,7 @@ defineExpose({
 </script>
 
 <template>
-  <form-input v-model="price" input-type="number" label="Price" :errors="priceErrors" :min="0" :mb="mb"/>
+  <form-input v-model="price" step="any" input-type="number" label="Price" :errors="priceErrors" :min="0" :mb="mb"/>
 </template>
 
 <style scoped>
