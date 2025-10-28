@@ -15,7 +15,7 @@ export function createAuthActions(state) {
         email,
         password,
         password_confirmation: passwordConfirm,
-        // redirect_url: REDIRECT_URL,
+        redirect_url: REDIRECT_URL,
       });
       console.log(response)
 
@@ -100,9 +100,14 @@ export function createAuthActions(state) {
     }
   };
 
+  const verifyEmail = async function (url){
+    return await sender.sendRequest('GET', url);
+  }
+
   return {
     register,
     login,
     logout,
+    verifyEmail,
   };
 }
