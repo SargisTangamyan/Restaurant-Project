@@ -11,11 +11,11 @@ import ProfileHeader from "@/components/profile/ProfileHeader.vue";
 
     <profile-navigation :links="[
           {routeName: 'profile', name: 'Profile'},
-          {routeName: 'categories', name: 'Categories'},
-          {routeName: 'ingredients', name: 'Ingredients'},
-          {routeName: 'add_product', name: 'Add Product'},
+          {routeName: 'categories', name: 'Categories', forAdmin: true},
+          {routeName: 'ingredients', name: 'Ingredients', forAdmin: true},
+          {routeName: 'add_product', name: 'Add Product', forAdmin: true},
           {routeName: 'my_orders', name: 'My Orders'},
-          {routeName: 'admin_orders', name: 'All Orders'},
+          {routeName: 'admin_orders', name: 'All Orders', forAdmin: true},
         ]">
 
     </profile-navigation>

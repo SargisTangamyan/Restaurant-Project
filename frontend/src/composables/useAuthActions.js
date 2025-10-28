@@ -9,14 +9,14 @@ export function useAuthActions() {
 
   const logout = async () => {
     try {
+      // Redirect to homepage
+      await router.push({ name: 'home' });
+
       // Call auth store logout
       await authStore.logout();
 
       // Show success message
       messageStore.showMessage('You have been logged out successfully', 'success');
-
-      // Redirect to homepage
-      await router.push({ name: 'home' });
     } catch (error) {
       console.error('Logout error:', error);
       messageStore.showMessage('An error occurred during logout', 'error');
