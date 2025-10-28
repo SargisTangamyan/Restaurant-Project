@@ -1,10 +1,7 @@
 <template>
   <div class="container mx-auto px-4 py-8">
     <div class="max-w-md mx-auto text-center">
-      <div v-if="loading" class="py-12">
-        <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900 mx-auto"></div>
-        <p class="mt-4 text-gray-600">Verifying your payment...</p>
-      </div>
+      <the-loader v-if="loading" />
 
       <div v-else-if="success" class="bg-white rounded-lg shadow-lg p-8">
         <div class="text-green-500 mb-4">
@@ -20,13 +17,13 @@
         </div>
         <div class="space-y-3">
           <router-link
-            to="/user"
+            :to="{name: 'my_orders'}"
             class="block w-full button-cgreen transition"
           >
             View My Orders
           </router-link>
           <router-link
-            to="/dishes"
+            :to="{name: 'dishes'}"
             class="block w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition"
           >
             Continue Shopping
@@ -58,6 +55,8 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import {sender} from "@/api/Sender.js";
 import {STRIPE_VERIFY_PAYMENT} from "@/constants/urls.js";
+
+import TheLoader from "@/components/ui/TheLoader.vue";
 
 const route = useRoute();
 const loading = ref(true);
