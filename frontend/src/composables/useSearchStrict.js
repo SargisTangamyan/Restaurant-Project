@@ -60,9 +60,7 @@ export function useSearchStrict({ searchFn, queryParam = 'q', jsonName, emitWord
       return
     }
 
-    console.log(query.value)
     const res = await searchFn(query.value)
-    console.log(res)
 
     if (res.success) {
       filteredItems.value = res[jsonName] ?? []
@@ -93,7 +91,8 @@ export function useSearchStrict({ searchFn, queryParam = 'q', jsonName, emitWord
   function selectItem(item) {
     query.value = item.name
     filteredItems.value = []
-    emitWordChosen?.(item.id, item.name)
+    console.log(item.unit)
+    emitWordChosen?.(item.id, item.name, item.unit)
     updateQuery()
   }
 

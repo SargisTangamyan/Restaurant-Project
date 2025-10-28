@@ -74,6 +74,13 @@ export const useDishStore = defineStore('dish', {
         formData.append('image', dish.image);
       }
 
+      if (dish.ingredients && dish.ingredients.length > 0) {
+        dish.ingredients.forEach((ingredient, index) => {
+          formData.append(`ingredients[${index}][id]`, ingredient.id);
+          formData.append(`ingredients[${index}][quantity]`, ingredient.quantity);
+        });
+      }
+
       const response = await sender.sendRequest('POST', DISHES, formData,
         {
           'Content-Type': 'multipart/form-data',

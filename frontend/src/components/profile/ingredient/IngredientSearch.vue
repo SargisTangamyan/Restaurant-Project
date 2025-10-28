@@ -20,7 +20,7 @@ const { query, filteredItems: filteredIngredients, message, onInput, selectItem:
   searchFn: ingredientStore.searchIngredients,
   queryParam: 'ingredient',
   jsonName: 'foundIngredients',
-  emitWordChosen: (id, name) => {emits('wordChosen', id, name)},
+  emitWordChosen: (id, name, unit) => {emits('wordChosen', id, name, unit)},
   emitIncorrectWord: () => {emits('incorrectWord')},
 })
 
