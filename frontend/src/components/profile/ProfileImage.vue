@@ -1,13 +1,18 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useAuthStore } from '@/stores/index.js';
+import { useMessageStore } from "@/stores/index.js";
 
 // COMPONENTS
 import ProfileImageDisplay from "@/components/profile/ProfileImageDisplay.vue";
+import ConfirmDialog from "@/components/ui/ConfirmDialog.vue";
 
 const emit = defineEmits(['success', 'error']);
 
 const authStore = useAuthStore();
+const messageStore = useMessageStore()
+
+
 const imageInput = ref(null);
 const uploading = ref(false);
 const deleting = ref(false);
@@ -41,17 +46,27 @@ const handleImageUpload = async (event) => {
 };
 
 const handleDeleteImage = async () => {
-  if (!confirm('Are you sure you want to remove your profile image?')) return;
+  const confirmed = await messageStore.showConfirm({
+    title: 'Remove Profile Image',
+    message: 'Are you sure you want to delete your profile picture?',
+    confirmText: 'Yes, Remove',
+    cancelText: 'Cancel',
+    type: 'danger',
+    onConfirm: async () => {
+      deleting.value = true
+      try {
+        await authStore.deleteProfileImage()
+        emit('success', 'Profile image removed successfully!')
+      } catch (error) {
+        emit('error', 'Failed to delete image. Please try again.')
+      } finally {
+        deleting.value = false
+      }
+    }
+  })
 
-  deleting.value = true;
-
-  try {
-    await authStore.deleteProfileImage();
-    emit('success', 'Profile image removed successfully!');
-  } catch (error) {
-    emit('error', 'Failed to delete image. Please try again.');
-  } finally {
-    deleting.value = false;
+  if (!confirmed) {
+    emit('error', 'Action cancelled.')
   }
 };
 </script>
@@ -89,5 +104,17 @@ const handleDeleteImage = async () => {
         </p>
       </div>
     </div>
+
+    <confirm-dialog
+      :show="messageStore.confirmDialog.show"
+      :title="messageStore.confirmDialog.title"
+      :message="messageStore.confirmDialog.message"
+      :confirm-text="messageStore.confirmDialog.confirmText"
+      :cancel-text="messageStore.confirmDialog.cancelText"
+      :type="messageStore.confirmDialog.type"
+      :loading="messageStore.confirmDialog.loading"
+      @confirm="messageStore.confirmDialog.onConfirm"
+      @cancel="messageStore.confirmDialog.onCancel"
+    />
   </div>
 </template>
