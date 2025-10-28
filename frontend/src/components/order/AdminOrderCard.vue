@@ -42,7 +42,7 @@ const handleStatusUpdate = async (newStatus) => {
         <div class="space-y-1">
           <p class="text-sm text-gray-600">
             <span class="font-medium">Customer:</span>
-            {{ order.user?.name || 'N/A' }}
+            {{ order.user?.username || 'N/A' }}
           </p>
           <p class="text-sm text-gray-600">
             <span class="font-medium">Email:</span>
