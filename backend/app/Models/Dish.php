@@ -60,6 +60,9 @@ class Dish extends Model
             $filters['search'] ?? false,
             fn ($query, $value) => $query->where('name', 'like', '%' . $value . '%')
         )->when(
+            $filters['limit'] ?? false,
+            fn ($query, $value) => $query->limit($value)
+        )->when(
             $filters['ingredients'] ?? false,
             fn ($query) => $query->whereHas('ingredients', function ($query) use ($filters) {
                 $query->whereIn('ingredients.id', $filters['ingredients']);

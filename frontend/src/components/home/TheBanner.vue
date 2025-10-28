@@ -2,14 +2,17 @@
 // VUE
 import {ref, computed, onMounted, onBeforeUnmount} from 'vue';
 
+// ROUTER
+import {useRouter} from 'vue-router';
+const router = useRouter();
+
 // COMPONENTS
 import TheBox from '@/components/ui/TheBox.vue'
-import ImageText from '@/components/ui/image/ImageText.vue';
+import BannerImage from "@/components/ui/BannerImage.vue";
 
-// IMPORTING IMAGE TO USE
-import bannerImage1 from '@/assets/images/restaurant/banner/1.jpg'
-import bannerImage2 from '@/assets/images/restaurant/banner/2.jpg'
-import bannerImage3 from '@/assets/images/restaurant/banner/3.jpg'
+// STORE
+import {useDishStore} from "@/stores/index.js";
+const dishStore = useDishStore();
 
 // SWIPER
 // Import Swiper Vue.js components
@@ -21,10 +24,31 @@ import 'swiper/css';
 
 // REFS
 const windowWidth = ref(window.innerWidth);
+const latestDishes = ref([]);
+const loading = ref(true);
 
 // METHODS
 const updateWidth = function () {
   windowWidth.value = window.innerWidth;
+}
+
+const fetchLatestDishes = async () => {
+  loading.value = true;
+  const response = await dishStore.fetchDishes({
+    limit: 5,
+  });
+  if (response.success) {
+    latestDishes.value = response.data;
+  }
+  loading.value = false;
+}
+
+const viewDish = (dishId) => {
+  router.push({name: 'dish', params: {id: dishId}})
+}
+
+const goToMenu = () => {
+  router.push({name: 'dishes'})
 }
 
 // COMPUTED
@@ -41,6 +65,7 @@ const itemsPerPage = computed(() => {
 // MOUNTING
 onMounted(() => {
   window.addEventListener('resize', updateWidth);
+  fetchLatestDishes();
 })
 
 onBeforeUnmount(() => {
@@ -52,7 +77,31 @@ onBeforeUnmount(() => {
   <the-box>
     <section class="banner-section py-8">
       <div class="container mx-auto">
+
+        <!-- Hero Header -->
+        <section class="hero-header text-gray-700 py-16">
+          <div class="container mx-auto text-center px-4">
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">
+              Our Freshest Products
+            </h1>
+            <p class="text-lg md:text-2xl text-gray-700 mb-6 drop-shadow-md">
+              Discover the freshest dishes made with love and quality ingredients
+            </p>
+            <button
+              @click="goToMenu"
+              class="px-8 py-4 bg-white text-gray-700 font-semibold rounded-lg shadow-lg hover:bg-gray-100 transition duration-300"
+            >
+              View Menu
+            </button>
+          </div>
+        </section>
+
+        <div v-if="loading" class="flex justify-center items-center py-12">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+        </div>
+
         <Swiper
+          v-else-if="latestDishes.length > 0"
           :modules="[Autoplay]"
           :slides-per-view="itemsPerPage"
           :space-between="16"
@@ -62,83 +111,19 @@ onBeforeUnmount(() => {
           class="w-full"
         >
           <!-- Slide 1 -->
-          <SwiperSlide>
-            <image-text image-alt="Banner Image" :image-src="bannerImage1">
+          <SwiperSlide v-for="dish in latestDishes" :key="dish.id">
+            <banner-image image-alt="Banner Image" :image-src="dish.thumbnail">
               <div
                 class="absolute inset-0 flex flex-col justify-center left-8 text-white space-y-2">
-                <h6 class="discount-box">5% Off</h6>
-                <h5 class="text-2xl md:text-4xl font-bold">Hot Deals on New Items</h5>
-                <h6 class="text-sm md:text-base">Daily Essentials Eggs & Dairy</h6>
-                <button href="#"
+                <h5 class="text-2xl md:text-4xl font-bold">{{dish.name}}</h5>
+                <h6 class="text-sm md:text-base">{{dish.description}}</h6>
+                <button
+                  @click="viewDish(dish.id)"
                    class="button-cgreen">
                   Order Now
                 </button>
               </div>
-            </image-text>
-          </SwiperSlide>
-
-          <!-- Slide 2 -->
-          <SwiperSlide>
-            <image-text image-alt="Banner Image 2" :image-src="bannerImage2">
-              <div
-                class="absolute inset-0 flex flex-col justify-center left-8 text-white space-y-2">
-                <h6 class="discount-box">5% OFF</h6>
-                <h5 class="text-2xl md:text-4xl font-bold">Buy More & Save More</h5>
-                <h6 class="text-sm md:text-base">Fresh Vegetables</h6>
-                <a href="#"
-                   class="button-cgreen">
-                  Order Now
-                </a>
-              </div>
-            </image-text>
-          </SwiperSlide>
-
-          <!-- Slide 3 -->
-          <SwiperSlide>
-            <image-text image-alt="Banner Image 2" :image-src="bannerImage3">
-              <div
-                class="absolute inset-0 flex flex-col justify-center left-8 text-white space-y-2">
-                <h6 class="discount-box">5% OFF</h6>
-                <h5 class="text-2xl md:text-4xl font-bold">Organic Meat Prepared</h5>
-                <h6 class="text-sm md:text-base">Delivered to Your Home</h6>
-                <a href="#"
-                   class="button-cgreen">
-                  Order Now
-                </a>
-              </div>
-            </image-text>
-          </SwiperSlide>
-
-          <!-- Slide 4 -->
-          <SwiperSlide>
-            <image-text image-alt="Banner Image 2" :image-src="bannerImage2">
-              <div
-                class="absolute inset-0 flex flex-col justify-center left-8 text-white space-y-2">
-                <h6 class="discount-box">5% OFF</h6>
-                <h5 class="text-2xl md:text-4xl font-bold">Eat as much as you want</h5>
-                <h6 class="text-sm md:text-base">Nuts & Snacks</h6>
-                <a href="#"
-                   class="button-cgreen">
-                  Order Now
-                </a>
-              </div>
-            </image-text>
-          </SwiperSlide>
-
-          <!-- Slide 2 -->
-          <SwiperSlide>
-            <image-text image-alt="Banner Image 2" :image-src="bannerImage3">
-              <div
-                class="absolute inset-0 flex flex-col justify-center left-8 text-white space-y-2">
-                <h6 class="discount-box">5% OFF</h6>
-                <h5 class="text-2xl md:text-4xl font-bold">Buy as Much as you want</h5>
-                <h6 class="text-sm md:text-base">Fresh Vegetables</h6>
-                <a href="#"
-                   class="button-cgreen">
-                  Order Now
-                </a>
-              </div>
-            </image-text>
+            </banner-image>
           </SwiperSlide>
 
         </Swiper>

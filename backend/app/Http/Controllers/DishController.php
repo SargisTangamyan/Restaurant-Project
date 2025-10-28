@@ -33,6 +33,7 @@ class DishController extends Controller
             'search',
             'sort_by',
             'sort_direction',
+            'limit',
         ]);
 
         if ($request->ingredients) {
@@ -41,8 +42,14 @@ class DishController extends Controller
         if ($request->categories) {
             $filters['categories'] = explode(',', $request->categories);
         }
-        return new DishCollection(Dish::filter($filters)->paginate(10));
-//        return DishResource::collection(Dish::latest()->filter($filters)->paginate(10));
+
+        $perPage = 10;
+        if ($request->limit)
+        {
+            $perPage = $request->limit;
+        }
+
+        return new DishCollection(Dish::filter($filters)->paginate($perPage));
     }
 
     public function search(Request $request)

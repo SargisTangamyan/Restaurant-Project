@@ -35,12 +35,12 @@ defineProps({
         class="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
       >
         <li>
-          <button
+          <router-link :to="{name: 'dish', params: {id: dish.id}}"
             class="w-9 h-9 flex items-center justify-center rounded-full bg-white shadow hover:bg-gray-100 hover:text-cgreen"
             title="View"
           >
             <font-awesome-icon class="block" :icon="['fas', 'eye']" />
-          </button>
+          </router-link>
         </li>
         <li>
           <button

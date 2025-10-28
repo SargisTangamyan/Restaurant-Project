@@ -247,13 +247,9 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
                   </li>
 
                   <li class="right-side hidden-sm">
-                    <a href="contact-us.html" class="delivery-login-box">
+                    <a href="#" class="delivery-login-box">
                       <div class="delivery-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path fill="#000000" d="M208.4 106.7C205 98.7 196.2 94.4 187.8 96.6L181.1 98.4C127.9 113 86.1 163.1 98.2 221.4C131.6 382 258.1 508.4 418.7 541.9C476.9 554 527.1 512.2 541.6 458.9L543.4 452.2C545.7 443.8 541.4 435 533.3 431.6L440 392.7C432.9 389.8 424.8 391.8 419.9 397.7L383.3 442.4C378.6 448.1 370.7 449.9 364.1 446.7C289.1 411.1 229.1 349.1 196 272.7C193.2 266.1 195 258.5 200.6 254L242.2 219.9C248.1 215.1 250.2 206.9 247.2 199.8L208.4 106.7zM179.4 65.8C203.3 59.3 228.4 71.5 237.9 94.4L276.8 187.7C285.2 207.8 279.4 231.1 262.5 244.9L230.4 271.2C259.4 331.7 307.5 381.4 366.7 412.5L395.2 377.6C409 360.7 432.2 354.9 452.4 363.3L545.7 402.2C568.6 411.7 580.8 436.8 574.3 460.7L572.5 467.4C554.8 532.3 491.2 589.6 412.2 573.2C239.1 537.2 102.9 401 66.9 227.9C50.4 148.8 107.7 85.3 172.7 67.6L179.4 65.8z"/></svg>
-                      </div>
-                      <div style="display:none" class="delivery-detail">
-                        <h6>24/7 Delivery</h6>
-                        <h5>+91 888 104 2340</h5>
                       </div>
                     </a>
                   </li>
@@ -267,60 +263,6 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
                   <li class="right-side hidden-sm">
                     <div class="onhover-dropdown header-badge">
                       <cart-logo />
-
-<!--                      <div class="onhover-div">-->
-<!--                        <ul class="cart-list">-->
-<!--                          <li class="product-box-contain">-->
-<!--                            <div class="drop-cart">-->
-<!--                              <a href="product-left-thumbnail.html" class="drop-image">-->
-<!--                                <img src="../assets/images/vegetable/product/1.png"-->
-<!--                                     class="blur-up lazyload" alt="">-->
-<!--                              </a>-->
-
-<!--                              <div class="drop-contain">-->
-<!--                                <a href="product-left-thumbnail.html">-->
-<!--                                  <h5>Fantasy Crunchy Choco Chip Cookies</h5>-->
-<!--                                </a>-->
-<!--                                <h6><span>1 x</span> $80.58</h6>-->
-<!--                                <button class="close-button close_button">-->
-<!--                                  <i class="fa-solid fa-xmark"></i>-->
-<!--                                </button>-->
-<!--                              </div>-->
-<!--                            </div>-->
-<!--                          </li>-->
-
-<!--                          <li class="product-box-contain">-->
-<!--                            <div class="drop-cart">-->
-<!--                              <a href="product-left-thumbnail.html" class="drop-image">-->
-<!--                                <img src="../assets/images/vegetable/product/2.png"-->
-<!--                                     class="blur-up lazyload" alt="">-->
-<!--                              </a>-->
-
-<!--                              <div class="drop-contain">-->
-<!--                                <a href="product-left-thumbnail.html">-->
-<!--                                  <h5>Peanut Butter Bite Premium Butter Cookies 600 g-->
-<!--                                  </h5>-->
-<!--                                </a>-->
-<!--                                <h6><span>1 x</span> $25.68</h6>-->
-<!--                                <button class="close-button close_button">-->
-<!--                                  <i class="fa-solid fa-xmark"></i>-->
-<!--                                </button>-->
-<!--                              </div>-->
-<!--                            </div>-->
-<!--                          </li>-->
-<!--                        </ul>-->
-
-<!--                        <div class="price-box">-->
-<!--                          <h5>Total :</h5>-->
-<!--                          <h4 class="theme-color fw-bold">$106.58</h4>-->
-<!--                        </div>-->
-
-<!--                        <div class="button-group">-->
-<!--                          <a href="cart.html" class="btn btn-sm cart-button">View Cart</a>-->
-<!--                          <a href="checkout.html" class="btn btn-sm cart-button theme-bg-color-->
-<!--                                                    text-white">Checkout</a>-->
-<!--                        </div>-->
-<!--                      </div>-->
                     </div>
                   </li>
 
@@ -333,10 +275,6 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
                       <div class="delivery-icon">
                         <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M224 192C224 139 267 96 320 96C373 96 416 139 416 192C416 245 373 288 320 288C267 288 224 245 224 192zM448 192C448 121.3 390.7 64 320 64C249.3 64 192 121.3 192 192C192 262.7 249.3 320 320 320C390.7 320 448 262.7 448 192zM128 544C128 464.5 192.5 400 272 400L368 400C447.5 400 512 464.5 512 544L512 560C512 568.8 519.2 576 528 576C536.8 576 544 568.8 544 560L544 544C544 446.8 465.2 368 368 368L272 368C174.8 368 96 446.8 96 544L96 560C96 568.8 103.2 576 112 576C120.8 576 128 568.8 128 560L128 544z"/></svg>
                       </div>
-<!--                      <div class="delivery-detail">-->
-<!--                        <h6>Hello,</h6>-->
-<!--                        <h5>My Account</h5>-->
-<!--                      </div>-->
                     </div>
 
                     <transition name="menu-slide">
@@ -399,22 +337,19 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
                 <router-link class="nav-link" :to="{name: 'dishes'}">Menu</router-link>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link" href="#">Blog</a>
+                <router-link class="nav-link" :to="{name: 'my_orders'}">My Orders</router-link>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link" href="#">Contact Us</a>
-              </li>
-              <li class="nav-item dropdown">
-                <router-link class="nav-link" :to="{name: 'user'}">Account</router-link>
+                <router-link class="nav-link" :to="{name: 'user'}">My Account</router-link>
               </li>
             </ul>
           </div>
 
           <div class="header-nav-right">
-            <button class="btn-outline btn-struct deal-button" data-bs-toggle="modal" data-bs-target="#deal-box">
+            <router-link :to="{name: 'dishes'}" class="btn-outline btn-struct deal-button">
               <svg class="menu-icon deal-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M434.8 54.1C446.7 62.7 451.1 78.3 445.7 91.9L367.3 288L512 288C525.5 288 537.5 296.4 542.1 309.1C546.7 321.8 542.8 336 532.5 344.6L244.5 584.6C233.2 594 217.1 594.5 205.2 585.9C193.3 577.3 188.9 561.7 194.3 548.1L272.7 352L128 352C114.5 352 102.5 343.6 97.9 330.9C93.3 318.2 97.2 304 107.5 295.4L395.5 55.4C406.8 46 422.9 45.5 434.8 54.1z"/></svg>
               <span class="deal-text">Deal Today</span>
-            </button>
+            </router-link>
           </div>
         </div>
       </div>

@@ -58,14 +58,9 @@ const changePage = (page) => {
 
 // MOUNTING
 onMounted(async () => {
-  // Load dishes
-  if (dishStore.getDishes?.length) {
-    dishes.value = dishStore.getDishes;
-  } else {
-    const res = await dishStore.fetchDishes(route.query);
-    if (res.success) {
-      dishes.value = res.data;
-    }
+  const res = await dishStore.fetchDishes(route.query);
+  if (res.success) {
+    dishes.value = res.data;
   }
 
   // Load cart
