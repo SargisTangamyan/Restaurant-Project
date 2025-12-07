@@ -75,7 +75,7 @@ class Dish extends Model
                 $categories = Category::with('children')->findMany($filters['categories']);
 
                 foreach ($categories as $category) {
-                    $allCategoryIds = array_merge($allCategoryIds, $category->allChildrenIds());
+                    $allCategoryIds = array_merge($allCategoryIds, $category->getAllChildrenIds());
                 }
 
                 $query->whereIn('category_id', $allCategoryIds);

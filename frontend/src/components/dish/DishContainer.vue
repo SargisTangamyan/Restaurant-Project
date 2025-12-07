@@ -40,15 +40,13 @@ watch(
 );
 
 // Watch only for page changes (filters are handled in FilterSidebar now)
-watch(() => route.query.page, async (newPage, oldPage) => {
-  if (newPage && newPage !== oldPage && newPage !== pagination.value.current_page) {
-    isLoading.value = true;
-    await dishStore.fetchDishes(route.query);
-    isLoading.value = false;
-    window.scrollTo({
-      top: 0,
-    });
-  }
+watch(() => route.query, async () => {
+  isLoading.value = true;
+  await dishStore.fetchDishes(route.query);
+  isLoading.value = false;
+  window.scrollTo({
+    top: 0,
+  });
 })
 
 // METHODS
