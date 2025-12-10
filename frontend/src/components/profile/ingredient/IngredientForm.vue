@@ -14,6 +14,7 @@ const ingredientStore = useIngredientStore();
 const iName = ref('');
 const unit = ref('');
 const price = ref(0);
+const isAllergic = ref(false);
 
 watch(price, (newValue) => {
   console.log(newValue);
@@ -30,6 +31,7 @@ const clearForm = function () {
   iName.value = '';
   unit.value = '';
   price.value = 0;
+  isAllergic.value = false;
 }
 
 const clearErrors = function () {
@@ -72,7 +74,13 @@ const validate = function () {
 
 const addIngredient = async function() {
   if (!validate()) return;
-  const res = await ingredientStore.addIngredient({'name': iName.value, 'unit': unit.value, 'price': price.value});
+  console.log(isAllergic.value);
+  const res = await ingredientStore.addIngredient({
+    'name': iName.value,
+    'unit': unit.value,
+    'price': price.value,
+    'is_allergic': isAllergic.value ? 1 : 0,
+  });
   if (res.success) {
     clearForm();
     clearErrors();
@@ -94,7 +102,16 @@ const addIngredient = async function() {
         <form-input v-model="price" input-type="number" label="Price" :errors="priceErrors" />
       </div>
 
-
+      <div class="mb-4">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            v-model="isAllergic"
+            class="w-4 h-4 text-cgreen border-gray-300 rounded focus:ring-cgreen focus:ring-2"
+          />
+          <span class="text-gray-700 font-medium">This ingredient is allergic</span>
+        </label>
+      </div>
     </template>
   </form-box>
 </template>

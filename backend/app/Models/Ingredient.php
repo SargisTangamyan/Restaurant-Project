@@ -14,6 +14,7 @@ class Ingredient extends Model
         'name',
         'unit',
         'price',
+        'is_allergic',
     ];
 
     protected static function booted(): void

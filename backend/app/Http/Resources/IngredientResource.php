@@ -20,6 +20,7 @@ class IngredientResource extends JsonResource
             'slug' => $this->slug,
             'unit' => $this->unit,
             'price' => $this->price,
+            'is_allergic' => $this->is_allergic,
         ];
 
         $quantity = $this->pivot?->quantity;

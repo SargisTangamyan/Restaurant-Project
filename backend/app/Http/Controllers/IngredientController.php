@@ -38,6 +38,7 @@ class IngredientController extends Controller
             'name'  => strtolower($request->name),
             'unit'  => strtolower($request->unit),
             'price' => $request->price ?? 0, // fallback to 0 if null
+            'is_allergic' => $request->is_allergic ?? false,
         ]);
 
         return $this->responder->send(

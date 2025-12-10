@@ -58,7 +58,7 @@ onMounted(async () => {
   <section class="lg:col-span-2 h-full">
     <div class="overflow-x-auto">
       <list-table
-        :header="['#', 'Name', 'Unit', 'Price', 'Actions']"
+        :header="['#', 'Name', 'Unit', 'Price', 'Allergic', 'Actions']"
         :center="['Actions']"
         :items="ingredients"
         :pagination="pagination"
@@ -68,6 +68,7 @@ onMounted(async () => {
           <table-column :element="item.name" />
           <table-column :element="item.unit" />
           <table-column :element="item.price" />
+          <table-column :element="String(!!item.is_allergic)" />
           <table-column class="text-center">
               <button class="text-blue-600 hover:underline">Edit</button> |
               <button

@@ -26,6 +26,7 @@ class IngredientStoreRequest extends FormRequest
         return [
             'name' => 'required|string|max:255|unique:ingredients',
             'unit' => 'required|string|max:255',
+            'is_allergic' => 'nullable|boolean',
         ];
     }
 
