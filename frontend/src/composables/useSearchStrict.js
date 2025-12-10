@@ -30,12 +30,7 @@ export function useSearchStrict({ searchFn, queryParam = 'q', jsonName, emitWord
           item.name.toLowerCase() === initialQuery.toLowerCase()
         )
 
-        // 3. If an exact match is found, automatically choose it (emit)
-        if (exactMatch) {
-          // IMPORTANT: Emit the chosen word to immediately set the external state.
-          // We don't need a timeout here as this runs once on initialization.
-          emitWordChosen?.(exactMatch.id, exactMatch.name)
-        } else {
+        if (!exactMatch) {
           // Optionally, treat a non-exact but present query as an error
           emitIncorrectWord?.()
         }
@@ -65,17 +60,6 @@ export function useSearchStrict({ searchFn, queryParam = 'q', jsonName, emitWord
     if (res.success) {
       filteredItems.value = res[jsonName] ?? []
       message.value = ''
-
-      const exactMatch = filteredItems.value.find(item =>
-        item.name.toLowerCase() === query.value.toLowerCase()
-      )
-
-      if (exactMatch) {
-        // Automatically select/emit the word if an exact match is found
-        setTimeout(() => {
-          emitWordChosen?.(exactMatch.id, exactMatch.name)
-        }, 50);
-      }
     } else {
       filteredItems.value = []
       message.value = res.message || 'No results found'
