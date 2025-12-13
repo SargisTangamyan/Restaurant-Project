@@ -30,6 +30,20 @@ defineProps({
         />
       </router-link>
 
+      <div class="absolute top-2 left-2 w-fit">
+        <div class="bg-green-500 text-white w-fit px-3 py-1 rounded-md">
+          Safe
+        </div>
+        <!--
+        <div class="bg-[#97a899] text-white w-fit px-3 py-1 rounded-md">
+          Modify
+        </div>
+        <div class="bg-red-500 text-white px-3 w-fit py-1 rounded-md">
+          Avoid
+        </div>
+        -->
+      </div>
+
       <!-- Product Options -->
       <ul
         class="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -55,6 +69,10 @@ defineProps({
 
     <!-- Product Info -->
     <div class="flex flex-col flex-grow p-4">
+      <div class="mb-2 bg-cgreen text-white w-fit text-xs px-3 py-1 rounded-md">
+        Match 78%
+      </div>
+
       <span class="text-sm text-gray-400">{{ dish.category.name }}</span>
 
       <router-link :to="{ name: 'dish', params: { id: dish.id } }" class="mt-1">

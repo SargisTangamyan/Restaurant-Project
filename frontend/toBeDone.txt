@@ -8,9 +8,10 @@
 For Now
 1) After sign in the page should be taken up, now it is at the bottom
 2) Show All Categories when clicking the button
-3) Set a new type isAllergic to Ingredients
+
 4) Show Safe, Modify and Avoid in the menu page
 5) Show how the food matches to the user's preferences
 6) Information about the user's allergies in the user's profile page
 7) Lifestyle & preferences of the user in the user's profile page
 8) Delete test dishes, ingredients and categories
+9)
