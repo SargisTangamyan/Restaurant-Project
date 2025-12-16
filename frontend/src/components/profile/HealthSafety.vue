@@ -1,9 +1,13 @@
 <script setup>
 
+import { ref } from 'vue';
+
+const errors = ref(false);
+
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow p-6">
+  <section class="bg-white rounded-lg shadow p-6">
     <h2 class="text-xl font-semibold mb-4">Health & Safety</h2>
 
     <!-- Doctor's Notes Upload -->
@@ -61,7 +65,7 @@
         ></textarea>
 
         <!-- Error text mock -->
-        <span class="text-red-500 text-sm">
+        <span v-if="errors" class="text-red-500 text-sm">
         This field is required.
       </span>
       </div>
@@ -78,7 +82,7 @@
         />
 
         <!-- Error text mock -->
-        <span class="text-red-500 text-sm">
+        <span v-if="errors" class="text-red-500 text-sm">
         Invalid phone number.
       </span>
       </div>
@@ -86,13 +90,13 @@
       <div>
         <button
           type="submit"
-          class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          class="button-cgreen"
         >
           Save Changes
         </button>
       </div>
     </form>
-  </div>
+  </section>
 </template>
 
 <style scoped>

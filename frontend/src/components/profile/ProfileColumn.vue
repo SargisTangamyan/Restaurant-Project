@@ -11,6 +11,7 @@ import ProfileHeader from "@/components/profile/ProfileHeader.vue";
 
     <profile-navigation :links="[
           {routeName: 'profile', name: 'Profile'},
+          {routeName: 'dietary_preferences', name: 'Dietary Preferences'},
           {routeName: 'categories', name: 'Categories', forAdmin: true},
           {routeName: 'ingredients', name: 'Ingredients', forAdmin: true},
           {routeName: 'add_product', name: 'Add Product', forAdmin: true},

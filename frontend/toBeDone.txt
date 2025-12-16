@@ -11,7 +11,8 @@ For Now
 
 4) Show Safe, Modify and Avoid in the menu page
 5) Show how the food matches to the user's preferences
-6) Information about the user's allergies in the user's profile page
-7) Lifestyle & preferences of the user in the user's profile page
+6) Information about the user's allergies in the user's profile page - done
+7) Lifestyle & preferences of the user in the user's profile page - done
 8) Delete test dishes, ingredients and categories
-9)
+9) Give restaurant Listing
+10) Mention the restaurant name in the dish box

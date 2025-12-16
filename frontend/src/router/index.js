@@ -95,6 +95,12 @@ const router = createRouter({
           meta: { requiresAuth: true }
         },
         {
+          path: 'dietary-preferences',
+          name: 'dietary_preferences',
+          component: () => import('@/pages/profile/DietaryPreferences.vue'),
+          meta: { requiresAuth: true }
+        },
+        {
           path: 'categories',
           name: 'categories',
           component: () => import('@/pages/profile/seller/CategoryBox.vue'),
