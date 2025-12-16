@@ -32,7 +32,9 @@ const route = useRoute();
         {{ link.name }}
       </router-link>
     </div>
-
+    <button class="bg-red-500 text-white py-3 font-bold text-lg hover:bg-red-600">
+      SOS
+    </button>
     <slot>
 
     </slot>
