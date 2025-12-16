@@ -108,14 +108,20 @@ onMounted(async () => {
         <div
           class="col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col gap-6">
           <!-- Discount Tag -->
-          <div class="discount-box">
-            30% Off
+          <div class="px-4 py-2 bg-[#97a899] w-fit text-white rounded-xl">
+            Modify
           </div>
 
           <!-- Product Title -->
           <div>
             <h2 class="text-3xl font-bold text-gray-800">{{ dish.name }}</h2>
-            <div class="mb-2" v-if="dish.category">
+            <div class="mt-1 text-sm text-gray-500">
+              by
+              <span class="font-semibold text-gray-700 hover:text-cgreen cursor-pointer">
+                Saffron & Smoke
+              </span>
+            </div>
+            <div class="" v-if="dish.category">
               <span class="font-bold">Category:</span>
               <span class="inline-block pl-1 text-cgreen text-md font-bold">
                 {{ dish.category.name }}
@@ -123,8 +129,8 @@ onMounted(async () => {
             </div>
             <div class="flex flex-wrap items-center gap-3">
               <h3 class="text-2xl font-semibold text-cgreen">${{ dish.price }}</h3>
-              <del class="text-gray-400 text-lg">$58.46</del>
-              <span class="text-cgreen font-medium">(8% off)</span>
+              <del class="text-gray-400 text-lg">${{(dish.price * 1.2).toFixed(2)}}</del>
+              <span class="text-cgreen font-medium">(20% off)</span>
             </div>
           </div>
 

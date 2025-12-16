@@ -14,6 +14,24 @@ defineProps({
     type: Object,
   }
 })
+
+// STATUS CONFIG
+const STATUSES = [
+  { label: 'Safe',   class: 'bg-green-500', match: [70, 95] },
+  { label: 'Modify', class: 'bg-[#97a899]', match: [40, 69] },
+  { label: 'Avoid',  class: 'bg-red-500',   match: [10, 39] }
+]
+
+// HELPERS
+const randomInt = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1)) + min
+
+// RANDOM STATUS (once)
+const status = STATUSES[Math.floor(Math.random() * STATUSES.length)]
+
+// RANDOM MATCH BASED ON STATUS
+const match = randomInt(status.match[0], status.match[1])
+
 </script>
 
 <template>
@@ -31,17 +49,11 @@ defineProps({
       </router-link>
 
       <div class="absolute top-2 left-2 w-fit">
-        <div class="bg-green-500 text-white w-fit px-3 py-1 rounded-md">
-          Safe
+        <div class="text-white w-fit px-3 py-1 rounded-md"
+          :class="status.class"
+        >
+          {{status.label}}
         </div>
-        <!--
-        <div class="bg-[#97a899] text-white w-fit px-3 py-1 rounded-md">
-          Modify
-        </div>
-        <div class="bg-red-500 text-white px-3 w-fit py-1 rounded-md">
-          Avoid
-        </div>
-        -->
       </div>
 
       <!-- Product Options -->
@@ -70,7 +82,7 @@ defineProps({
     <!-- Product Info -->
     <div class="flex flex-col flex-grow p-4">
       <div class="mb-2 bg-cgreen text-white w-fit text-xs px-3 py-1 rounded-md">
-        Match 78%
+        Match {{match}}%
       </div>
 
       <span class="text-sm text-gray-400">{{ dish.category.name }}</span>
@@ -93,7 +105,7 @@ defineProps({
 
       <!-- Price -->
       <div class="mt-2">
-        <h6 class="text-xs text-gray-400">250 ml</h6>
+        <h6 class="text-xs text-gray-400">Saffron & Smoke</h6>
         <h5 class="text-lg font-semibold">
           <span class="text-emerald-600">${{ dish.price }}</span>
         </h5>

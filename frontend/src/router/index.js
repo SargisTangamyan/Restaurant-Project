@@ -22,6 +22,11 @@ const router = createRouter({
       component: HomePage,
     },
     {
+      path: '/restaurants',
+      name: 'restaurants',
+      component: () => import('@/pages/RestaurantsPage.vue'),
+    },
+    {
       path: '/account',
       meta: {requiresUnauth: true},
       children: [

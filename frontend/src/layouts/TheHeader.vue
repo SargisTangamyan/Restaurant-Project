@@ -334,6 +334,9 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
                 <router-link class="nav-link" :to="{name: 'home'}">Home</router-link>
               </li>
               <li class="nav-item dropdown">
+                <router-link class="nav-link" :to="{name: 'restaurants'}">Restaurants</router-link>
+              </li>
+              <li class="nav-item dropdown">
                 <router-link class="nav-link" :to="{name: 'dishes'}">Menu</router-link>
               </li>
               <li class="nav-item dropdown">

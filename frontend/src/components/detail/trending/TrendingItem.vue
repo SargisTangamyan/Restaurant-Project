@@ -32,10 +32,6 @@ defineProps({
           <span class="text-cgreen font-bold text-lg">
             ${{ dish.price }}
           </span>
-
-          <span v-if="dish.category" class="text-xs text-gray-500 truncate">
-            {{ dish.category.name }}
-          </span>
         </div>
       </div>
     </div>
