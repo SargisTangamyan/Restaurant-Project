@@ -1,6 +1,55 @@
 <script setup>
+
+// COMPONENTS
 import TheBox from "@/components/ui/TheBox.vue";
 import PageName from "@/components/ui/PageName.vue";
+import ErrorMessage from "@/components/ui/form/ErrorMessage.vue";
+
+// VALIDATION
+import {useField, useForm} from 'vee-validate';
+import * as yup from 'yup';
+
+// STORES
+import {useMessageStore, useAuthStore, useLoadingStore} from "@/stores/index.js"
+
+// INIT
+const messageStore = useMessageStore();
+const loadingStore = useLoadingStore();
+const authStore = useAuthStore();
+
+// VALIDATION SCHEMA
+const schema = yup.object({
+  email: yup.string().email('Invalid email address').required('Email is required')
+});
+
+// FORM SET UP
+const {handleSubmit, errors, setErrors, setFieldValue} = useForm({
+  validationSchema: schema
+});
+
+// FIELDS
+const {value: email} = useField('email');
+
+// METHODS
+const sendMail = handleSubmit(async () => {
+  loadingStore.isLoading = true;
+  const response = await authStore.forgotPassword(email.value);
+  console.log(response);
+  if (response.success) {
+    const message = `We have sent a password reset link to email '${email.value}'`
+    messageStore.showMessage(message)
+  } else {
+    setErrors(response.errors)
+    const message = response.errors.overall;
+    messageStore.showMessage(message, 'error')
+  }
+
+  setFieldValue('email', '', false);
+
+  setTimeout(() => {
+    loadingStore.isLoading = false;
+  }, 250)
+})
 </script>
 
 <template>
@@ -26,11 +75,12 @@ import PageName from "@/components/ui/PageName.vue";
             <h4 class="text-lg text-gray-600">Log In Your Account</h4>
           </div>
 
-          <form class="space-y-4">
+          <form @submit.prevent="sendMail" class="space-y-4">
             <div>
               <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-              <input type="email" id="email" placeholder="Email Address"
+              <input v-model="email" type="email" id="email" placeholder="Email Address"
                      class="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0da487] focus:border-[#0da487]">
+              <ErrorMessage v-for="(error, id) in errors" :message="error" :key="id"/>
             </div>
 
             <!-- Submit Button -->

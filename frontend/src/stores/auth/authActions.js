@@ -2,7 +2,11 @@ import { sender } from '@/api/Sender.js';
 import {
   REGISTER_URL,
   LOGIN_URL,
-  LOGOUT_URL, REDIRECT_URL,
+  LOGOUT_URL,
+  REDIRECT_URL,
+  FORGOT_PASSWORD,
+  RESET_PASSWORD,
+  RESET_PASSWORD_REDIRECT,
 } from '@/constants/urls.js';
 
 export function createAuthActions(state) {
@@ -104,10 +108,60 @@ export function createAuthActions(state) {
     return await sender.sendRequest('GET', url);
   }
 
+  const forgotPassword = async function (email) {
+    state.loading.value = true;
+    state.errors.value = {};
+
+    try {
+      const response = await sender.sendRequest('POST', FORGOT_PASSWORD, {email, 'redirect_url': RESET_PASSWORD_REDIRECT});
+
+      if (response.success) {
+        console.log('From authActions.js: Success')
+        return { success: true };
+      }
+
+      return { success: false, errors: { overall: 'Failed to send the reset link' } };
+    } catch (error) {
+      const errors = {};
+
+      if (error.response?.data?.errors) {
+        // Laravel validation errors
+        Object.keys(error.response.data.errors).forEach(key => {
+          errors[key] = error.response.data.errors[key][0];
+        });
+      } else {
+        errors.overall = 'We are having a trouble sending your password reset link. Please try again.';
+      }
+
+      state.errors.value = error.response?.data?.errors || {};
+      return { success: false, errors };
+    } finally {
+      state.loading.value = false;
+    }
+  };
+
+  const resetPassword = async function (payload)
+  {
+    const response = await sender.sendRequest('POST', RESET_PASSWORD, {
+      token: payload.token,
+      email: payload.email,
+      password: payload.password,
+      password_confirmation: payload.password_confirmation,
+    });
+
+    if (response.success) {
+      return {success: true, message: response.message || 'Password reset successfully.'};
+    } else {
+      return {success: false, errors: response.errors};
+    }
+  }
+
   return {
     register,
     login,
     logout,
     verifyEmail,
+    forgotPassword,
+    resetPassword,
   };
 }

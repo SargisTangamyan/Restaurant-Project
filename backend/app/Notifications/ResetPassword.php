@@ -16,15 +16,10 @@ class ResetPassword extends Notification implements ShouldQueue
      */
     public function __construct(
         private readonly string $token,
+        private readonly string $redirect_url,
     )
     {
         //
-    }
-
-    private function generateUrl(string $token, string $email): string
-    {
-        // TODO: Should be changed with the link of the vue
-        return route('account.reset_password', ['token' => $token, 'email' => $email]);
     }
 
     /**
@@ -42,12 +37,22 @@ class ResetPassword extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $resetUrl = $this->generateUrl($this->token, $notifiable->email);
+        // We manually build the query string to include token and email
+        $queryParams = http_build_query([
+            'token' => $this->token,
+            'email' => $notifiable->email,
+        ]);
+
+        // Check if the redirect_url already has parameters to use the correct separator
+        $separator = str_contains($this->redirect_url, '?') ? '&' : '?';
+
+        $resetUrl = $this->redirect_url . $separator . $queryParams;
 
         return (new MailMessage)
             ->subject('Password Reset')
-            ->line('Here you can find the link for resetting your password.')
-            ->action('Reset Password', url($resetUrl))
+            ->line('Here you can find the link for resetting your password jkl.')
+            ->action('Reset Password', $resetUrl)
+            ->line('This link will allow you to choose a new password.')
             ->line('Thank you for using our application!');
     }
 }

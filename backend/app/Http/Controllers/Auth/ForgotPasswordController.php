@@ -58,13 +58,20 @@ class ForgotPasswordController extends Controller
             // Inserting or Updating if the token exists into the DB
             $this->storeTokenIntoDB($token, $user->email);
 
+            // Defining the redirect url
+            $redirect_url = $request->redirect_url ?? route('account.reset_password');
+
             // Send the token
-            $user->notify(new ResetPassword($token));
+            $user->notify(new ResetPassword($token, $redirect_url));
         }
 
 
         return $this->responder->send(
                 'Reset Link is sent to your email',
+                [
+                    'token' => $token,
+                    'redirect' => $redirect_url,
+                ]
             );
     }
 
@@ -75,7 +82,7 @@ class ForgotPasswordController extends Controller
         if (! $record) {
             return $this->responder->send(
                 'Failed to Reset Your Password',
-                ['errors' => 'Invalid email or token.'],
+                ['overall' => 'Invalid email or token.'],
                 ResponseStatus::UNAUTHORIZED->value,
             );
         }

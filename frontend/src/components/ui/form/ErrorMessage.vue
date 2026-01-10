@@ -3,7 +3,7 @@
 // VUE
 import { defineProps } from 'vue'
 
-const props = defineProps({
+defineProps({
   message: {
     type: String,
     required: true,

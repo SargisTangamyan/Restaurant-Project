@@ -111,6 +111,12 @@ const loginUser = handleSubmit(async (credentials) => {
               <p v-if="errors.password" class="text-red-600 text-sm mt-1">{{ errors.password }}</p>
             </div>
 
+            <div class="flex justify-end">
+              <router-link :to="{name: 'forgot_password'}" class="text-sm text-cgreen hover:underline">
+                Forgot Password?
+              </router-link>
+            </div>
+
             <!-- Submit Button -->
             <button type="submit"
                     class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition">

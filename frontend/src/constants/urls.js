@@ -1,12 +1,15 @@
 // BASE URL
 const BASE_URL = 'http://localhost:8000/api';
+const HOME_URL = 'http://localhost:5173'
 
 // AUTHENTICATION
 export const REGISTER_URL = `${BASE_URL}/account/register`;
 export const LOGIN_URL = `${BASE_URL}/account/login`;
 export const LOGOUT_URL = `${BASE_URL}/account/logout`;
-
-export const REDIRECT_URL = 'http://localhost:5173/verify-email';
+export const FORGOT_PASSWORD = `${BASE_URL}/account/forgot-password`;
+export const REDIRECT_URL = `${HOME_URL}/verify-email`;
+export const RESET_PASSWORD = `${BASE_URL}/account/reset-password`;
+export const RESET_PASSWORD_REDIRECT = `${HOME_URL}/account/reset-password`;
 
 
 // CATEGORY

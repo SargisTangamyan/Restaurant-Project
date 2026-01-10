@@ -45,6 +45,8 @@ export const useAuthStore = defineStore('auth', () => {
     register: authActions.register,
     login: authActions.login,
     logout: authActions.logout,
+    forgotPassword: authActions.forgotPassword,
+    resetPassword: authActions.resetPassword,
     verifyEmail: authActions.verifyEmail,
 
     // Profile Actions

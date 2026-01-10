@@ -2,14 +2,21 @@
 
 // Vue
 import { onBeforeMount, ref, watch } from 'vue';
-import { useAuthStore } from '@/stores/index.js';
+
+// STORES
+import {useAuthStore, useLoadingStore} from '@/stores/index.js';
 
 // COMPONENTS
 import TheHeader from '@/layouts/TheHeader.vue'
 import TheFooter from '@/layouts/TheFooter.vue'
 import MessageBox from "@/components/message/MessageBox.vue";
+import TheLoader from "@/components/ui/TheLoader.vue";
 
+// INIT
 const authStore = useAuthStore();
+const loadingStore = useLoadingStore()
+
+// REFS
 const isInitialized = ref(false);
 
 watch(isInitialized, (val) => {
@@ -36,12 +43,15 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen">
-    <the-header />
-    <router-view />
+  <div class="flex flex-col justify-between min-h-screen">
+    <div>
+      <the-header />
+      <router-view />
+    </div>
     <the-footer />
   </div>
   <message-box v-if="isInitialized"/>
+  <the-loader v-if="loadingStore.isLoading"/>
 </template>
 
 <style scoped>
