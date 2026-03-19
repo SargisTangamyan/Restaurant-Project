@@ -54,7 +54,7 @@
 
 5. Start Docker services (database, cache, etc.):
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 6. Run database migrations:
@@ -73,6 +73,30 @@
    ```
 
 The API will be available at `http://localhost:8000`
+
+### Queue Setup
+
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+
+2. Run the following command to start the queue worker:
+   ```bash
+   php_artisan queue:work
+   ```
+
+### Stripe Setup
+
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+
+2. Run the following command to start the Stripe webhook listener:
+   ```bash
+   stripe listen --forward-to http://localhost:8000/api/stripe/webhook
+   ```
 
 ### Frontend Setup
 

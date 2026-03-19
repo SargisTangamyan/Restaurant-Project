@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import {nextTick, ref} from 'vue'
 
 export const useMessageStore = defineStore('message', () => {
   // Toast message state
@@ -27,6 +27,20 @@ export const useMessageStore = defineStore('message', () => {
     message.value = msg
     type.value = msgType
     visible.value = true
+  }
+
+  /**
+   * Show the toast message and wait until it's actually rendered as visible
+   * (useful for keeping global loader until the user can see the toast)
+   */
+  const showMessageAdnWaitUntilVisible = async (msg, msgType='success') => {
+    showMessage(msg, msgType)
+
+    // Wait for Vue to apply reactive changes + render MessageBox
+    await nextTick();
+
+    // In case MessageBox uses transitions / v-if timing, yield one frame
+    await new Promise(resolve => requestAnimationFrame(() => resolve(true)))
   }
 
   /**
@@ -103,6 +117,7 @@ export const useMessageStore = defineStore('message', () => {
     type,
     visible,
     showMessage,
+    showMessageAdnWaitUntilVisible,
     hideMessage,
 
     // Confirmation dialog

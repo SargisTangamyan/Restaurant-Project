@@ -152,6 +152,7 @@ const router = createRouter({
 
     { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
   ],
+  scrollBehavior: () => ({ top: 0 }),
 })
 
 router.beforeEach(async (to, from, next) => {

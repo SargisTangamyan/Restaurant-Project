@@ -8,8 +8,18 @@ export const useLoadingStore = defineStore('loader', () => {
     isLoading.value = status;
   }
 
+  function startLoading() {
+    setLoading();
+  }
+
+  function stopLoading() {
+    setLoading(false);
+  }
+
   return {
     isLoading,
     setLoading,
+    startLoading,
+    stopLoading,
   }
 })

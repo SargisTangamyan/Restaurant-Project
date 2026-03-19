@@ -8,3 +8,15 @@
 8) Dish Update Request
 9) Dish tests
 10) Save the data in lowercase in categories and in ingredients
+
+11) Add a new CRUD for the restaurants
+12) connect dishes with restaurants
+13) Add a new authentication system for companies
+14) add role company
+15) manage the ingredient allergen part
+16) Write a system to calculate the match
+17) Base on the match, show whether the ingredient is safe, needs modification or should be changed
+18) Add review system
+19) Add a recommendation system
+20) Add google authentication part
+

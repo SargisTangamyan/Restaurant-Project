@@ -3,16 +3,12 @@
 4) Category delete has a bug showing the all categories
 5) The pagination should be changed
 6) Add product implementation, incomplete, without validation
-7) Search not working as intended especially with refresh
+7) Search not working as intended, especially when the async request is not finished (the options are shown even after the models have been found)
 
 For Now
-1) After sign in the page should be taken up, now it is at the bottom
-2) Show All Categories when clicking the button
-
-4) Show Safe, Modify and Avoid in the menu page
-5) Show how the food matches to the user's preferences
-6) Information about the user's allergies in the user's profile page - done
-7) Lifestyle & preferences of the user in the user's profile page - done
-8) Delete test dishes, ingredients and categories
-9) Give restaurant Listing
-10) Mention the restaurant name in the dish box
+1) Show All Categories when clicking the button
+2) Delete test dishes, ingredients and categories
+3) The redirection page after authentication should be the one on which the user clicked previously
+4) Styling should be changed to be flexible
+5) Restaurant page needs modification
+6) My orders page has a bug; it shows that no orders are place even that I have placed

@@ -1,25 +1,36 @@
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/index.js';
-import { useMessageStore } from '@/stores/index.js';
+import {
+  useAuthStore,
+  useMessageStore,
+  useLoadingStore
+} from '@/stores/index.js';
 
 export function useAuthActions() {
   const router = useRouter();
   const authStore = useAuthStore();
+  const loadingStore = useLoadingStore();
   const messageStore = useMessageStore();
 
   const logout = async () => {
-    try {
-      // Redirect to homepage
-      await router.push({ name: 'home' });
+    // Start Loading
+    loadingStore.startLoading();
 
+    try {
       // Call auth store logout
       await authStore.logout();
 
-      // Show success message
-      messageStore.showMessage('You have been logged out successfully', 'success');
+      // Redirect to homepage
+      await router.replace({ name: 'home' });
+
+      // Show a success message
+      await messageStore.showMessageAdnWaitUntilVisible('You have been logged out successfully', 'success');
     } catch (error) {
       console.error('Logout error:', error);
-      messageStore.showMessage('An error occurred during logout', 'error');
+      await router.push({ name: 'home' })
+
+      await messageStore.showMessageAdnWaitUntilVisible('An error occurred during logout', 'error');
+    } finally {
+      loadingStore.stopLoading();
     }
   };
 
