@@ -11,6 +11,7 @@ use App\Http\Controllers\DishController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\StripePaymentController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\WishlistController;
@@ -98,6 +99,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/stripe/verify-payment', [StripePaymentController::class, 'verifyPayment']);
     Route::post('/stripe/cancel-payment', [StripePaymentController::class, 'cancelPayment']);
 });
+
+// Restaurant
+Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants.index');
 
 // Stripe Webhook
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);

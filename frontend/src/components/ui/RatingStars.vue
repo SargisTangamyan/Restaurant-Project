@@ -1,6 +1,6 @@
 <script setup>
 
-import { defineProps } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
   stars: {
@@ -9,11 +9,21 @@ const props = defineProps({
   }
 });
 
+function roundToHalf(num) {
+  return Math.round(num * 2) / 2;
+}
 
-const halfStar = !Number.isInteger(props.stars)
+const stars = computed(() => roundToHalf(props.stars));
 
-const completeStars = halfStar ? props.stars - 0.5 : props.stars;
-const emptyStars = halfStar ? 4 - completeStars : 5 - completeStars;
+const halfStar = computed(() => !Number.isInteger(stars.value));
+
+const completeStars = computed(() =>
+  halfStar.value ? stars.value - 0.5 : stars.value
+);
+
+const emptyStars = computed(() =>
+  halfStar.value ? 4 - completeStars.value : 5 - completeStars.value
+);
 
 </script>
 
