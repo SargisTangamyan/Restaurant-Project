@@ -3,34 +3,20 @@
 // COMPONENTS
 import RatingStars from "@/components/ui/RatingStars.vue";
 import AddToCartButton from "@/components/cart/AddToCartButton.vue";
+import AllergyStatusBadge from "@/components/ui/AllergyStatusBadge.vue";
 
 // URLS
 import { STORAGE } from '@/constants/urls.js'
 
 // PROPS
-defineProps({
+const props = defineProps({
   dish: {
     required: true,
     type: Object,
   }
 })
 
-// STATUS CONFIG
-const STATUSES = [
-  { label: 'Safe',   class: 'bg-green-500', match: [70, 95] },
-  { label: 'Modify', class: 'bg-[#97a899]', match: [40, 69] },
-  { label: 'Avoid',  class: 'bg-red-500',   match: [10, 39] }
-]
-
-// HELPERS
-const randomInt = (min, max) =>
-  Math.floor(Math.random() * (max - min + 1)) + min
-
-// RANDOM STATUS (once)
-const status = STATUSES[Math.floor(Math.random() * STATUSES.length)]
-
-// RANDOM MATCH BASED ON STATUS
-const match = randomInt(status.match[0], status.match[1])
+const matchScore = props.dish.match_score ?? null
 
 </script>
 
@@ -49,11 +35,7 @@ const match = randomInt(status.match[0], status.match[1])
       </router-link>
 
       <div class="absolute top-2 left-2 w-fit">
-        <div class="text-white w-fit px-3 py-1 rounded-md"
-          :class="status.class"
-        >
-          {{status.label}}
-        </div>
+        <allergy-status-badge :status="dish.allergy_status ?? null" />
       </div>
 
       <!-- Product Options -->
@@ -81,8 +63,8 @@ const match = randomInt(status.match[0], status.match[1])
 
     <!-- Product Info -->
     <div class="flex flex-col flex-grow p-4">
-      <div class="mb-2 bg-cgreen text-white w-fit text-xs px-3 py-1 rounded-md">
-        Match {{match}}%
+      <div v-if="matchScore !== null" class="mb-2 bg-cgreen text-white w-fit text-xs px-3 py-1 rounded-md">
+        Match {{ matchScore }}%
       </div>
 
       <span class="text-sm text-gray-400">{{ dish.category.name }}</span>

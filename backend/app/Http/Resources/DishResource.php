@@ -31,6 +31,8 @@ class DishResource extends JsonResource
             'image' => $this->image ? Storage::url($this->image) : null,
             'thumbnail' => $this->thumbnail ? Storage::url($this->thumbnail) : null,
             'category' => new CategoryResource($this->category),
+            'allergy_status' => $this->allergy_status ?? null,
+            'match_score'    => $this->match_score ?? null,
             $this->mergeWhen($this->showIngredients, [
                 'ingredients' => IngredientResource::collection($this->ingredients),
             ]),

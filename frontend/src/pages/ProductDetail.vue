@@ -11,6 +11,7 @@ import TrendingList from "@/components/detail/trending/TrendingList.vue";
 import ReviewContainer from "@/components/detail/review/ReviewContainer.vue";
 import TheLoader from "@/components/ui/TheLoader.vue";
 import AddToCartButton from "@/components/cart/AddToCartButton.vue";
+import AllergyStatusBadge from "@/components/ui/AllergyStatusBadge.vue";
 
 // VUE
 import {ref, defineProps, onMounted, computed, watch} from 'vue';
@@ -21,17 +22,23 @@ import {useRouter} from "vue-router";
 const router = useRouter();
 
 // STORE
-import {useDishStore} from "@/stores/index.js";
+import {useDishStore, useAuthStore} from "@/stores/index.js";
 import {useCartStore} from "@/stores/index.js";
 
 const cartStore = useCartStore();
 const dishStore = useDishStore();
+const authStore = useAuthStore();
+
+// API
+import { sender } from '@/api/Sender.js';
+import { ALLERGIES } from '@/constants/urls.js';
 
 // REF
 const isLoading = ref(true);
 const dish = ref(null);
 const count = ref(1);
 const fetchError = ref(false);
+const userAllergyIds = ref(new Set());
 
 // COMPUTED
 const isDishLoaded = computed(() => dish.value !== null && !fetchError.value);
@@ -74,9 +81,17 @@ onMounted(async () => {
     // Fetch cart only if not loaded (non-blocking)
     if (!cartStore.getIsLoaded) {
       cartStore.fetchCart().catch(err => {
-        // Don't block page load if cart fetch fails
         console.warn('Failed to load cart:', err)
       })
+    }
+
+    // Fetch user's personal allergies (non-blocking)
+    if (authStore.isAuthenticated) {
+      sender.sendRequest('GET', ALLERGIES).then(res => {
+        if (res.success) {
+          userAllergyIds.value = new Set(res.data.allergies.map(i => i.id));
+        }
+      });
     }
 
     // Fetch dish details
@@ -107,10 +122,8 @@ onMounted(async () => {
         <!-- Second 2 columns -->
         <div
           class="col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col gap-6">
-          <!-- Discount Tag -->
-          <div class="px-4 py-2 bg-[#97a899] w-fit text-white rounded-xl">
-            Modify
-          </div>
+          <!-- Allergy Status -->
+          <allergy-status-badge :status="dish.allergy_status ?? null" />
 
           <!-- Product Title -->
           <div>
@@ -164,7 +177,7 @@ onMounted(async () => {
             </a>
           </div>
 
-          <ingredient-list v-if="dish.ingredients" :ingredients="dish.ingredients"/>
+          <ingredient-list v-if="dish.ingredients" :ingredients="dish.ingredients" :user-allergy-ids="userAllergyIds"/>
         </div>
 
         <!-- Last Column -->

@@ -51,3 +51,8 @@ export const PROFILE_IMAGE_DELETE = `${BASE_URL}/profile/image`;
 export const PROFILE_PASSWORD_UPDATE = `${BASE_URL}/account/change-password`;
 export const PROFILE_DELETE = `${BASE_URL}/account/delete-account`;
 
+// ALLERGIES
+export const ALLERGIES = `${BASE_URL}/profile/allergies`;
+export const ALLERGY_ADD = (ingredientId) => `${BASE_URL}/profile/allergies/${ingredientId}`;
+export const ALLERGY_REMOVE = (ingredientId) => `${BASE_URL}/profile/allergies/${ingredientId}`;
+

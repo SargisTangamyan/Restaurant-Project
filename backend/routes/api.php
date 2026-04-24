@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\StripePaymentController;
 use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\UserAllergyController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -62,6 +63,13 @@ Route::apiResource('/ingredients', IngredientController::class);
 Route::get('/dishes/{dish}/related', [DishController::class, 'related'])->name('dishes.related');
 Route::get('dishes/search', [DishController::class, 'search'])->name('dishes.search');
 Route::apiResource('/dishes', DishController::class);
+
+// User Allergies
+Route::prefix('/profile/allergies')->controller(UserAllergyController::class)->middleware('auth:sanctum')->name('allergies.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/{ingredient}', 'store')->name('store');
+    Route::delete('/{ingredient}', 'destroy')->name('destroy');
+});
 
 // Wishlist
 Route::prefix('/wishlist')->controller(WishlistController::class)->middleware('auth:sanctum')->name('wishlist.')->group(function () {

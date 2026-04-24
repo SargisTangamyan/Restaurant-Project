@@ -49,7 +49,27 @@ class DishController extends Controller
             $perPage = $request->limit;
         }
 
-        return new DishCollection(Dish::filter($filters)->paginate($perPage));
+        $allergyIds = auth()->check()
+            ? auth()->user()->allergyIngredients()->pluck('ingredients.id')->toArray()
+            : [];
+
+        $dishes = Dish::with('ingredients')->filter($filters)->paginate($perPage);
+
+        $dishes->each(function ($dish) use ($allergyIds) {
+            $total   = $dish->ingredients->count();
+            $matches = $dish->ingredients->whereIn('id', $allergyIds)->count();
+
+            $dish->allergy_status = match (true) {
+                $matches === 0 => 'safe',
+                $matches === 1 => 'modify',
+                default        => 'avoid',
+            };
+            $dish->match_score = $total > 0
+                ? (int) round((($total - $matches) / $total) * 100)
+                : 100;
+        });
+
+        return new DishCollection($dishes);
     }
 
     public function search(Request $request)
@@ -116,7 +136,25 @@ class DishController extends Controller
      */
     public function show(Dish $dish)
     {
-        return (new DishResource($dish))->withIngredients();
+        $dish->loadMissing('ingredients');
+        $allergyIds = auth()->check()
+            ? auth()->user()->allergyIngredients()->pluck('ingredients.id')->toArray()
+            : [];
+
+        $total   = $dish->ingredients->count();
+        $matches = $dish->ingredients->whereIn('id', $allergyIds)->count();
+
+        $dish->allergy_status = match (true) {
+            $matches === 0 => 'safe',
+            $matches === 1 => 'modify',
+            default        => 'avoid',
+        };
+
+        $dish->match_score = $total > 0
+            ? (int) round((($total - $matches) / $total) * 100)
+            : 100;
+
+        return (DishResource::make($dish))->withIngredients();
     }
 
     public function related(Dish $dish, Request $request)

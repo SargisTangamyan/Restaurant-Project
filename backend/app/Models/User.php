@@ -73,4 +73,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+
+    public function allergyIngredients(): BelongsToMany
+    {
+        return $this->belongsToMany(Ingredient::class, 'user_allergic_ingredients')->withTimestamps();
+    }
 }

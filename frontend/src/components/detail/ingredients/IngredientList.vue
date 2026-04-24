@@ -10,7 +10,11 @@ defineProps({
   ingredients: {
     required: true,
     type: Array,
-  }
+  },
+  userAllergyIds: {
+    type: Set,
+    default: () => new Set(),
+  },
 })
 
 </script>
@@ -24,7 +28,12 @@ defineProps({
     </p>
 
     <div class="grid grid-cols-2 gap-x-4 gap-y-3 text-gray-700">
-        <ingredient-item v-for="(ingredient, index) in ingredients" :key="index" :ingredient="ingredient" />
+        <ingredient-item
+          v-for="(ingredient, index) in ingredients"
+          :key="index"
+          :ingredient="ingredient"
+          :is-personal-allergy="userAllergyIds.has(ingredient.id)"
+        />
     </div>
   </div>
 </template>
