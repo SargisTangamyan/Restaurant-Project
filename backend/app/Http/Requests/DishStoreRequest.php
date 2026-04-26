@@ -22,13 +22,16 @@ class DishStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'image' => 'required|image|max:10240', // 10MB
-            'ingredients' => 'nullable|array',
-            'ingredients.*.id' => 'required|exists:ingredients,id',
+            'restaurant_id'          => 'required|exists:restaurants,id',
+            'category_id'            => 'required|exists:categories,id',
+            'slug'                   => 'nullable|string|max:255|unique:dishes,slug',
+            'name'                   => 'required|string|max:255',
+            'description'            => 'nullable|string',
+            'price'                  => 'required|numeric|min:0',
+            'image'                  => 'required|image|max:10240',
+            'is_available'           => 'boolean',
+            'ingredients'            => 'nullable|array',
+            'ingredients.*.id'       => 'required|exists:ingredients,id',
             'ingredients.*.quantity' => 'nullable|decimal:0,2|max:50',
         ];
     }

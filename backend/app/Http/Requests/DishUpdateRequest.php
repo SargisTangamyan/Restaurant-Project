@@ -22,13 +22,16 @@ class DishUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => 'exists:categories,id',
-            'name' => 'string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'numeric|min:0',
-            'image' => 'nullable|image|max:2048', // 2MB
-            'ingredients' => 'nullable|array',
-            'ingredients.*.id' => 'exists:ingredients,id',
+            'restaurant_id'          => 'exists:restaurants,id',
+            'category_id'            => 'exists:categories,id',
+            'slug'                   => 'string|max:255|unique:dishes,slug,' . $this->dish?->id,
+            'name'                   => 'string|max:255',
+            'description'            => 'nullable|string',
+            'price'                  => 'numeric|min:0',
+            'image'                  => 'nullable|image|max:2048',
+            'is_available'           => 'boolean',
+            'ingredients'            => 'nullable|array',
+            'ingredients.*.id'       => 'exists:ingredients,id',
             'ingredients.*.quantity' => 'decimal:0,2|max:50',
         ];
     }

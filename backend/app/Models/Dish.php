@@ -6,26 +6,54 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class Dish extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'dishes';
 
     protected $fillable = [
+        'slug',
         'category_id',
+        'restaurant_id',
         'name',
         'description',
         'price',
         'image',
         'thumbnail',
+        'average_rating',
+        'reviews_count',
+        'is_available',
     ];
+
+    protected $casts = [
+        'price'          => 'decimal:2',
+        'average_rating' => 'decimal:1',
+        'reviews_count'  => 'integer',
+        'is_available'   => 'boolean',
+    ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Dish $dish) {
+            if (empty($dish->slug)) {
+                $dish->slug = Str::slug($dish->name);
+            }
+        });
+    }
 
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function restaurant(): BelongsTo
+    {
+        return $this->belongsTo(Restaurant::class);
     }
 
     public function ingredients(): BelongsToMany
@@ -53,7 +81,6 @@ class Dish extends Model
                 }
             }
         )->when(
-        // Keep backward compatibility with old 'price' filter
             !isset($filters['min_price']) && !isset($filters['max_price']) && isset($filters['price']),
             fn ($query, $value) => $query->where('price', '<=', $filters['price'])
         )->when(
@@ -63,6 +90,12 @@ class Dish extends Model
             $filters['limit'] ?? false,
             fn ($query, $value) => $query->limit($value)
         )->when(
+            $filters['restaurant_id'] ?? false,
+            fn ($query, $value) => $query->where('restaurant_id', $value)
+        )->when(
+            isset($filters['is_available']),
+            fn ($query) => $query->where('is_available', $filters['is_available'])
+        )->when(
             $filters['ingredients'] ?? false,
             fn ($query) => $query->whereHas('ingredients', function ($query) use ($filters) {
                 $query->whereIn('ingredients.id', $filters['ingredients']);
@@ -70,7 +103,6 @@ class Dish extends Model
         )->when(
             !empty($filters['categories']),
             function ($query) use ($filters) {
-                // Collect all children recursively
                 $allCategoryIds = [];
                 $categories = Category::with('children')->findMany($filters['categories']);
 
@@ -82,17 +114,16 @@ class Dish extends Model
             }
         );
 
-        // Apply sorting
         if (!empty($filters['sort_by'])) {
             $direction = strtolower($filters['sort_direction'] ?? 'asc');
-            // Validate direction
             $direction = in_array($direction, ['asc', 'desc']) ? $direction : 'asc';
 
             match ($filters['sort_by']) {
-                'price' => $query->orderBy('price', $direction),
-                'name' => $query->orderBy('name', $direction),
+                'price'      => $query->orderBy('price', $direction),
+                'name'       => $query->orderBy('name', $direction),
+                'rating'     => $query->orderBy('average_rating', $direction),
                 'created_at' => $query->orderBy('created_at', $direction),
-                default => $query->latest(),
+                default      => $query->latest(),
             };
         } else {
             $query->latest();
@@ -101,7 +132,7 @@ class Dish extends Model
         return $query;
     }
 
-    public function scopeHasPattern (Builder $query, string $pattern): Builder
+    public function scopeHasPattern(Builder $query, string $pattern): Builder
     {
         return $query->where('name', 'like', '%' . $pattern . '%');
     }
