@@ -110,6 +110,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Restaurant
 Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants.index');
+Route::get('/restaurants/{restaurant:slug}', [RestaurantController::class, 'show'])->name('restaurants.show');
+Route::get('/restaurants/{restaurant:slug}/dishes', [RestaurantController::class, 'dishes'])->name('restaurants.dishes');
 
 // Stripe Webhook
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);

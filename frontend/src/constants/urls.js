@@ -56,3 +56,8 @@ export const ALLERGIES = `${BASE_URL}/profile/allergies`;
 export const ALLERGY_ADD = (ingredientId) => `${BASE_URL}/profile/allergies/${ingredientId}`;
 export const ALLERGY_REMOVE = (ingredientId) => `${BASE_URL}/profile/allergies/${ingredientId}`;
 
+// RESTAURANTS
+export const RESTAURANTS = `${BASE_URL}/restaurants`;
+export const RESTAURANT_BY_SLUG = (slug) => `${BASE_URL}/restaurants/${slug}`;
+export const RESTAURANT_DISHES = (slug) => `${BASE_URL}/restaurants/${slug}/dishes`;
+

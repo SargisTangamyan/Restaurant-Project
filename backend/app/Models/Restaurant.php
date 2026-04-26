@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Restaurant extends Model
 {
@@ -13,12 +14,22 @@ class Restaurant extends Model
 
     protected $fillable = [
         'owner_id',
+        'slug',
         'name',
         'description',
         'image',
         'phone_number',
         'rating',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Restaurant $restaurant) {
+            if (empty($restaurant->slug)) {
+                $restaurant->slug = Str::slug($restaurant->name);
+            }
+        });
+    }
 
     protected $casts = [
         'rating' => 'decimal:1',

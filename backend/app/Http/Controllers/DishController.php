@@ -34,6 +34,8 @@ class DishController extends Controller
             'sort_by',
             'sort_direction',
             'limit',
+            'restaurant_id',
+            'is_available',
         ]);
 
         if ($request->ingredients) {
@@ -114,12 +116,15 @@ class DishController extends Controller
         }
 
         $dish = Dish::create([
-            'category_id' => $request->category_id,
-            'name' => $request->name,
-            'description' => $request->description,
-            'price' => $request->price,
-            'image' => $imagePaths['original'],
-            'thumbnail' => $imagePaths['thumbnail'],
+            'restaurant_id' => $request->restaurant_id,
+            'category_id'   => $request->category_id,
+            'slug'          => $request->slug,
+            'name'          => $request->name,
+            'description'   => $request->description,
+            'price'         => $request->price,
+            'image'         => $imagePaths['original'],
+            'thumbnail'     => $imagePaths['thumbnail'],
+            'is_available'  => $request->boolean('is_available', true),
         ]);
 
         if ($request->has('ingredients')) {
@@ -181,7 +186,16 @@ class DishController extends Controller
      */
     public function update(DishUpdateRequest $request, Dish $dish)
     {
-        $dish->update($request->only(['category_id', 'name', 'description', 'price', 'image']));
+        $dish->update($request->only([
+            'restaurant_id',
+            'category_id',
+            'slug',
+            'name',
+            'description',
+            'price',
+            'image',
+            'is_available',
+        ]));
 
         if ($request->has('ingredients')) {
             $ingredients = collect($request->input('ingredients'))

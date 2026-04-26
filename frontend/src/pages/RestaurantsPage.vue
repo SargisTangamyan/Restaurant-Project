@@ -87,7 +87,7 @@ onMounted(fetchRestaurants);
               <div class="p-5">
                 <div class="flex items-start justify-between gap-4">
                   <div class="min-w-0">
-                    <router-link to="dishes" class="block">
+                    <router-link :to="{ name: 'restaurant_dishes', params: { slug: r.slug } }" class="block">
                       <h4 class="truncate text-lg font-bold text-gray-900 transition-colors group-hover:text-emerald-600">
                         {{ r.name }}
                       </h4>
@@ -122,7 +122,7 @@ onMounted(fetchRestaurants);
                   </div>
 
                   <router-link
-                    to="dishes"
+                    :to="{ name: 'restaurant_dishes', params: { slug: r.slug } }"
                     class="inline-flex items-center rounded-full bg-gray-900 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-emerald-600"
                   >
                     View dishes

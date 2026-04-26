@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Restaurant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class RestaurantFactory extends Factory
 {
@@ -27,9 +28,12 @@ class RestaurantFactory extends Factory
 
         $imageIndex++;
 
+        $name = array_shift($names) ?? $this->faker->unique()->company();
+
         return [
             'owner_id' => User::factory(),
-            'name' => array_shift($names) ?? $this->faker->unique()->company(),
+            'name' => $name,
+            'slug' => Str::slug($name),
             'description' => $this->faker->sentence(12),
             'image' => $image,
             'phone_number' => $this->faker->phoneNumber(),

@@ -1,6 +1,6 @@
 <script setup>
 // VUE
-import {ref, onMounted, watch, computed} from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 
 // COMPONENTS
 import DishBox from "@/components/dish/DishBox.vue";
@@ -8,28 +8,42 @@ import ThePagination from "@/components/ui/ThePagination.vue";
 import TheLoader from "@/components/ui/TheLoader.vue";
 
 // COMPOSABLES
-import { useQueryFunctionality} from "@/composables/useQueryFunctionality.js";
-const {writeQuery} = useQueryFunctionality();
+import { useQueryFunctionality } from "@/composables/useQueryFunctionality.js";
+const { writeQuery } = useQueryFunctionality();
 
 // STORES
-import {useDishStore, useCartStore} from "@/stores/index.js";
+import { useDishStore, useCartStore } from "@/stores/index.js";
 
 const dishStore = useDishStore();
 const cartStore = useCartStore();
 
 // ROUTE
-import {useRoute} from "vue-router";
-
+import { useRoute } from "vue-router";
 const route = useRoute();
+
+// PROPS
+const props = defineProps({
+  restaurantId: {
+    type: [Number, String],
+    default: null,
+  },
+});
 
 // REF
 const dishes = ref([]);
 const isLoading = ref(true);
 
 // COMPUTED
-// Convert cart chosen IDs into a reactive Set for quick lookups
 const cartIdSet = computed(() => new Set(cartStore.getChosenIds));
-const pagination = computed(() => dishStore.getPagination)
+const pagination = computed(() => dishStore.getPagination);
+
+const buildFilters = () => {
+  const filters = { ...route.query };
+  if (props.restaurantId) {
+    filters.restaurant_id = props.restaurantId;
+  }
+  return filters;
+};
 
 // WATCH
 watch(
@@ -39,29 +53,28 @@ watch(
   }
 );
 
-// Watch only for page changes (filters are handled in FilterSidebar now)
-watch(() => route.query, async () => {
-  isLoading.value = true;
-  await dishStore.fetchDishes(route.query);
-  isLoading.value = false;
-  window.scrollTo({
-    top: 0,
-  });
-})
+watch(
+  () => [route.query, props.restaurantId],
+  async () => {
+    isLoading.value = true;
+    await dishStore.fetchDishes(buildFilters());
+    isLoading.value = false;
+    window.scrollTo({ top: 0 });
+  }
+);
 
 // METHODS
 const changePage = (page) => {
   writeQuery('page', page);
-}
+};
 
 // MOUNTING
 onMounted(async () => {
-  const res = await dishStore.fetchDishes(route.query);
+  const res = await dishStore.fetchDishes(buildFilters());
   if (res.success) {
     dishes.value = res.data;
   }
 
-  // Load cart
   if (!cartStore.getIsLoaded) {
     await cartStore.fetchCart();
   }
@@ -97,7 +110,6 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- No dishes found message -->
     <div v-else class="flex flex-col items-center justify-center py-10 text-gray-500">
       <p class="text-lg font-medium">No dishes found</p>
       <p class="text-sm">Try adjusting your filters or search.</p>

@@ -27,6 +27,12 @@ const router = createRouter({
       component: () => import('@/pages/RestaurantsPage.vue'),
     },
     {
+      path: '/restaurants/:slug/dishes',
+      name: 'restaurant_dishes',
+      component: () => import('@/pages/MenuPage.vue'),
+      props: true,
+    },
+    {
       path: '/account',
       meta: {requiresUnauth: true},
       children: [
