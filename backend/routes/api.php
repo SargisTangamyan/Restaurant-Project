@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DishController;
+use App\Http\Controllers\DishReviewController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
@@ -63,6 +64,14 @@ Route::apiResource('/ingredients', IngredientController::class);
 Route::get('/dishes/{dish}/related', [DishController::class, 'related'])->name('dishes.related');
 Route::get('dishes/search', [DishController::class, 'search'])->name('dishes.search');
 Route::apiResource('/dishes', DishController::class);
+
+// Dish Reviews
+Route::get('/dishes/{dish}/reviews', [DishReviewController::class, 'index'])->name('dish_reviews.index');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/dishes/{dish}/reviews', [DishReviewController::class, 'store'])->name('dish_reviews.store');
+    Route::put('/dishes/{dish}/reviews/{review}', [DishReviewController::class, 'update'])->name('dish_reviews.update');
+    Route::delete('/dishes/{dish}/reviews/{review}', [DishReviewController::class, 'destroy'])->name('dish_reviews.destroy');
+});
 
 // User Allergies
 Route::prefix('/profile/allergies')->controller(UserAllergyController::class)->middleware('auth:sanctum')->name('allergies.')->group(function () {

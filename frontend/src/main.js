@@ -9,7 +9,7 @@ import router from './router'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCaretDown, faCaretUp, faXmark, faMagnifyingGlass, faListCheck, faEye,
   faHeart, faPlus, faMinus, faStar, faStarHalfAlt, faStarHalfStroke, faCircle,
-  faShuffle, faCheck, faUtensils  } from '@fortawesome/free-solid-svg-icons'
+  faShuffle, faCheck, faUtensils, faPencil, faTrash, faCircleCheck  } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {useLanguageStore} from "@/stores/config/language.js";
 import {useCurrencyStore} from "@/stores/index.js";
@@ -22,7 +22,7 @@ import TheLoader from '@/components/ui/TheLoader.vue'
 
 // Add icons to the library
 library.add(faCaretDown, faCaretUp, faMagnifyingGlass, faXmark, faListCheck, faEye, faHeart, faPlus, faMinus,
-  faStar, faStarHalfAlt, faStarHalfStroke, faCircle, faShuffle, faCheck, faUtensils );
+  faStar, faStarHalfAlt, faStarHalfStroke, faCircle, faShuffle, faCheck, faUtensils, faPencil, faTrash, faCircleCheck );
 
 const app = createApp(App);
 

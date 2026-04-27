@@ -72,6 +72,13 @@ const props = defineProps({
   }
 })
 
+const refreshDish = async () => {
+  const res = await dishStore.fetchDishById(props.id);
+  if (res.success && res.data) {
+    dish.value = { ...dish.value, average_rating: res.data.average_rating, reviews_count: res.data.reviews_count };
+  }
+};
+
 // WATCH
 watch(() => props.id, async (newId) => {await fetchDish(newId);})
 
@@ -149,8 +156,8 @@ onMounted(async () => {
 
           <!-- Rating -->
           <div class="flex items-center gap-2">
-            <rating-stars :stars="3.5"/>
-            <span class="text-sm text-gray-500">23 Customer Reviews</span>
+            <rating-stars :stars="Number(dish.average_rating) || 0"/>
+            <span class="text-sm text-gray-500">{{ dish.reviews_count }} Customer {{ dish.reviews_count === 1 ? 'Review' : 'Reviews' }}</span>
           </div>
 
           <!-- Description -->
@@ -185,7 +192,7 @@ onMounted(async () => {
       </div>
 
       <!-- ✅ Review Section -->
-      <review-container/>
+      <review-container :dish="dish" @rating-updated="refreshDish"/>
     </the-box>
   </div>
   <!-- Fallback if redirect fails -->

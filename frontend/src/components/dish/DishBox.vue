@@ -81,8 +81,11 @@ const matchScore = props.dish.match_score ?? null
 
       <!-- Rating -->
       <div class="flex items-center gap-2 mt-auto">
-        <rating-stars :stars="4.5" />
-        <span class="text-sm text-gray-500">(4.5)</span>
+        <rating-stars :stars="Number(dish.average_rating) || 0" />
+        <span class="text-sm text-gray-500">
+          {{ dish.average_rating > 0 ? Number(dish.average_rating).toFixed(1) : 'No reviews' }}
+          <span v-if="dish.reviews_count > 0" class="text-gray-400">({{ dish.reviews_count }})</span>
+        </span>
       </div>
 
       <!-- Price -->

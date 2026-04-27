@@ -61,3 +61,7 @@ export const RESTAURANTS = `${BASE_URL}/restaurants`;
 export const RESTAURANT_BY_SLUG = (slug) => `${BASE_URL}/restaurants/${slug}`;
 export const RESTAURANT_DISHES = (slug) => `${BASE_URL}/restaurants/${slug}/dishes`;
 
+// REVIEWS
+export const DISH_REVIEWS = (dishId) => `${BASE_URL}/dishes/${dishId}/reviews`;
+export const DISH_REVIEW = (dishId, reviewId) => `${BASE_URL}/dishes/${dishId}/reviews/${reviewId}`;
+

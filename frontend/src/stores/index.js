@@ -8,3 +8,4 @@ export { useMessageStore } from './message/index.js';
 export { useCartStore } from './cart/index.js';
 export { useOrderStore } from './order/index.js';
 export { useLoadingStore } from './config/loader.js'
+export { useReviewStore } from './review/index.js'
