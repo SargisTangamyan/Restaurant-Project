@@ -1,0 +1,2 @@
+-- The search engine reads directly from the Laravel backend's `dishes` table.
+-- No separate seed data needed here.

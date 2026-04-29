@@ -1,0 +1,17 @@
+services:
+  engine:
+    build:
+      context: ./cpp_engine
+      dockerfile: Dockerfile
+    container_name: search-engine
+    volumes:
+      - ./.env:/app/.env:ro
+    ports:
+      - "${ENGINE_PORT:-9001}:9000"
+    networks:
+      - backend_default
+    restart: unless-stopped
+
+networks:
+  backend_default:
+    external: true   # shared with the Laravel backend stack
