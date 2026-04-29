@@ -84,6 +84,9 @@ class Dish extends Model
     public function scopeFilter(Builder $query, array $filters): Builder
     {
         $query = $query->when(
+            !empty($filters['ids']),
+            fn ($query) => $query->whereIn('id', $filters['ids'])
+        )->when(
             isset($filters['min_price']) || isset($filters['max_price']),
             function ($query) use ($filters) {
                 if (isset($filters['min_price'])) {

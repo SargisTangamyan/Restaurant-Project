@@ -14,6 +14,10 @@ return [
     |
     */
 
+    'search_engine' => [
+        'url' => env('SEARCH_ENGINE_URL', 'http://search-engine:9000'),
+    ],
+
     'stripe' => [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),

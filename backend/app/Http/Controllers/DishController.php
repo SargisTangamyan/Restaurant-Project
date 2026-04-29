@@ -10,14 +10,14 @@ use App\Http\Resources\DishCollection;
 use App\Http\Resources\DishResource;
 use App\Models\Dish;
 use App\Services\ImageService;
+use App\Services\SearchEngineService;
 use Illuminate\Http\Request;
 
 class DishController extends Controller
 {
-    public function __construct(ResponseStrategy $responder)
+    public function __construct(ResponseStrategy $responder, private SearchEngineService $searchEngine)
     {
         parent::__construct($responder);
-        // Resource authorisation injecting
         $this->authorizeResource(Dish::class, 'dish');
     }
 
@@ -37,6 +37,16 @@ class DishController extends Controller
             'restaurant_id',
             'is_available',
         ]);
+
+        // Resolve text search to engine IDs so the listing uses WHERE id IN (...)
+        // instead of LIKE. Falls back to LIKE automatically if engine is down.
+        if (!empty($filters['search'])) {
+            $engineResults = $this->searchEngine->search($filters['search'], 50);
+            if (!empty($engineResults)) {
+                $filters['ids'] = array_column($engineResults, 'id');
+                unset($filters['search']);
+            }
+        }
 
         if ($request->ingredients) {
             $filters['ingredients'] = explode(',', $request->ingredients);
@@ -76,9 +86,9 @@ class DishController extends Controller
 
     public function search(Request $request)
     {
-        $search = trim($request->get('search', ''));
+        $prefix = trim($request->get('search', ''));
 
-        if (empty($search)) {
+        if (empty($prefix)) {
             return $this->responder->send(
                 'No search query provided.',
                 ['names' => []],
@@ -86,21 +96,26 @@ class DishController extends Controller
             );
         }
 
-        $names = Dish::hasPattern($search)->pluck('name')->toArray();
+        $engineResults = $this->searchEngine->search($prefix);
+
+        if (!empty($engineResults)) {
+            $names  = array_values(array_unique(array_column($engineResults, 'word')));
+            $source = 'engine';
+        } else {
+            // Engine unavailable — fall back to SQL LIKE
+            $names  = Dish::hasPattern($prefix)->pluck('name')->toArray();
+            $source = 'fallback';
+        }
 
         if (empty($names)) {
             return $this->responder->send(
                 'No search results found.',
-                ['names' => []],
+                ['names' => [], 'source' => $source],
                 status: ResponseStatus::BAD_REQUEST->value,
-
             );
         }
 
-        return $this->responder->send(
-            'Found dishes successfully.',
-            ['names' => $names],
-        );
+        return $this->responder->send('Found dishes successfully.', ['names' => $names, 'source' => $source]);
     }
 
 
