@@ -2,6 +2,7 @@
 #include "search/Trie.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <algorithm>
 #include <cctype>
 
@@ -28,8 +29,18 @@ AutocompleteEngine::AutocompleteEngine(int top_n, int cache_size, int recency_bo
 void AutocompleteEngine::load_word(const std::string& word, int frequency, int id) {
     std::string norm = normalize(word);
     if (norm.empty()) return;
-    for (int i = 0; i < frequency; ++i)
-        trie_.insert(norm, id);
+
+    // Index the full phrase (e.g. "chocolate cake")
+    trie_.insert(norm, id, norm, frequency);
+
+    // Also index each individual token so mid-phrase searches work:
+    // searching "ca" returns "chocolate cake" because "cake" is indexed too
+    if (norm.find(' ') != std::string::npos) {
+        std::istringstream ss(norm);
+        std::string token;
+        while (ss >> token)
+            trie_.insert(token, id, norm, frequency);
+    }
 }
 
 void AutocompleteEngine::load_words(const std::vector<std::string>& words) {

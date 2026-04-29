@@ -28,7 +28,9 @@ public:
     ~Trie();
 
     // Core operations  –  O(N) each, N = word length
-    void insert(const std::string& word, int id = 0);
+    // key      = the token inserted into the trie (e.g. "cake")
+    // full_name = the full dish name returned in results (e.g. "chocolate cake")
+    void insert(const std::string& key, int id, const std::string& full_name, int frequency = 1);
     int  search(const std::string& word) const;   // returns frequency, 0 if absent
     bool remove(const std::string& word);
 

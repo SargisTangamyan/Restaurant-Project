@@ -1,22 +1,20 @@
 #include "search/Trie.h"
 #include <algorithm>
+#include <unordered_map>
 
 //  Construction / destruction
 Trie::Trie() : root_(new TrieNode()), word_count_(0) {}
 Trie::~Trie() { delete root_; }
 
 //  insert  –  O(N)
-void Trie::insert(const std::string& word, int id) {
-    if (word.empty()) return;
+void Trie::insert(const std::string& key, int id, const std::string& full_name, int frequency) {
+    if (key.empty()) return;
     TrieNode* cur = root_;
 
-    for (char ch : word) {
-        auto it = cur->children.find(ch);
-        if (it == cur->children.end()) {
+    for (char ch : key) {
+        if (!cur->children.count(ch))
             cur->children[ch] = new TrieNode();
-            it = cur->children.find(ch);
-        }
-        cur = it->second;
+        cur = cur->children[ch];
     }
 
     if (!cur->is_end) {
@@ -24,20 +22,20 @@ void Trie::insert(const std::string& word, int id) {
         ++word_count_;
     }
 
-    ++cur->frequency;
-    cur->id = id;
+    // Accumulate score if this dish is already registered at this token node
+    for (auto& c : cur->completions) {
+        if (c.id == id) {
+            c.score += frequency;
+            return;
+        }
+    }
+    cur->completions.push_back({full_name, frequency, id});
 }
 
 //  search  –  O(N)
 int Trie::search(const std::string& word) const {
     TrieNode* node = find_node(word);
-
-    if (node && node->is_end) {
-        ++node->frequency;
-        return node->frequency;
-    }
-
-    return 0;
+    return (node && node->is_end) ? 1 : 0;
 }
 
 //  remove  –  O(N)
@@ -56,8 +54,7 @@ bool Trie::remove_helper(TrieNode* node, const std::string& word, int depth) {
     if (depth == static_cast<int>(word.size())) {
         if (!node->is_end) return false;
         node->is_end = false;
-        node->frequency = 0;
-        node->id = 0;
+        node->completions.clear();
         return node->children.empty();
     }
 
@@ -98,6 +95,18 @@ Trie::get_completions(const std::string& prefix, int top_n) const {
     std::string current = prefix;
     dfs_collect(start, current, all_results);
 
+    // Deduplicate by id — same dish can appear via both its full-phrase key
+    // and individual token keys; keep the entry with the highest score.
+    std::unordered_map<int, Completion> best;
+    for (auto& c : all_results) {
+        auto it = best.find(c.id);
+        if (it == best.end() || c.score > it->second.score)
+            best[c.id] = c;
+    }
+    all_results.clear();
+    for (auto& [id, c] : best)
+        all_results.push_back(c);
+
     int k = std::min(top_n, static_cast<int>(all_results.size()));
     std::partial_sort(all_results.begin(), all_results.begin() + k, all_results.end(),
         [](const Completion& a, const Completion& b){ return a.score > b.score; });
@@ -109,7 +118,8 @@ Trie::get_completions(const std::string& prefix, int top_n) const {
 //  DFS collector
 void Trie::dfs_collect(TrieNode* node, std::string& current, std::vector<Completion>& results) const {
     if (node->is_end)
-        results.push_back({ current, node->frequency, node->id });
+        for (const auto& c : node->completions)
+            results.push_back(c);
 
     for (auto& [ch, child] : node->children) {
         current.push_back(ch);
