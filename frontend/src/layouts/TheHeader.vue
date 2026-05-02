@@ -227,7 +227,7 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
               </button>
 
               <router-link :to="{'name': 'home'}" class="web-logo nav-logo">
-                <img src="../assets/images/logo/1.png" class="logo-img" alt="">
+                <img src="../assets/images/logo/eato.png" class="logo-img" alt="">
               </router-link>
 
               <!-- Now Working on -->
@@ -548,14 +548,15 @@ const {showAccount, toggleShowAccount, openAccount, closeAccount } = useMenuLogi
 .nav-logo {
   flex-shrink: 0;
   display: block;
-  height: 25px;
-  width: 141px;
+  height: 22px;
+  width: auto;
 }
 
 .logo-img {
   height: 100%;
-  width: 100%;
+  width: auto;
   display: block;
+  object-fit: contain;
 }
 
 .rightside-box {
@@ -813,6 +814,10 @@ input::-webkit-clear-button {
 
   .navbar-menu-button {
     margin-right: 10px;
+  }
+
+  .nav-logo {
+    height: 42px;
   }
 
   .rightside-box {
