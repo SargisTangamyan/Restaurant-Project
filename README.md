@@ -10,6 +10,13 @@
 - **Testing**: PHPUnit with Mockery
 - **API Testing**: Postman collection included
 
+### Search Engine
+- **Language**: C++17
+- **Data Structure**: Trie (prefix tree) with frequency tracking and LRU recency cache
+- **Database Client**: MySQL Connector/C++ (`libmysqlcppconn-dev`)
+- **Build System**: CMake ≥ 3.16
+- **Integration**: Standalone CLI binary invoked by Laravel via `shell_exec` / `proc_open`
+
 ### Frontend
 - **Framework**: Vue.js 3.5.18
 - **State Management**: Pinia 3.0.3 with persistence
@@ -27,6 +34,9 @@
 - Node.js >= 18
 - npm
 - Docker & Docker Compose (for containerized development)
+- CMake >= 3.16 (for the search engine)
+- GCC / Clang with C++17 support — `sudo apt install g++`
+- MySQL Connector/C++ — `sudo apt install libmysqlcppconn-dev`
 
 ## Getting Started
 
@@ -83,7 +93,7 @@ The API will be available at `http://localhost:8000`
 
 2. Run the following command to start the queue worker:
    ```bash
-   php_artisan queue:work
+   php artisan queue:work
    ```
 
 ### Stripe Setup
@@ -117,6 +127,43 @@ The API will be available at `http://localhost:8000`
 
 The application will be available at `http://localhost:5173`
 
+### Search Engine Setup
+
+1. Navigate to the search engine directory:
+   ```bash
+   cd search-engine/cpp_engine
+   ```
+
+2. Configure credentials in `search-engine/.env` (shares the same database as the backend):
+   ```env
+   MYSQL_HOST=127.0.0.1
+   MYSQL_ROOT=root
+   MYSQL_ROOT_PASSWORD=your_password
+   MYSQL_DATABASE=restaurant_project
+   MYSQL_PORT=3306
+   ```
+
+3. Run the engine in docker:
+   ```bash
+   docker compose up -d
+   ```
+
+   This produces two binaries in `build/`:
+   - `engine` — the autocomplete binary called by Laravel
+   - `benchmark` — standalone Trie-vs-linear-scan performance tool
+
+4. Verify the build:
+   ```bash
+   ./build/engine "chicken"
+   ```
+
+   Expected output:
+   ```json
+   {"query":"chicken","fuzzy":false,"elapsed_ms":0.03,"count":5,"results":[...]}
+   ```
+
+The engine loads all dish names from MySQL on startup. If the database is unavailable it falls back to the bundled `data/dataset.txt` (1000 food phrases).
+
 ## Development
 
 ### Backend Development
@@ -135,6 +182,31 @@ The application will be available at `http://localhost:5173`
 - **Clear caches**:
   ```bash
   php artisan optimize:clear
+  ```
+
+### Search Engine Development
+
+- **Single-shot query**:
+  ```bash
+  cd search-engine/cpp_engine/build
+  ./engine "pasta"
+  ./engine --fuzzy "pastta"        # fuzzy mode: edit distance ≤ 1
+  ./engine --top 10 "chicken"     # return up to 10 results (default 5)
+  ```
+
+- **REPL / pipe mode** (persistent process, avoids per-request DB connection):
+  ```bash
+  ./engine                         # interactive
+  echo "pizza" | ./engine          # pipe a single query
+  printf "pizza\nchicken\n:stats\n:quit\n" | ./engine
+  ```
+
+  REPL special commands: `?<prefix>` for fuzzy, `+<word>` insert, `-<word>` remove, `:stats` word count, `:quit` exit.
+
+- **Run benchmark** (Trie vs linear scan):
+  ```bash
+  cd search-engine/cpp_engine/build
+  ./benchmark ../data/dataset.txt
   ```
 
 ### Frontend Development
