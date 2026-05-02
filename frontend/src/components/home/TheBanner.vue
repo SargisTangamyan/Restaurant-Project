@@ -67,7 +67,7 @@ onBeforeUnmount(() => {
       <div class="container mx-auto">
 
         <!-- Hero Header -->
-        <section class="hero-header text-gray-700 py-16">
+        <section class="hero-header text-gray-700 pb-10">
           <div class="container mx-auto text-center px-4">
             <h1 class="text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">
               Our Freshest Products
@@ -76,7 +76,7 @@ onBeforeUnmount(() => {
               Discover the freshest dishes made with love and quality ingredients
             </p>
             <router-link :to="{name: 'dishes' }"
-              class="px-8 py-4 bg-white text-gray-700 font-semibold rounded-lg shadow-lg hover:bg-gray-100 transition duration-300"
+              class="px-8 py-4 bg-cgreen text-white font-semibold rounded-lg shadow-lg hover:bg-gray-100 transition duration-300"
             >
               View Menu
             </router-link>
